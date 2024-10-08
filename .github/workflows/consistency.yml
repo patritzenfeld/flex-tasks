@@ -3,9 +3,9 @@ name: Check .cabal Consistency
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   check-consistency:
