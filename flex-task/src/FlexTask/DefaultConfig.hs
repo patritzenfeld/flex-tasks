@@ -46,7 +46,7 @@ dTaskData = [rQ|
 
 {-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-Module for generating static task data, possibly randomised.
+Module for generating static task data, possibly randomized.
 This includes (in order):
 
 - Flexible data available to both the task description and the checks/feedback. (String)
