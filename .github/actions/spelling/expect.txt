@@ -1,0 +1,12 @@
+ABCD
+Buf
+Equi
+flexident
+formify
+gformify
+gparse
+gshow
+oss
+PKGDB
+RWS
+YOURFORM
