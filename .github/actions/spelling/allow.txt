@@ -15,8 +15,10 @@ GHC
 github
 Graphviz
 mform
+MForms
 mopt
 standalone
+typeclasses
 uncached
 unlines
 whamlet
