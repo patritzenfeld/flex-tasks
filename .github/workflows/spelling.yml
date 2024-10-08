@@ -60,6 +60,7 @@ jobs:
           extra_dictionaries:
             cspell:aws/aws.txt
             cspell:haskell/dict/haskell.txt
+            cspell:php/dict/php.txt
             cspell:software-terms/dict/softwareTerms.txt
             cspell:de_DE/src/German_de_DE.dic
             cspell:de_DE/src/hunspell/index.dic
