@@ -35,7 +35,7 @@ import Data.List.Split         (chunksOf)
 import Data.Maybe              (fromJust)
 import Data.Text               (Text)
 import Data.String.Interpolate (i)
-import FlexTask.FormUtil       (($$>), getFormData, newFlexId, newFlexName)
+import FlexTask.FormUtil       (($$>), addCss, getFormData, newFlexId, newFlexName)
 import FlexTask.Generic.Form (
   Alignment(..),
   FieldInfo,
@@ -138,7 +138,7 @@ formulaAndHints a b c d (aN,bN,cN,dN) = do
 
 tableForm :: [Text] -> Int -> Int -> Rendered
 tableForm staticHeaders rowAmount columnAmount =
-  reader $ \extra -> do
+  addCss css $ reader $ \extra -> do
     let addCssClass fs = fs {fsAttrs = addClass "tableInput" (fsAttrs fs)}
         addFieldAttrs t = (fieldSettingsLabel t) {fsName = Just t}
 
@@ -154,18 +154,6 @@ tableForm staticHeaders rowAmount columnAmount =
         rows = chunksOf columnAmount $ map snd columnsRes
     pure ( ["headers","cells"]
          , [whamlet|
-             <style>
-               .tableInput {
-                 width: 100%;
-               }
-               table, th, td {
-                 border: 1px solid black;
-                 border-collapse: collapse;
-
-               }
-               table {
-                 width: 100%;
-               }
              #{extra}
              <table>
                <tr>
@@ -178,6 +166,16 @@ tableForm staticHeaders rowAmount columnAmount =
                    $forall input <- row
                      <td>^{fvInput input}|]
          )
+  where
+    css = [cassius|
+      .tableInput
+        width: 100%;
+      table, th, td
+        border: 1px solid black;
+        border-collapse: collapse;
+      table
+       width: 100%;
+    |]
 
 
 
