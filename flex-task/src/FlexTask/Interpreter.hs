@@ -10,6 +10,7 @@ The interpreted code is usually supplied by accessing data stored in `FlexInst` 
 module FlexTask.Interpreter
   ( checkSolution
   , genFlexInst
+  , prettyError
   , runWithPackageDB
   , validDescription
   ) where
@@ -26,8 +27,9 @@ import Data.Text.Lazy.Encoding      (encodeUtf8)
 import Data.Text.Lazy               (pack)
 import Data.Typeable                (Typeable)
 import Language.Haskell.Interpreter (
+    GhcError(errMsg),
     Interpreter,
-    InterpreterError,
+    InterpreterError(..),
     infer,
     interpret,
     loadModules,
@@ -262,7 +264,7 @@ writeUncachedAndGetPaths xs = do
 
 
 extract :: Either InterpreterError c -> c
-extract = either (error . show) id
+extract = either (error . prettyError) id
 
 
 hash :: Show a => a -> String
@@ -294,3 +296,13 @@ imageLinks = concatMap gatherLinks
     gatherLinks (Itemized oss)   = imageLinks $ concat oss
     gatherLinks (Indented os)    = imageLinks os
     gatherLinks _                = []
+
+
+{- |
+Custom display of Hint InterpreterError messages.
+-}
+prettyError :: InterpreterError -> String
+prettyError (UnknownError s) = "Unknown error:\n" ++ s
+prettyError (NotAllowed s) = "Not allowed:\n" ++ s
+prettyError (GhcException s) = "GHC exception occurred:\n" ++ s
+prettyError (WontCompile ghcErrors) = "Won't compile:\n" ++ unlines (map errMsg ghcErrors)
