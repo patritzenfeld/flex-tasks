@@ -5,7 +5,7 @@ set ver [lindex $argv 0];
 
 
 log_user 0
-spawn ghci-$ver Global.hs TaskData.hs Description.hs Parse.hs -Wall
+spawn ghci-$ver Global.hs TaskData.hs Description.hs Parse.hs -Wall -Wno-orphans
 log_user 1
 expect "*"
 expect "Ok, four modules loaded.*"
