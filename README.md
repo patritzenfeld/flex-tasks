@@ -12,11 +12,11 @@ Directory `tasks` includes a collection of sample tasks and a test script.
 ### flex-task
 
 Supplies both a way to run tasks, as well as utilities to simplify the creation of said tasks.
-- `FlexTask.Types` defines task configurations and instances.
-- `FlexTask.Interpreter` contains functions to evaluate such tasks at runtime.
--  The remaining modules implement various utility functions and automations for creating tasks, for example:
-  - `FlexTask.Generic.Form`  provides generic, composable input forms for most data types.
-  - `FlexTask.Generic.Parse` does the same for generic parsers.
+* `FlexTask.Types` defines task configurations and instances.
+* `FlexTask.Interpreter` contains functions to evaluate such tasks at runtime.
+* The remaining modules implement various utility functions and automations for creating tasks, for example:
+  ** `FlexTask.Generic.Form`  provides generic, composable input forms for most data types.
+  ** `FlexTask.Generic.Parse` does the same for generic parsers.
 
 ### flex-task-processing
 
