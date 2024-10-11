@@ -1,9 +1,19 @@
-default: true
+/ Example markdownlint configuration with all properties set to their default value
+{
 
-extends: null
+  // Default state for all rules
+  "default": true,
 
-# MD007/ul-indent : Unordered list indentation : https://github.com/DavidAnson/markdownlint/blob/v0.35.0/doc/md007.md
-MD007:
-  # Spaces for indent
-  indent: 3
+  // Path to configuration file to extend
+  "extends": null,
+
+  // MD007/ul-indent : Unordered list indentation : https://github.com/DavidAnson/markdownlint/blob/v0.35.0/doc/md007.md
+  "MD007": {
+    // Spaces for indent
+    "indent": 4,
+    // Whether to indent the first level of the list
+    "start_indented": false,
+    // Spaces for first level indent (when start_indented is set)
+    "start_indent": 2
+  },
 
