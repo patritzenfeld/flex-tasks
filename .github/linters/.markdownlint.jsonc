@@ -15,5 +15,5 @@
     "start_indented": false,
     // Spaces for first level indent (when start_indented is set)
     "start_indent": 2
-  },
-
+  }
+}
