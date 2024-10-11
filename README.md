@@ -1,22 +1,22 @@
 # Flex-Tasks
 
 Runtime interpreted flexible exercises, mainly for use in [Autotool](https://gitlab.imn.htwk-leipzig.de/autotool/all0).
-Also automatic HTML form and parser generation for input data types. 
+Also automatic HTML form and parser generation for input data types.
 
 
 ## Contents
 
-The repository includes two packages. 
+The repository includes two packages.
 Directory `tasks` includes a collection of sample tasks and a test script.
 
 ### flex-task
 
 Supplies both a way to run tasks, as well as utilities to simplify the creation of said tasks.
-  - `Flextask.Types` defines task configurations and instances .
-  - `FlexTask.Interpreter` contains functions to evaluate such tasks at runtime.
-  -  The remaining modules implement various utility functions and automations for creating tasks, for example:
-     - `Flextask.Generic.Form`  provides generic, composable input forms for most datas types.
-     - `Flextask.Generic.Parse` does the same for generic parsers.
+- `FlexTask.Types` defines task configurations and instances.
+- `FlexTask.Interpreter` contains functions to evaluate such tasks at runtime.
+-  The remaining modules implement various utility functions and automations for creating tasks, for example:
+  - `FlexTask.Generic.Form`  provides generic, composable input forms for most data types.
+  - `FlexTask.Generic.Parse` does the same for generic parsers.
 
 ### flex-task-processing
 
