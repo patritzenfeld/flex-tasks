@@ -19,7 +19,6 @@ dependencies:
   - raw-strings-qq
   - SHA
   - shakespeare
-  - split
   - string-interpolate
   - text
   - transformers
