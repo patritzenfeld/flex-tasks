@@ -9,7 +9,7 @@ extra-deps:
       - flex-task
       - flex-task-processing
   - git: https://github.com/fmidue/output-blocks.git
-    commit: f2418656472b9c32bde06ec3b916fe6d749d0290
+    commit: dbc0713b6b8da7d1305bbfbd4d6856a78676e1e1
     subdirs:
       - output-blocks
   - git: https://github.com/fmidue/logic-tasks.git
