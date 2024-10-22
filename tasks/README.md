@@ -10,7 +10,7 @@ A folder named after the task will be created, containing all of the .hs files a
 
 ### example
 
-`./test.sh proplogic.txt flex-pkgdb/pkgdb`
+`./test.sh proplogic.txt flex-pkgdb`
 
 ## Notes
 
