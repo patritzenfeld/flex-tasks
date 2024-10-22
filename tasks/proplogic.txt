@@ -17,11 +17,9 @@ type Submission = (Table,PropFormula Char,[Namen])
 
 =============================================
 
-{-# language DeriveDataTypeable #-}
 {-# language FlexibleContexts #-}
 {-# language OverloadedStrings #-}
 {-# language QuasiQuotes #-}
-{-# language StandaloneDeriving #-}
 {-# language TupleSections #-}
 
 module TaskData (getTask) where
@@ -29,7 +27,6 @@ module TaskData (getTask) where
 
 import Control.Monad.Reader    (reader)
 import Data.Char               (digitToInt)
-import Data.Data               (Data)
 import Data.List               (transpose)
 import Data.List.Split         (chunksOf)
 import Data.Maybe              (fromJust)
@@ -191,10 +188,6 @@ instance Formify [Namen] where
   formifyImplementation = formifyInstanceMultiChoice
 
 
-deriving instance Data BinOp
-deriving instance Data (PropFormula Char)
-
-
 
 startingTable :: [[Maybe Binary]]
 startingTable = map (Just . Binary . toEnum . digitToInt) <$>
@@ -218,9 +211,8 @@ import Data.List     (isInfixOf)
 import Data.Maybe    (catMaybes, fromJust)
 import Data.Map      (fromList)
 import Data.Ratio    ((%))
-import Data.Tuple    (swap)
 
-import LogicTasks.Formula (isSemanticEqual, ToSAT(..))
+import LogicTasks.Formula (isSemanticEqual, convert)
 import Trees.Types (PropFormula(..), BinOp(..))
 
 import qualified SAT.MiniSat as Sat
@@ -246,23 +238,6 @@ isSubFormula :: PropFormula Char -> PropFormula Char -> Bool
 isSubFormula a b = noSpaces a `isInfixOf` noSpaces b
   where
     noSpaces = filter (/=' ') . show
-
-
-
--- Not available in logic-tasks
--- needed for equivalence test without excessive brackets in formulas
-instance ToSAT (PropFormula Char) where
-   convert (Atomic c) = Sat.Var c
-   convert (Neg p) = Sat.Not (convert p)
-   convert (Brackets p) = convert p
-   convert (Assoc op l r) = convertBinOp op left right
-     where
-       (left, right) = (if op == BackImpl then swap else id) (convert l, convert r)
-       convertBinOp And = (Sat.:&&:)
-       convertBinOp Or = (Sat.:||:)
-       convertBinOp Impl = (Sat.:->:)
-       convertBinOp BackImpl = (Sat.:->:)
-       convertBinOp Equi = (Sat.:<->:)
 
 
 
