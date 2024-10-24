@@ -98,7 +98,7 @@ import qualified LogicTasks.Syntax.ComposeFormula as LT
 
 
 description :: (OutputCapable m, MonadIO m) => FilePath -> ComposeFormulaInst -> LangM m
-description path = LT.description (path <> "/")
+description path = LT.description False (path <> "/")
 
 =============================================
 
