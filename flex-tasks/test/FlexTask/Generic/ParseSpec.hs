@@ -12,7 +12,6 @@ import Test.Hspec (
   context,
   describe,
   specify,
-  pendingWith,
   )
 import Test.Hspec.QuickCheck            (prop)
 import Test.Hspec.Parsec                (shouldFailOn, shouldParse)
@@ -56,7 +55,7 @@ spec = do
       prop "Double" $ testParsing @Double show
 
     context "should work for lists" $ do
-      prop "String" $ pendingWith "prevented by nested lists type error. fix first!"
+      prop "String" $ testParsingStringList id
       prop "Text" $ testParsingStringList pack
       prop "Textarea" $ testParsingStringList (Textarea . pack)
       prop "Bool" $ testParsingList boolShow
