@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 
-name:           flex-task
+name:           flex-tasks
 version:        0.0.0
 build-type:     Simple
 
@@ -21,7 +21,7 @@ library
   other-modules:
       FlexTask.Generic.ParseInternal
       FlexTask.Widgets
-      Paths_flex_task
+      Paths_flex_tasks
   hs-source-dirs:
       src
   default-extensions:
@@ -45,7 +45,7 @@ library
     , extra
     , fast-logger
     , filepath
-    , flex-task-processing
+    , flex-tasks-processing
     , ghc
     , hint
     , mtl
@@ -59,7 +59,7 @@ library
     , yesod-core
   default-language: Haskell2010
 
-test-suite flex-task-test
+test-suite flex-tasks-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
@@ -69,7 +69,7 @@ test-suite flex-task-test
       FlexTask.Generic.ParseSpec
       FlexTask.TestUtil
       FlexTask.TypesSpec
-      Paths_flex_task
+      Paths_flex_tasks
   hs-source-dirs:
       test
   default-extensions:
@@ -93,8 +93,8 @@ test-suite flex-task-test
     , extra
     , fast-logger
     , filepath
-    , flex-task
-    , flex-task-processing
+    , flex-tasks
+    , flex-tasks-processing
     , ghc
     , hint
     , hspec

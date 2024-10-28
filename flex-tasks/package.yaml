@@ -1,5 +1,5 @@
 ---
-name: flex-task
+name: flex-tasks
 extra-source-files: [ ]
 dependencies:
   - base
@@ -11,7 +11,7 @@ dependencies:
   - filepath
   - ghc
   - hint
-  - flex-task-processing
+  - flex-tasks-processing
   - mtl
   - output-blocks
   - parsec
@@ -50,7 +50,7 @@ library:
     - -Werror
     - -Wno-x-partial
 tests:
-  flex-task-test:
+  flex-tasks-test:
     main: Spec.hs
     source-dirs:
       - test
@@ -62,8 +62,8 @@ tests:
       - -Widentities
       - -Werror
     dependencies:
-      - flex-task
-      - flex-task-processing
+      - flex-tasks
+      - flex-tasks-processing
       - hspec
       - hspec-parsec
       - quickcheck-instances
