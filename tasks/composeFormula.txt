@@ -85,6 +85,9 @@ checkSemantics inst path try = completeGrade path inst (delayed $ toListString t
 
 =============================================
 
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE RecordWildCards #-}
+
 module Description (description) where
 
 
@@ -98,7 +101,24 @@ import qualified LogicTasks.Syntax.ComposeFormula as LT
 
 
 description :: (OutputCapable m, MonadIO m) => FilePath -> ComposeFormulaInst -> LangM m
-description path = LT.description False (path <> "/")
+description path inst@ComposeFormulaInst{..} = do
+  LT.description False (path <> "/") inst
+  paragraph $ do
+    translate $ do
+      german "Ein Lösungsversuch könnte beispielsweise aus den folgenden beiden Eingaben bestehen: "
+      english "For instance, a solution attempt could consist of the following two inputs: "
+    translatedCode $ flip localise $ translations exampleCode
+    pure()
+  pure()
+  where
+    (fixedEng, fixedGer) = ("C and (A or not B)","C und (A oder nicht B)")
+    exampleCode
+      | unicodeAllowed = do
+        english $ unlines ["(A ∨ ¬B) and C", fixedEng]
+        german $ unlines ["(A ∨ ¬B) und C", fixedGer]
+      | otherwise      = do
+        english $ unlines ["(A or not B) and C", fixedEng]
+        german $ unlines ["(A oder nicht B) und C", fixedGer]
 
 =============================================
 
