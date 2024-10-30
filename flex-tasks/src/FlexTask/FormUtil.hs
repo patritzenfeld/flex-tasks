@@ -14,11 +14,13 @@ module FlexTask.FormUtil
   , newFlexId
   , newFlexName
   , repeatFlexName
+  , standaloneDefaultsJS
   ) where
 
 
 import Control.Monad.Reader            (runReader)
 import Data.Text                       (Text, pack, unpack)
+import Data.Text.Lazy                  (toStrict)
 import Data.Tuple.Extra                (second)
 import System.Log.FastLogger           (defaultBufSize, newStdoutLoggerSet)
 import Text.Blaze.Html.Renderer.String (renderHtml)
@@ -128,6 +130,10 @@ The format is "flex[number]"
 newFlexName :: MForm Handler Text
 newFlexName = T.replace "f" "flex" <$> newFormIdent
 
+
+standaloneDefaultsJS :: [Text] -> Text
+standaloneDefaultsJS =
+  toStrict . renderJavascriptUrl (\_ _ -> undefined) . setDefaultsJS
 
 
 setDefaultsJS :: [Text] -> JavascriptUrl url
