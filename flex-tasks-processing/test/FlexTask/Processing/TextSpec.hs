@@ -6,7 +6,7 @@ module FlexTask.Processing.TextSpec where
 import Data.Char                        (isAscii)
 import Data.List                        (intersperse)
 import Data.Maybe                       (fromJust, fromMaybe)
-import Data.Text                        (Text, pack)
+import Data.Text                        (Text, isInfixOf, pack)
 import Test.Hspec                       (Spec, describe, it, shouldBe)
 import Test.Hspec.QuickCheck            (prop)
 import Test.QuickCheck                  (arbitrary, chooseInt, forAll, suchThat)
@@ -40,7 +40,7 @@ spec = do
 
   describe "formatForJS" $ do
     it "does not change non unicode text and puts it in a printed list" $
-      forAll (arbitrary `suchThat` T.all isAscii) $ \t ->
+      forAll (arbitrary `suchThat` noUnicode) $ \t ->
         formatForJS (fromJust $ formatAnswer [[t]]) `shouldBe` T.pack (show [emptyOrNone t])
     it "converts haskell unicode chars into JavaScript (\\u) for a unit test" $
       formatForJS (fromJust $ formatAnswer [[jsUnitTest]]) `shouldBe` "[\"\\u04d2\\u29b6\"]"
@@ -74,6 +74,7 @@ spec = do
       ]
 
     content = T.drop 2 . T.dropEnd 2
+    noUnicode t = T.all isAscii t && not ("\\u" `isInfixOf` t)
 
 
 processArg :: [Text] -> Text
