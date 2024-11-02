@@ -20,7 +20,7 @@ module FlexTask.Processing.Text
   ) where
 
 
-import Data.Char  (isAscii, isDigit)
+import Data.Char  (isAscii, isHexDigit)
 import Data.Maybe (fromMaybe)
 import Data.Text  (Text)
 import Numeric    (showHex)
@@ -117,7 +117,7 @@ caused by conversion between Haskell and JavaScript representation.
 -}
 removeUnicodeEscape :: String -> String
 removeUnicodeEscape cs@(a:b:c:d:e:xs)
-    | a == '\\' && all isDigit [b,c,d,e] = b:c:d:e: removeUnicodeEscape xs
+    | a == '\\' && all isHexDigit [b,c,d,e] = b:c:d:e: removeUnicodeEscape xs
     | otherwise                = a : removeUnicodeEscape (drop 1 cs)
 removeUnicodeEscape xs         = xs
 

@@ -7,6 +7,7 @@ import Data.Char                        (isAscii)
 import Data.List                        (intersperse)
 import Data.Maybe                       (fromJust, fromMaybe)
 import Data.Text                        (Text, isInfixOf, pack)
+import Numeric                          (showHex)
 import Test.Hspec                       (Spec, describe, it, shouldBe)
 import Test.Hspec.QuickCheck            (prop)
 import Test.QuickCheck                  (arbitrary, chooseInt, forAll, suchThat)
@@ -50,8 +51,8 @@ spec = do
       forAll (arbitrary `suchThat` all isAscii) $ \s ->
         removeUnicodeEscape s `shouldBe` s
     it "strips an escape char off of any unicode." $
-      forAll (chooseInt (999,100000)) $ \i ->
-        removeUnicodeEscape ('\\': show i) `shouldBe` show i
+      forAll genHex $ \i ->
+        removeUnicodeEscape ('\\': i) `shouldBe` i
 
   where
     formatUnitTest = T.concat $ intersperse argDelimiter
@@ -75,6 +76,10 @@ spec = do
 
     content = T.drop 2 . T.dropEnd 2
     noUnicode t = T.all isAscii t && not ("\\u" `isInfixOf` t)
+    genHex = do
+      num <- chooseInt (1,1048575)
+      let hex = showHex num ""
+      pure $ replicate (4 - length hex) '0' ++ hex
 
 
 processArg :: [Text] -> Text
