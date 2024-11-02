@@ -22,7 +22,7 @@ Supplies both a way to run tasks, as well as utilities to simplify the creation 
 
 ### flex-tasks-processing
 
-Includes text processing necessary for the Autotool frontend. It is split of from the above package to minimize dependencies in Autotool.
+Includes text processing necessary for the Autotool frontend. It is split off from the above package to minimize dependencies in Autotool.
 
 
 ## Usage
@@ -36,4 +36,4 @@ The generic parsers and input forms can be used as a standalone feature, indepen
 
 ## Running tests
 
-The test suite for flex-task needs a specified external package database. Its path has to be set via the environment variable `FLEX_PKGDB` before running the tests. You can use the default database of the package by setting `FLEX_PKGDB` to `$(stack path --local-pkg-db)`.
+The test suite for flex-tasks needs a specified external package database. Its path has to be set via the environment variable `FLEX_PKGDB` before running the tests. You can use the default database of the package by setting `FLEX_PKGDB` to `$(stack path --local-pkg-db)`.
