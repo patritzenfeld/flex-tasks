@@ -1,6 +1,5 @@
 module Global where
 
-
 type Solution = (String,String)
 
 =============================================
@@ -10,35 +9,64 @@ type Solution = (String,String)
 
 module TaskData where
 
-
 import Data.String.Interpolate          (i)
 import FlexTask.FormUtil                (getFormData)
 import FlexTask.Generic.Form
 import FlexTask.YesodConfig             (Rendered)
-import Tasks.ComposeFormula.Config      (defaultComposeFormulaConfig)
+import Tasks.ComposeFormula.Config      (ComposeFormulaConfig(..), TreeDisplayMode (TreeDisplay))
 import Tasks.ComposeFormula.Quiz        (generateComposeFormulaInst)
 import Test.QuickCheck.Gen              (Gen)
+import qualified Data.Map as Map        (fromList)
+import Data.Map                         (Map)
+
+import Tasks.SynTree.Config (
+  SynTreeConfig(..)
+  )
+import Trees.Types (BinOp(..))
 
 import Global
 
-
-
 getTask :: Gen (String, String, IO ([String],String))
 getTask = do
-    inst <- generateComposeFormulaInst defaultComposeFormulaConfig
+    inst <- generateComposeFormulaInst task03
     pure (show inst, checkers, getFormData form)
 
+listToFM :: Ord k => [(k, a)] -> Map k a
+listToFM = Map.fromList
 
+-- 2024: Weight 0.33
+task03 :: ComposeFormulaConfig
+task03 = ComposeFormulaConfig
+  { syntaxTreeConfig = SynTreeConfig
+    { minNodes = 10
+    , maxNodes = 14
+    , minDepth = 4
+    , maxDepth = 6
+    , availableAtoms = "ABCDE"
+    , minAmountOfUniqueAtoms = 5
+    , binOpFrequencies = listToFM
+      [ (And, 1)
+      , (Or, 1)
+      , (Impl, 1)
+      , (BackImpl, 1)
+      , (Equi, 1)
+      ]
+    , negOpFrequency = 1
+    , maxConsecutiveNegations = 2
+    , minUniqueBinOperators = 2
+    }
+  , treeDisplayModes = (TreeDisplay, TreeDisplay)
+  , extraHintsOnAssociativity = False
+  , extraText = Nothing
+  , printSolution = True
+  , offerUnicodeInput = True
+  }
 
 fields :: [[FieldInfo]]
-fields = [[single "First Formula", single "Second Formula"]]
-
-
+fields = [[single "Erste Formel:", single "Zweite Formel:"]]
 
 form :: Rendered
 form = formify (Nothing :: Maybe Solution) fields
-
-
 
 checkers :: String
 checkers = [i|
@@ -46,7 +74,6 @@ checkers = [i|
 {-\# language ApplicativeDo \#-}
 
 module Check where
-
 
 import Control.Monad.IO.Class           (MonadIO)
 import Control.OutputCapable.Blocks
@@ -58,10 +85,8 @@ import Trees.Types                      (BinOp(..), SynTree(..), TreeFormulaAnsw
 
 import Global
 
-
 toListString :: (String,String) -> String
 toListString (x,y) = '[' : x ++ ',' : y ++ "]"
-
 
 checkSyntax
   :: (MonadIO m, OutputCapable m)
@@ -70,8 +95,6 @@ checkSyntax
   -> Solution
   -> LangM m
 checkSyntax inst _ try = partialGrade inst $ delayed $ toListString try
-
-
 
 checkSemantics
   :: (MonadIO m, OutputCapable m)
@@ -90,15 +113,12 @@ checkSemantics inst path try = completeGrade path inst (delayed $ toListString t
 
 module Description (description) where
 
-
 import Control.Monad.IO.Class                    (MonadIO)
 import Control.OutputCapable.Blocks
 import Tasks.ComposeFormula.Config               (ComposeFormulaInst(..))
 import Trees.Types                               (BinOp(..), SynTree(..))
 
 import qualified LogicTasks.Syntax.ComposeFormula as LT
-
-
 
 description :: (OutputCapable m, MonadIO m) => FilePath -> ComposeFormulaInst -> LangM m
 description path inst@ComposeFormulaInst{..} = do
@@ -124,14 +144,10 @@ description path inst@ComposeFormulaInst{..} = do
 
 module Parse (parseSubmission) where
 
-
 import FlexTask.Generic.Parse  (parseInput, useParser)
 import Text.Parsec             (ParseError)
 
 import Global
 
-
-
 parseSubmission :: String -> Either ParseError Solution
 parseSubmission = useParser parseInput
-
