@@ -11,6 +11,7 @@ module FlexTask.FormUtil
   , addJs
   , addCssAndJs
   , getFormData
+  , addNameAndCssClass
   , newFlexId
   , newFlexName
   , repeatFlexName
@@ -106,6 +107,23 @@ addCssAndJs
   -> Rendered' m            -- ^ Form to add to
   -> Rendered' m
 addCssAndJs css js = applyToWidget ((<* toWidget css) . (<* toWidget js))
+
+
+{- |
+Convenience function to directly add a field name and Css class to a Yesod Field.
+-}
+addNameAndCssClass
+  :: Monad m
+  => (FieldSettings app -> Field m a)
+  -> Text
+  -> Text
+  -> Field m a
+addNameAndCssClass field name cssClass = field addFieldAttrs
+  where
+    addFieldAttrs = (fieldSettingsLabel name) {
+      fsName = Just name,
+      fsAttrs = addClass cssClass $ fsAttrs addFieldAttrs
+      }
 
 
 {- |
