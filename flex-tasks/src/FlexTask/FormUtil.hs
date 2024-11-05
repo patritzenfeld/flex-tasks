@@ -110,19 +110,15 @@ addCssAndJs css js = applyToWidget ((<* toWidget css) . (<* toWidget js))
 
 
 {- |
-Convenience function to directly add a field name and Css class to a Yesod Field.
+Convenience function to directly create a Yesod FieldSetting with this name and CSS Class.
 -}
-addNameAndCssClass
-  :: Monad m
-  => (FieldSettings app -> Field m a)
-  -> Text
-  -> Text
-  -> Field m a
-addNameAndCssClass field name cssClass = field addFieldAttrs
+addNameAndCssClass :: Text -> Text -> FieldSettings app
+addNameAndCssClass name cssClass = addFieldAttrs
   where
-    addFieldAttrs = (fieldSettingsLabel name) {
+    fSettings = fieldSettingsLabel name
+    addFieldAttrs = fSettings {
       fsName = Just name,
-      fsAttrs = addClass cssClass $ fsAttrs addFieldAttrs
+      fsAttrs = addClass cssClass $ fsAttrs fSettings
       }
 
 
