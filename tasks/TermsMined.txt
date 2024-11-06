@@ -133,7 +133,7 @@ sigList = [
       ("amazonS3Connection", ["String", "String"], "AWSConnection"),
       ("awsAccessKey", ["AWSConnection"], "String")
       ],
-  -- LPFP-core-3.json
+
   toSignature [
       ("defaultPFS", [], "ParticleFieldState"),
       ("position", ["ParticleFieldState"], "Position"),

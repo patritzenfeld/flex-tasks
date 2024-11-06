@@ -12,6 +12,7 @@ lindex
 OBT
 oss
 PKGDB
+pfs
 proplogic
 RWS
 usr
