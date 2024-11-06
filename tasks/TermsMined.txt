@@ -70,7 +70,7 @@ genConfig = do
 
 
 sigList = [
-  -- Cabal-syntax-2.json
+
   toSignature [
       ("zeroPos", [], "Position"),
       ("retPos", ["Position"], "Position"),
@@ -79,7 +79,7 @@ sigList = [
       ("makePosition", ["Int", "Int"], "Position"),
       ("incPos", ["Int", "Position"], "Position")
       ],
-  -- ekg-push-1.json
+
   toSignature [
       ("defaultPushOptions", [], "PushOptions"),
       ("prefix", ["PushOptions"], "Text"),
@@ -88,7 +88,7 @@ sigList = [
       ("flushInterval", ["PushOptions"], "Int"),
       ("makeOptions", ["Int", "Bool", "Text", "Text"], "PushOptions")
       ],
-  -- Euterpea-1.json
+
   toSignature [
       ("trackEnd", [], "Message"),
       ("key", ["Message"], "Key"),
@@ -97,7 +97,7 @@ sigList = [
       ("controlChange", ["Channel", "Int", "Int"], "Message"),
       ("timeSignature", ["Int", "Int", "Int", "Int"], "Message")
       ],
-  -- french-cards-1.json
+
   toSignature [
       ("rTwo", [], "Rank"),
       ("diamonds", [], "Suit"),
@@ -106,7 +106,7 @@ sigList = [
       ("cardWord", ["Card"], "Word8"),
       ("cardSuit", ["Card"], "Suit")
       ],
-  -- ghc-26.json
+
   toSignature [
       ("boxedTuple", [], "TupleSort"),
       ("finalPhase", [], "CompilerPhase"),
@@ -115,7 +115,7 @@ sigList = [
       ("isActive", ["CompilerPhase", "Activation"], "Bool"),
       ("beginPhase", ["Activation"], "CompilerPhase")
       ],
-  -- haskellscrabble-2.json
+
   toSignature [
       ("emptyBoard", [], "Board"),
       ("posMax", [], "Int"),
@@ -124,7 +124,7 @@ sigList = [
       ("yPos", ["Pos"], "Int"),
       ("gridValue", ["Pos"], "String")
       ],
-  -- hS3-1.json
+
   toSignature [
       ("defaultAmazonS3Port", [], "Int"),
       ("defaultAmazonS3Host", [], "String"),
@@ -142,7 +142,7 @@ sigList = [
       ("pfsUpdate", ["R", "ParticleFieldState"], "ParticleFieldState"),
       ("charge", ["ParticleFieldState"], "R")
       ],
-  -- packedstring-2.json
+
   toSignature [
       ("nilPS", [], "PackedString"),
       ("lengthPS", ["PackedString"], "Int"),
@@ -151,7 +151,7 @@ sigList = [
       ("nullPS", ["PackedString"], "Bool"),
       ("unpackPS", ["PackedString"], "String")
       ],
-  -- prettyprint-avh4-2.json
+
   toSignature [
       ("space", [], "Line"),
       ("blankLine", [], "Block"),
@@ -160,7 +160,7 @@ sigList = [
       ("render", ["Block"], "Builder"),
       ("addSuffix", ["Line", "Block"], "Block")
       ],
-  -- protobuf-1.json
+
   toSignature [
       ("empty", [], "Builder"),
       ("append", ["Builder", "Builder"], "Builder"),
@@ -169,7 +169,7 @@ sigList = [
       ("fromByteString", ["ByteString"], "Builder"),
       ("makeBuilder", ["Int", "Builder"], "Builder")
       ],
-  -- template-toolkit-1.json
+
   toSignature [
       ("undef", [], "Val"),
       ("not", [], "UnOp"),
@@ -178,7 +178,7 @@ sigList = [
       ("eTerOp", ["Expr", "Expr", "Expr"], "Expr"),
       ("vArrayRange", ["Expr", "Expr"], "Val")
       ],
-  -- time-1.json
+
   toSignature [
       ("midnight", [], "TimeOfDay"),
       ("midday", [], "TimeOfDay"),
@@ -187,7 +187,7 @@ sigList = [
       ("makeTime", ["Int", "Int", "Pico"], "TimeOfDay"),
       ("sinceMidnight", ["TimeOfDay"], "DiffTime")
       ],
-  -- unliftio-path-1.json
+
   toSignature [
       ("emptyPermissions", [], "Permissions"),
       ("exeExtension", [], "String"),
@@ -196,7 +196,7 @@ sigList = [
       ("setOwnerSearchable", ["Bool", "Permissions"], "Permissions"),
       ("executable", ["Permissions"], "Bool")
       ],
-  -- web-rep-2.json
+
   toSignature [
       ("defaultSocketConfig", [], "SocketConfig"),
       ("defaultSocketPage", [], "Page"),
