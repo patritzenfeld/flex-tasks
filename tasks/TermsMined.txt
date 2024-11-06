@@ -1,0 +1,283 @@
+module Global where
+
+type Solution = [Int]
+
+=============================================
+
+{-# language OverloadedStrings #-}
+{-# language QuasiQuotes #-}
+{-# language StandaloneDeriving #-}
+{-# language DeriveDataTypeable #-}
+{-# language RecordWildCards #-}
+
+
+module TaskData where
+
+import Data.String.Interpolate          (i)
+import Data.Data                        (Data)
+import Data.Generics.Text               (gshow)
+import Data.Text                        (pack)
+import FlexTask.FormUtil                (getFormData)
+import FlexTask.Generic.Form
+import FlexTask.YesodConfig             (Rendered)
+import TermTasks.Direct                 (description, genInst)
+import TermTasks.Records (
+  Certain(..),
+  SigInstance(..),
+  Base(..),
+  )
+import TermTasks.DataType               (Error(..), toSignature)
+import Test.QuickCheck.Gen              (Gen, elements)
+import qualified Data.Map as Map        (fromList)
+
+import Global
+
+
+
+deriving instance Data SigInstance
+
+instance MonadFail Gen where
+  fail = error
+
+
+getTask :: Gen (String, String, IO ([String],String))
+getTask = do
+    config <- genConfig
+    inst@SigInstance{..} <- genInst config
+    pure (gshow inst, checkers, getFormData $ form $ length terms)
+
+
+form :: Int -> Rendered
+form amount = formify
+  (Nothing :: Maybe MultipleChoiceSelection)
+  [[buttons Vertical "Korrekte Terme/Correct terms" $ map (pack . show) [1..amount]]]
+
+
+genConfig :: Gen Certain
+genConfig = do
+  sig <- elements sigList
+  pure $ Certain {
+    signatures = sig,
+    root = Nothing,
+    baseConf = Base {
+      termSizeRange = ( 6, 10 ),
+      wrongTerms = [(1, Swap), (1, TypeChange), (1, OneMore), (1, OneLess)],
+      properTerms = 5,
+      extraFeedback = True,
+      printSolution = True
+    }
+  }
+
+
+sigList = [
+  -- Cabal-syntax-2.json
+  toSignature [
+      ("zeroPos", [], "Position"),
+      ("retPos", ["Position"], "Position"),
+      ("showPos", ["Position"], "String"),
+      ("positionRow", ["Position"], "Int"),
+      ("makePosition", ["Int", "Int"], "Position"),
+      ("incPos", ["Int", "Position"], "Position")
+      ],
+  -- ekg-push-1.json
+  toSignature [
+      ("defaultPushOptions", [], "PushOptions"),
+      ("prefix", ["PushOptions"], "Text"),
+      ("suffix", ["PushOptions"], "Text"),
+      ("debug", ["PushOptions"], "Bool"),
+      ("flushInterval", ["PushOptions"], "Int"),
+      ("makeOptions", ["Int", "Bool", "Text", "Text"], "PushOptions")
+      ],
+  -- Euterpea-1.json
+  toSignature [
+      ("trackEnd", [], "Message"),
+      ("key", ["Message"], "Key"),
+      ("controllerNumber", ["Message"], "Int"),
+      ("channel", ["Message"], "Channel"),
+      ("controlChange", ["Channel", "Int", "Int"], "Message"),
+      ("timeSignature", ["Int", "Int", "Int", "Int"], "Message")
+      ],
+  -- french-cards-1.json
+  toSignature [
+      ("rTwo", [], "Rank"),
+      ("diamonds", [], "Suit"),
+      ("newCard", ["Rank", "Suit"], "Card"),
+      ("cardRank", ["Card"], "Rank"),
+      ("cardWord", ["Card"], "Word8"),
+      ("cardSuit", ["Card"], "Suit")
+      ],
+  -- ghc-26.json
+  toSignature [
+      ("boxedTuple", [], "TupleSort"),
+      ("finalPhase", [], "CompilerPhase"),
+      ("activeAfter", ["CompilerPhase"], "Activation"),
+      ("isAlwaysActive", ["Activation"], "Bool"),
+      ("isActive", ["CompilerPhase", "Activation"], "Bool"),
+      ("beginPhase", ["Activation"], "CompilerPhase")
+      ],
+  -- haskellscrabble-2.json
+  toSignature [
+      ("emptyBoard", [], "Board"),
+      ("posMax", [], "Int"),
+      ("prettyPrint", ["Board"], "String"),
+      ("makePos", ["Int", "Int", "String"], "Pos"),
+      ("yPos", ["Pos"], "Int"),
+      ("gridValue", ["Pos"], "String")
+      ],
+  -- hS3-1.json
+  toSignature [
+      ("defaultAmazonS3Port", [], "Int"),
+      ("defaultAmazonS3Host", [], "String"),
+      ("makeAWSConnection", ["String", "Int", "String", "String"], "AWSConnection"),
+      ("awsPort", ["AWSConnection"], "Int"),
+      ("amazonS3Connection", ["String", "String"], "AWSConnection"),
+      ("awsAccessKey", ["AWSConnection"], "String")
+      ],
+  -- LPFP-core-3.json
+  toSignature [
+      ("defaultPFS", [], "ParticleFieldState"),
+      ("position", ["ParticleFieldState"], "Position"),
+      ("mass", ["ParticleFieldState"], "R"),
+      ("scalePos", ["R", "Position"], "Position"),
+      ("pfsUpdate", ["R", "ParticleFieldState"], "ParticleFieldState"),
+      ("charge", ["ParticleFieldState"], "R")
+      ],
+  -- packedstring-2.json
+  toSignature [
+      ("nilPS", [], "PackedString"),
+      ("lengthPS", ["PackedString"], "Int"),
+      ("appendPS", ["PackedString", "PackedString"], "PackedString"),
+      ("dropPS", ["Int", "PackedString"], "PackedString"),
+      ("nullPS", ["PackedString"], "Bool"),
+      ("unpackPS", ["PackedString"], "String")
+      ],
+  -- prettyprint-avh4-2.json
+  toSignature [
+      ("space", [], "Line"),
+      ("blankLine", [], "Block"),
+      ("line", ["Line"], "Block"),
+      ("indent", ["Block"], "Block"),
+      ("render", ["Block"], "Builder"),
+      ("addSuffix", ["Line", "Block"], "Block")
+      ],
+  -- protobuf-1.json
+  toSignature [
+      ("empty", [], "Builder"),
+      ("append", ["Builder", "Builder"], "Builder"),
+      ("size", ["Builder"], "Int"),
+      ("toLazyByteString", ["Builder"], "ByteString"),
+      ("fromByteString", ["ByteString"], "Builder"),
+      ("makeBuilder", ["Int", "Builder"], "Builder")
+      ],
+  -- template-toolkit-1.json
+  toSignature [
+      ("undef", [], "Val"),
+      ("not", [], "UnOp"),
+      ("eVal", ["Val"], "Expr"),
+      ("eUnOp", ["UnOp", "Expr"], "Expr"),
+      ("eTerOp", ["Expr", "Expr", "Expr"], "Expr"),
+      ("vArrayRange", ["Expr", "Expr"], "Val")
+      ],
+  -- time-1.json
+  toSignature [
+      ("midnight", [], "TimeOfDay"),
+      ("midday", [], "TimeOfDay"),
+      ("todHour", ["TimeOfDay"], "Int"),
+      ("todSec", ["TimeOfDay"], "Pico"),
+      ("makeTime", ["Int", "Int", "Pico"], "TimeOfDay"),
+      ("sinceMidnight", ["TimeOfDay"], "DiffTime")
+      ],
+  -- unliftio-path-1.json
+  toSignature [
+      ("emptyPermissions", [], "Permissions"),
+      ("exeExtension", [], "String"),
+      ("readable", ["Permissions"], "Bool"),
+      ("setOwnerReadable", ["Bool", "Permissions"], "Permissions"),
+      ("setOwnerSearchable", ["Bool", "Permissions"], "Permissions"),
+      ("executable", ["Permissions"], "Bool")
+      ],
+  -- web-rep-2.json
+  toSignature [
+      ("defaultSocketConfig", [], "SocketConfig"),
+      ("defaultSocketPage", [], "Page"),
+      ("path", ["SocketConfig"], "Text"),
+      ("host", ["SocketConfig"], "Text"),
+      ("port", ["SocketConfig"], "Int"),
+      ("makeConfig", ["Text", "Int", "Text"], "SocketConfig")
+      ]
+  ]
+
+
+checkers :: String
+checkers = [i|
+
+module Check where
+
+
+import Control.Applicative              (Alternative)
+import Control.OutputCapable.Blocks
+import TermTasks.DataType (
+  Signature(..),
+  Symbol(..),
+  Term(..),
+  Type(..),
+  )
+import TermTasks.Direct                 (completeGrade, partialGrade)
+import TermTasks.Records                (SigInstance(..))
+
+import Global
+
+
+
+checkSyntax
+  :: OutputCapable m
+  => SigInstance
+  -> FilePath
+  -> Solution
+  -> LangM m
+checkSyntax inst _ = partialGrade inst
+
+
+checkSemantics
+  :: (Alternative m, OutputCapable m)
+  => SigInstance
+  -> FilePath
+  -> Solution
+  -> Rated m
+checkSemantics inst _ = completeGrade inst
+
+|]
+
+=============================================
+
+module Description (description) where
+
+import Control.OutputCapable.Blocks
+import TermTasks.DataType (
+  Term(..),
+  Type(..),
+  Symbol(..),
+  Signature(..),
+  )
+import TermTasks.Records                (SigInstance(..))
+
+import qualified TermTasks.Direct as TD
+
+
+
+description :: OutputCapable m => FilePath -> SigInstance -> LangM m
+description _ = TD.description False
+
+=============================================
+
+module Parse (parseSubmission) where
+
+import FlexTask.Generic.Parse  (parseInput, useParser)
+import Text.Parsec             (ParseError)
+
+import Global
+
+
+
+parseSubmission :: String -> Either ParseError Solution
+parseSubmission = useParser parseInput
