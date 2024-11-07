@@ -9,19 +9,17 @@ spawn ghci-$ver Global TaskData Description Parse -Wall -Wno-orphans
 log_user 1
 expect_before timeout { exit 1 }
 
-expect "*"
-expect "Ok, four modules loaded.*"
+expect "GHCi, version*Ok, four modules loaded.\r"
 expect "ghci> "
-send "import Test.QuickCheck.Gen\n"
+send "import Test.QuickCheck.Gen\r"
 expect "ghci> "
-send "import Data.Tuple.Extra\n"
+send "import Data.Tuple.Extra\r"
 expect "ghci> "
-send "writeFile \"Check.hs\" =<< (snd3 <$> (generate TaskData.getTask))\n"
+send "writeFile \"Check.hs\" =<< (snd3 <$> (generate TaskData.getTask))\r"
 expect "ghci> "
-send ":l Check.hs\n"
-expect "*"
-expect "Ok, two modules loaded.*"
+send ":l Check.hs\r"
+expect "\[1 of*Ok, two modules loaded.\r\n"
 expect "ghci> "
-send ":q\n"
-expect "Leaving GHCi.*"
+send ":q\r"
+expect "Leaving GHCi.\r\n"
 
