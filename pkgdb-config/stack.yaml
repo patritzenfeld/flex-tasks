@@ -14,10 +14,9 @@ extra-deps:
       - output-blocks
   - git: https://github.com/fmidue/logic-tasks.git
     commit: 8f70b2ad94d53d0757368eb58113b41dfe6bd749
-  - latex-svg-image-0.2@sha256:b282a74a96724037ec3d24b664118e51170c8152aff12f363ddb715a38ef053a,1830
-
   - git: https://github.com/fmidue/term-tasks
     commit: aa00d38b477e70e95f913383aa2ed1505912132c
+  - latex-svg-image-0.2@sha256:b282a74a96724037ec3d24b664118e51170c8152aff12f363ddb715a38ef053a,1830
 
 allow-newer: true
 allow-newer-deps:
