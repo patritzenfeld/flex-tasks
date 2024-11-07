@@ -20,17 +20,14 @@ import Data.Text                        (pack)
 import FlexTask.FormUtil                (getFormData)
 import FlexTask.Generic.Form
 import FlexTask.YesodConfig             (Rendered)
-import TermTasks.Direct                 (description, genInst)
+import TermTasks.Direct                 (genInst)
 import TermTasks.Records (
   Certain(..),
   SigInstance(..),
   Base(..),
   )
-import TermTasks.DataType               (Error(..), toSignature)
+import TermTasks.DataType               (Error(..), Signature, toSignature)
 import Test.QuickCheck.Gen              (Gen, elements)
-import qualified Data.Map as Map        (fromList)
-
-import Global
 
 
 
@@ -69,6 +66,7 @@ genConfig = do
   }
 
 
+sigList :: [Signature]
 sigList = [
 
   toSignature [
