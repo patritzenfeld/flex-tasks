@@ -4,7 +4,7 @@ packages:
   - .
 extra-deps:
   - git: https://github.com/fmidue/flex-tasks.git
-    commit: e80ee41ca68434e4d9cd010261169a3a1ccd53c3
+    commit: 6d93b355921776c338139a7c70c7e63410cb0c56
     subdirs:
       - flex-tasks
       - flex-tasks-processing
@@ -13,8 +13,11 @@ extra-deps:
     subdirs:
       - output-blocks
   - git: https://github.com/fmidue/logic-tasks.git
-    commit: 9fa5e730d20d1e226c6ecce29b5d485a51f05492
+    commit: 8f70b2ad94d53d0757368eb58113b41dfe6bd749
   - latex-svg-image-0.2@sha256:b282a74a96724037ec3d24b664118e51170c8152aff12f363ddb715a38ef053a,1830
+
+  - git: https://github.com/fmidue/term-tasks
+    commit: aa00d38b477e70e95f913383aa2ed1505912132c
 
 allow-newer: true
 allow-newer-deps:
