@@ -6,15 +6,11 @@ type Solution = [Int]
 
 {-# language OverloadedStrings #-}
 {-# language QuasiQuotes #-}
-{-# language StandaloneDeriving #-}
-{-# language DeriveDataTypeable #-}
 {-# language RecordWildCards #-}
-
 
 module TaskData where
 
 import Data.String.Interpolate          (i)
-import Data.Data                        (Data)
 import Data.Generics.Text               (gshow)
 import Data.Text                        (pack)
 import FlexTask.FormUtil                (getFormData)
@@ -30,8 +26,6 @@ import TermTasks.DataType               (Error(..), Signature, toSignature)
 import Test.QuickCheck.Gen              (Gen, elements)
 
 
-
-deriving instance Data SigInstance
 
 instance MonadFail Gen where
   fail = error
