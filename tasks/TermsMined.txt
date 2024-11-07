@@ -79,7 +79,7 @@ sigList = [
       ("makePosition", ["Int", "Int"], "Position"),
       ("incPos", ["Int", "Position"], "Position")
       ],
-
+{- too long
   toSignature [
       ("defaultPushOptions", [], "PushOptions"),
       ("prefix", ["PushOptions"], "Text"),
@@ -88,7 +88,7 @@ sigList = [
       ("flushInterval", ["PushOptions"], "Int"),
       ("makeOptions", ["Int", "Bool", "Text", "Text"], "PushOptions")
       ],
-
+-}
   toSignature [
       ("trackEnd", [], "Message"),
       ("key", ["Message"], "Key"),
