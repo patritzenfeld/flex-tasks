@@ -124,7 +124,7 @@ sigList = [
       ("yPos", ["Pos"], "Int"),
       ("gridValue", ["Pos"], "String")
       ],
-
+{- too long
   toSignature [
       ("defaultAmazonS3Port", [], "Int"),
       ("defaultAmazonS3Host", [], "String"),
@@ -133,7 +133,7 @@ sigList = [
       ("amazonS3Connection", ["String", "String"], "AWSConnection"),
       ("awsAccessKey", ["AWSConnection"], "String")
       ],
-
+-}
   toSignature [
       ("defaultPFS", [], "ParticleFieldState"),
       ("position", ["ParticleFieldState"], "Position"),
@@ -187,7 +187,7 @@ sigList = [
       ("makeTime", ["Int", "Int", "Pico"], "TimeOfDay"),
       ("sinceMidnight", ["TimeOfDay"], "DiffTime")
       ],
-
+{- too long
   toSignature [
       ("emptyPermissions", [], "Permissions"),
       ("exeExtension", [], "String"),
@@ -196,7 +196,7 @@ sigList = [
       ("setOwnerSearchable", ["Bool", "Permissions"], "Permissions"),
       ("executable", ["Permissions"], "Bool")
       ],
-
+-}
   toSignature [
       ("defaultSocketConfig", [], "SocketConfig"),
       ("defaultSocketPage", [], "Page"),
