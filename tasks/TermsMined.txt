@@ -41,7 +41,7 @@ getTask = do
 form :: Int -> Rendered
 form amount = formify
   (Nothing :: Maybe MultipleChoiceSelection)
-  [[buttons Vertical "Korrekte Terme/Correct terms" $ map (pack . show) [1..amount]]]
+  [[buttons Vertical "Korrekte Terme/Correct terms" $ map (pack . (++ ".") . show) [1..amount]]]
 
 
 genConfig :: Gen Certain
