@@ -1,6 +1,7 @@
 module Global where
 
 
+import Control.OutputCapable.Blocks
 import Trees.Types (PropFormula)
 
 
@@ -14,6 +15,10 @@ data Namen = A | B | C | D deriving (Eq,Enum,Bounded,Show)
 type FormType = (String,[Namen])
 
 type Submission = (Table,PropFormula Char,[Namen])
+
+
+bothLangs :: OutputCapable m => String -> LangM m
+bothLangs s = translate $ german s >> english s
 
 =============================================
 
@@ -243,10 +248,10 @@ isSubFormula a b = noSpaces a `isInfixOf` noSpaces b
 
 checkSyntax :: OutputCapable m => a -> FilePath -> Submission -> LangM m
 checkSyntax _ _ (Table xs,_,n) = do
-    assertion (all (`notElem` map (Just . Atomic) "ABCD") nonStaticHeaders) $ translate $
-      german "Tabellenspalten existieren nur einmal?"
-    assertion (not (null n)) $ translate $
-      german "Es wurde mindestens ein Name angekreuzt? (Alleine gehen ist ausgeschlossen.)"
+    assertion (all (`notElem` map (Just . Atomic) "ABCD") nonStaticHeaders) $ bothLangs
+      "Tabellenspalten existieren nur einmal?"
+    assertion (not (null n)) $ bothLangs
+      "Es wurde mindestens ein Name angekreuzt? (Alleine gehen ist ausgeschlossen.)"
     pure ()
   where
     nonStaticHeaders = drop 4 $ map fst xs
@@ -256,22 +261,22 @@ checkSyntax _ _ (Table xs,_,n) = do
 checkSemantics :: OutputCapable m => (a,[Namen]) -> FilePath -> Submission -> Rated m
 checkSemantics (_,nSol) _ (Table xs,f,n) = do
     let correctStart = take 4 columns == #{startingTable}
-    #{checkType} correctStart $ translate $
-          german "Spalten der atomaren Formeln ergeben sinnvolle Wahrheitstafel?"
+    #{checkType} correctStart $ bothLangs
+      "Spalten der atomaren Formeln ergeben sinnvolle Wahrheitstafel?"
     let subFormulas = all (`isSubFormula` f) $ catMaybes nonStaticHeaders
-    #{checkType} subFormulas $ translate $
-          german "Tabellenspalten sind Teilformeln der Gesamtformel?"
+    #{checkType} subFormulas $ bothLangs
+      "Tabellenspalten sind Teilformeln der Gesamtformel?"
     let correctValues = all correctColumn [(sf,b)| (Just sf,b) <- drop 4 xs]
-    #{checkType} correctValues $ translate $
-          german "Tabellenspalten enthalten korrekte Warheitswerte?"
-    yesNo (T.all (`elem` f) "ABCD") $ translate $
-          german "Formel enthält alle vorkommenden atomaren Formeln?"
+    #{checkType} correctValues $ bothLangs
+      "Tabellenspalten enthalten korrekte Warheitswerte?"
+    yesNo (T.all (`elem` f) "ABCD") $ bothLangs
+       "Formel enthält alle vorkommenden atomaren Formeln?"
     let correctFormula = isSemanticEqual #{gshow fSol} f
-    yesNo correctFormula $ translate $
-          german "Die aussagenlogische Formel ist korrekt?"
+    yesNo correctFormula $ bothLangs
+        "Die aussagenlogische Formel ist korrekt?"
     let correctNames = n == nSol
-    yesNo correctNames $ translate $
-          german "Die Liste der Begleitenden ist korrekt?"
+    yesNo correctNames $ bothLangs
+       "Die Liste der Begleitenden ist korrekt?"
     let correct = filter id [correctStart, correctFormula, correctNames, correctValues]
     let points = fromIntegral (length correct) % 4
     res <- printSolutionAndAssert IndefiniteArticle maybeAnswer points
