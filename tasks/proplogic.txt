@@ -2,13 +2,15 @@ module Global where
 
 
 import Control.OutputCapable.Blocks
+import LogicTasks.Formula (TruthValue(..))
 import Trees.Types (PropFormula)
 
 
 
-newtype Binary = Binary { unBinary :: Bool} deriving (Eq,Show)
+instance Eq TruthValue where
+  (TruthValue a) == (TruthValue b) = a == b
 
-newtype Table = Table [(Maybe (PropFormula Char), [Maybe Binary])] deriving (Eq,Show)
+newtype Table = Table [(Maybe (PropFormula Char), [Maybe TruthValue])] deriving (Eq,Show)
 
 data Namen = A | B | C | D deriving (Eq,Enum,Bounded,Show)
 
@@ -49,6 +51,7 @@ import FlexTask.Generic.Form (
   )
 import FlexTask.YesodConfig    (Handler, FlexForm, Rendered)
 import Data.Generics.Text      (gshow)
+import LogicTasks.Formula      (TruthValue(..))
 import Numeric                 (showBin)
 import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen
@@ -194,8 +197,8 @@ instance Formify [Namen] where
 
 
 
-startingTable :: [[Maybe Binary]]
-startingTable = map (Just . Binary . toEnum . digitToInt) <$>
+startingTable :: [[Maybe TruthValue]]
+startingTable = map (Just . TruthValue . toEnum . digitToInt) <$>
     transpose (pad . (`showBin` "") <$> [0..15 :: Int])
   where pad s = replicate (4 - length s) '0' ++ s
 
@@ -217,7 +220,7 @@ import Data.Maybe    (catMaybes, fromJust)
 import Data.Map      (fromList)
 import Data.Ratio    ((%))
 
-import LogicTasks.Formula (isSemanticEqual, convert)
+import LogicTasks.Formula (TruthValue(..), isSemanticEqual, convert)
 import Trees.Types (PropFormula(..), BinOp(..))
 
 import qualified SAT.MiniSat as Sat
@@ -228,12 +231,12 @@ import Global
 
 
 
-correctColumn :: (PropFormula Char,[Maybe Binary]) -> Bool
+correctColumn :: (PropFormula Char,[Maybe TruthValue]) -> Bool
 correctColumn (f,bs) = all lookFor allocationsAndValues
   where
     ones = Sat.solve_all $ convert f
-    allocations = map (zip (toList f) . map (unBinary . fromJust)) #{transpose startingTable}
-    allocationsAndValues = [(unBinary a,b) | (Just a,b) <- zip bs allocations]
+    allocations = map (zip (toList f) . map (truth . fromJust)) #{transpose startingTable}
+    allocationsAndValues = [(truth a,b) | (Just a,b) <- zip bs allocations]
     lookFor (True,a) = fromList a `elem` ones
     lookFor (False,a) = fromList a `notElem` ones
 
@@ -339,6 +342,7 @@ import FlexTask.Generic.Parse (
   escaped,
   useParser
   )
+import LogicTasks.Formula      (TruthValue)
 import Text.Parsec (
   (<|>),
   ParseError,
@@ -353,10 +357,8 @@ import Global
 
 
 
-instance Parse Binary where
-  parseInput = escaped $ do
-    val <- string "0" <|> string "1"
-    pure $ Binary $ toEnum $ read val
+instance Parse TruthValue where
+  parseInput = escaped FP.parser
 
 
 instance Parse (PropFormula Char) where
