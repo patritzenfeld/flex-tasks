@@ -102,7 +102,7 @@ formulaAndHints a b c d (aN,bN,cN,dN) = do
                   then [i|Falls #{bN} nicht, aber #{dN} kommt,|]
                   else [i|Falls #{bN}, aber nicht #{dN} kommt,|]
             )
-            ++ [i| kommt Claudia #{nicht (not c)}.|]
+            ++ [i| kommt #{cN} #{nicht (not c)}.|]
     hint2 = [i|#{bN} kommt #{nicht b} mit, wenn #{aN} #{nicht a} mitkommt.|]
     hint3 = [i|Wenn #{bN} #{nicht b} kommt, kommt #{if b == c then auch else ""} #{cN} #{nicht c}.|]
     hint4 = [i|Wenn #{cN} #{nicht c} kommt, kommt #{if c == d then auch else ""} #{dN} #{nicht d}.|]
