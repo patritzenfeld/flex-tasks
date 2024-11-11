@@ -147,7 +147,9 @@ newFlexName = T.replace "f" "flex" <$> newFormIdent
 
 standaloneDefaultsJS :: [Text] -> Text
 standaloneDefaultsJS ts =
-  "<script>" <> toStrict (renderJavascriptUrl (\_ _ -> undefined) $ setDefaultsJS ts) <> "</script>"
+  "<script>" <>
+  toStrict (renderJavascriptUrl (\_ _ -> undefined) $ setDefaultsJS ts) <>
+  "</script>"
 
 
 setDefaultsJS :: [Text] -> JavascriptUrl url

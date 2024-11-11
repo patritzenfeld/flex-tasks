@@ -315,7 +315,7 @@ description _ ((legend,hints),_) = do
         legend ++
         "ob sie mitkommen wollen. Leider sind die Antworten etwas seltsam."
       )
-    itemizeM $ map (bothLangs) hints
+    itemizeM $ map bothLangs hints
     paragraph $ bothLangs
       "Übersetzen Sie die Kombination der Aussagen in eine aussagenlogische Formel. Geben Sie diese Formel in das entsprechend benannte Textfeld ein."
     paragraph $ bothLangs
