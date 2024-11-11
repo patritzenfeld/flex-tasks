@@ -25,6 +25,7 @@ standalone
 typeclasses
 uncached
 unlines
+Wahrheitswerte
 whamlet
 Yesod
 yml
