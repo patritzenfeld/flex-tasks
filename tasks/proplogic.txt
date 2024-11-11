@@ -271,7 +271,7 @@ checkSemantics (_,nSol) _ (Table xs,f,n) = do
       "Tabellenspalten sind Teilformeln der Gesamtformel?"
     let correctValues = all correctColumn [(sf,b)| (Just sf,b) <- drop 4 xs]
     #{checkType} correctValues $ bothLangs
-      "Tabellenspalten enthalten korrekte Warheitswerte?"
+      "Tabellenspalten enthalten korrekte Wahrheitswerte?"
     yesNo (T.all (`elem` f) "ABCD") $ bothLangs
        "Formel enthält alle vorkommenden atomaren Formeln?"
     let correctFormula = isSemanticEqual #{gshow fSol} f
