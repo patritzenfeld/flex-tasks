@@ -10,6 +10,7 @@ build-type:     Simple
 
 library
   exposed-modules:
+      FlexTask.Content
       FlexTask.DefaultConfig
       FlexTask.FormUtil
       FlexTask.Generic.Form

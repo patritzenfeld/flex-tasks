@@ -1,15 +1,11 @@
 {-# language OverloadedStrings #-}
 {-# language QuasiQuotes #-}
-{-# language TypeOperators #-}
 
 {- | Functions for creating and composing forms.
 -}
 
 module FlexTask.FormUtil
   ( ($$>)
-  , addCss
-  , addJs
-  , addCssAndJs
   , getFormData
   , addNameAndCssClass
   , newFlexId
@@ -22,13 +18,10 @@ module FlexTask.FormUtil
 import Control.Monad.Reader            (runReader)
 import Data.Text                       (Text, pack, unpack)
 import Data.Text.Lazy                  (toStrict)
-import Data.Tuple.Extra                (second)
 import System.Log.FastLogger           (defaultBufSize, newStdoutLoggerSet)
 import Text.Blaze.Html.Renderer.String (renderHtml)
-import Text.Cassius                    (Css)
-import Text.Julius                     (Javascript, RawJS(..))
+import Text.Julius                     (RawJS(..))
 import Yesod
-import Yesod.Core.Types                (RY)
 import Yesod.Default.Config2           (makeYesodLogger)
 
 import qualified Control.Monad.Trans.RWS as RWS   (get)
@@ -40,7 +33,6 @@ import FlexTask.YesodConfig (
   Handler,
   Rendered,
   Rendered',
-  Widget,
   )
 
 
@@ -59,54 +51,6 @@ f1 $$> f2 = do
       (names1,wid1) <- res1
       (names2,wid2) <- res2
       pure (names1++names2, wid1 >> wid2)
-
-
-applyToWidget :: Functor m => (Widget -> Widget) -> Rendered' m -> Rendered' m
-applyToWidget f form = fmap (second f) <$> form
-
-
-addContent
-  :: (ToWidget FlexForm (render -> a), Functor m)
-  => (render -> a)
-  -> Rendered' m
-  -> Rendered' m
-addContent content = applyToWidget (<* toWidget content)
-
-
-{- |
-Add CSS to a form.
-Use with `Yesod` Cassius or Lucius Shakespeare quasi quoters or hosted files.
--}
-addCss
-  :: (render ~ RY FlexForm, Functor m)
-  => (render -> Css) -- ^ CSS template
-  -> Rendered' m     -- ^ Form to add to
-  -> Rendered' m
-addCss = addContent
-
-
-{- |
-Add JavaScript to a form.
-Use with `Yesod` Julius Shakespeare quasi quoters or hosted files.
--}
-addJs
-  :: (render ~ RY FlexForm, Functor m)
-  => (render -> Javascript) -- ^ Javascript template
-  -> Rendered' m            -- ^ Form to add to
-  -> Rendered' m
-addJs = addContent
-
-
-{- |
-Like `addCss` and `addJs`, but for including CSS and JavaScript in one step.
--}
-addCssAndJs
-  :: (render ~ RY FlexForm, Functor m)
-  => (render -> Css)        -- ^ CSS template
-  -> (render -> Javascript) -- ^ Javascript template
-  -> Rendered' m            -- ^ Form to add to
-  -> Rendered' m
-addCssAndJs css js = applyToWidget ((<* toWidget css) . (<* toWidget js))
 
 
 {- |
