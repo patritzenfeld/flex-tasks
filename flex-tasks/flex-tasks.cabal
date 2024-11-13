@@ -64,6 +64,7 @@ test-suite flex-tasks-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      FlexTask.ContentSpec
       FlexTask.DefaultConfigSpec
       FlexTask.FormUtilSpec
       FlexTask.Generic.FormSpec

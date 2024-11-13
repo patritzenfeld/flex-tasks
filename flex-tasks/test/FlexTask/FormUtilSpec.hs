@@ -1,5 +1,4 @@
 {-# language OverloadedStrings #-}
-{-# language QuasiQuotes #-}
 
 module FlexTask.FormUtilSpec where
 
@@ -10,8 +9,6 @@ import Test.Hspec (
   describe,
   it,
   )
-import Text.Cassius                     (Css, cassius)
-import Text.Julius                      (JavascriptUrl, julius)
 
 import FlexTask.TestUtil                (shouldNotThrow, shouldReturnSame)
 import FlexTask.FormUtil
@@ -50,29 +47,3 @@ spec = do
         getFormData ((form1 $$> form2) $$> form3)
         `shouldReturnSame`
         getFormData (form1 $$> (form2 $$> form3))
-  describe "addCss and addJs" $
-    it "are order invariant" $
-      getFormData (addJs testJs $ addCss testCss form1)
-      `shouldReturnSame`
-      getFormData (addCss testCss $ addJs testJs form1)
-  describe "addCssAndJs" $
-    it "should behave the same as applying CSS and JS one after the other" $
-      getFormData (addCssAndJs testCss testJs form3)
-      `shouldReturnSame`
-      getFormData (addCss testCss $ addJs testJs form3)
-
-
-
-testCss :: render -> Css
-testCss = [cassius|
-  p
-    text-align: center
-    color: red
-|]
-
-testJs :: JavascriptUrl url
-testJs = [julius|
-  myFunction(){
-    console.log("test");
-  }
-|]
