@@ -36,7 +36,6 @@ default-extensions:
 library:
   source-dirs: src
   exposed-modules:
-    - FlexTask.Content
     - FlexTask.DefaultConfig
     - FlexTask.FormUtil
     - FlexTask.Generic.Form

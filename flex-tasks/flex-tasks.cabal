@@ -10,7 +10,6 @@ build-type:     Simple
 
 library
   exposed-modules:
-      FlexTask.Content
       FlexTask.DefaultConfig
       FlexTask.FormUtil
       FlexTask.Generic.Form
@@ -64,7 +63,6 @@ test-suite flex-tasks-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      FlexTask.ContentSpec
       FlexTask.DefaultConfigSpec
       FlexTask.FormUtilSpec
       FlexTask.Generic.FormSpec
