@@ -66,7 +66,8 @@ $newline never
         where
           outside theId _name _attrs inside' = [whamlet|
 $newline never
-<span ##{theId}>^{inside'}
+<div>
+  <span ##{theId}>^{inside'}
 |]
           onOpt theId name isSel = nothingFun theId [whamlet|
 $newline never
