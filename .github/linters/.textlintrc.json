@@ -1,17 +1,7 @@
 {
   "rules": {
     "terminology": {
-      // Excludes terms
-      "exclude": [
-        // Simple replacements, the casing should match terms.jsonc entry
-        "JavaScript",
-        "API",
-        // Complex replacements, put only the first array element exactly as
-        // in terms.jsonc
-        "V[ -]?S[ -]?Code",
-        "walk-through",
-        "(?<![\\.-])css\\b"
-      ]
+      "exclude": ["HTML"]
     }
   }
 }
