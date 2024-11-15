@@ -55,7 +55,7 @@ echo -e "${CYAN}Interpreting the code files...${NC}"
 export GHC_PACKAGE_PATH=$pkg_path
 ghc_file=$(find "$pkg_path" -name "ghci*" -print -quit)
 temp="${ghc_file##*/ghci-}"
-ghc_version="${temp%-*.conf.copy}"
+ghc_version="${temp%-*.conf*}"
 
 cd "$base_name" || exit 1
 expect "$expect_script" "$ghc_version" |
