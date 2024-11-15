@@ -38,7 +38,12 @@ import Data.List.Split         (chunksOf)
 import Data.Maybe              (fromJust)
 import Data.Text               (Text)
 import Data.String.Interpolate (i)
-import FlexTask.FormUtil       (($$>), addCss, getFormData)
+import FlexTask.FormUtil (
+  ($$>),
+  addCss,
+  addNameAndCssClass,
+  getFormData,
+  )
 import FlexTask.Generic.Form (
   Alignment(..),
   FieldInfo,
@@ -143,11 +148,8 @@ formulaAndHints a b c d (aN,bN,cN,dN) = do
 tableForm :: [Text] -> Int -> Int -> Rendered
 tableForm staticHeaders rowAmount columnAmount =
   addCss css $ reader $ \extra -> do
-    let addCssClass fs = fs {fsAttrs = addClass "tableInput" (fsAttrs fs)}
-        addFieldAttrs t = (fieldSettingsLabel t) {fsName = Just t}
-
-        tableTextField :: Text -> MForm Handler (FormResult (Maybe Text),FieldView FlexForm)
-        tableTextField t = mopt textField (addCssClass (addFieldAttrs t)) Nothing
+    let tableTextField :: Text -> MForm Handler (FormResult (Maybe Text),FieldView FlexForm)
+        tableTextField t = mopt textField (addNameAndCssClass t "tableInput") Nothing
 
         headerList = replicate (columnAmount - length staticHeaders) "headers"
         cellList = replicate (rowAmount*columnAmount) "cells"
