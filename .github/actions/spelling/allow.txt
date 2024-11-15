@@ -17,6 +17,7 @@ ghci
 github
 Graphviz
 Hspec
+ansi2html
 mform
 MForms
 mopt
