@@ -12,6 +12,12 @@ A folder named after the task will be created, containing all of the .hs files a
 
 `./test.sh proplogic.txt flex-pkgdb`
 
+## Requirements
+
+- stack
+- ghci version used in the package database (if you don't know, execute the script and look for an error message)
+- ansi2hmtl (colorized-logs)
+
 ## Notes
 
 - Generate a package database using [our tool](https://github.com/fmidue/haskell-template-setup)
