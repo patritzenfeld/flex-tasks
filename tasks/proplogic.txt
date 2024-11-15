@@ -3,20 +3,19 @@ module Global where
 
 import Control.OutputCapable.Blocks
 import LogicTasks.Formula (TruthValue(..))
-import Trees.Types (PropFormula)
 
 
 
 instance Eq TruthValue where
   (TruthValue a) == (TruthValue b) = a == b
 
-newtype Table = Table [(Maybe (PropFormula Char), [Maybe TruthValue])] deriving (Eq,Show)
+newtype Table = Table [(Maybe String, [Maybe TruthValue])] deriving (Eq,Show)
 
 data Namen = A | B | C | D deriving (Eq,Enum,Bounded,Show)
 
 type FormType = (String,[Namen])
 
-type Submission = (Table,PropFormula Char,[Namen])
+type Submission = (Table,String,[Namen])
 
 
 bothLangs :: OutputCapable m => String -> LangM m
@@ -215,19 +214,20 @@ module Check (checkSemantics, checkSyntax) where
 
 import Control.OutputCapable.Blocks
 import Data.Foldable (toList)
-import Data.List     (isInfixOf)
+import Data.List     (intercalate, isInfixOf)
 import Data.Maybe    (catMaybes, fromJust)
 import Data.Map      (fromList)
 import Data.Ratio    ((%))
 
 import LogicTasks.Formula (TruthValue(..), isSemanticEqual, convert)
+import LogicTasks.Parsing (allSymbolParser, parser)
+import Formula.Parsing.Delayed
 import Trees.Types (PropFormula(..), BinOp(..))
 
 import qualified SAT.MiniSat as Sat
 import qualified Data.Text   as T
 
 import Global
-
 
 
 
@@ -248,28 +248,59 @@ isSubFormula a b = noSpaces a `isInfixOf` noSpaces b
     noSpaces = filter (/=' ') . show
 
 
+stringTuple :: String -> String -> String
+stringTuple s1 s2 = '(':s1 ++ ',':s2 ++ ")"
+
+
+stringList :: [Maybe String] -> String
+stringList xs = '[': intercalate "," (map stringMaybe xs) ++ "]"
+  where
+    stringMaybe Nothing = "Nothing"
+    stringMaybe (Just s) = s
+
+
 
 checkSyntax :: OutputCapable m => a -> FilePath -> Submission -> LangM m
-checkSyntax _ _ (Table xs,_,n) = do
-    assertion (all (`notElem` map (Just . Atomic) "ABCD") nonStaticHeaders) $ bothLangs
+checkSyntax _ _ (Table xs,formula,names) =
+  parseDelayedWithAndThen
+    parser
+    complainAboutMissingParenthesesIfNotFailingOn
+    allSymbolParser
+    (checkSyntax' names)
+    $ delayed $ stringTuple (stringList $ map fst xs) formula
+
+
+
+checkSyntax' :: OutputCapable m => [Namen] -> ([Maybe (PropFormula Char)],PropFormula Char) -> LangM m
+checkSyntax' n (xs,_) = do
+    assertion (all (`notElem` map (Just . Atomic) "ABCD") $ drop 4 xs) $ bothLangs
       "Tabellenspalten existieren nur einmal?"
     assertion (not (null n)) $ bothLangs
       "Es wurde mindestens ein Name angekreuzt? (Alleine gehen ist ausgeschlossen.)"
     pure ()
-  where
-    nonStaticHeaders = drop 4 $ map fst xs
 
 
 
 checkSemantics :: OutputCapable m => (a,[Namen]) -> FilePath -> Submission -> Rated m
-checkSemantics (_,nSol) _ (Table xs,f,n) = do
+checkSemantics (_,nSol) _ (Table xs,formula,names) =
+  withDelayedSucceeding
+    (checkSemantics' nSol columns names)
+    parser
+    $ delayed $ stringTuple (stringList headers) formula
+  where
+    (headers,columns) = unzip xs
+
+
+
+checkSemantics' :: OutputCapable m => [Namen] -> [[Maybe TruthValue]] -> [Namen] -> ([Maybe (PropFormula Char)],PropFormula Char) -> Rated m
+checkSemantics' nSol columns n (headers,f) = do
     let correctStart = take 4 columns == #{startingTable}
     #{checkType} correctStart $ bothLangs
       "Spalten der atomaren Formeln ergeben sinnvolle Wahrheitstafel?"
-    let subFormulas = all (`isSubFormula` f) $ catMaybes nonStaticHeaders
+    let subFormulas = all (`isSubFormula` f) $ catMaybes $ drop 4 headers
     #{checkType} subFormulas $ bothLangs
       "Tabellenspalten sind Teilformeln der Gesamtformel?"
-    let correctValues = all correctColumn [(sf,b)| (Just sf,b) <- drop 4 xs]
+    let correctValues = all correctColumn [(sf,b)| (Just sf,b) <- drop 4 $ zip headers columns]
     #{checkType} correctValues $ bothLangs
       "Tabellenspalten enthalten korrekte Wahrheitswerte?"
     yesNo (T.all (`elem` f) "ABCD") $ bothLangs
@@ -285,8 +316,6 @@ checkSemantics (_,nSol) _ (Table xs,f,n) = do
     res <- printSolutionAndAssert IndefiniteArticle maybeAnswer points
     pure res
   where
-    (headers,columns) = unzip xs
-    nonStaticHeaders = drop 4 headers
     maybeAnswer = flip (++) (show nSol) <$>
                     #{if showSolution
                        then Just ("Formel:  " ++ show fSol ++ "\nBegleitende: ")
@@ -343,13 +372,8 @@ import FlexTask.Generic.Parse (
   useParser
   )
 import LogicTasks.Formula      (TruthValue)
-import Text.Parsec (
-  (<|>),
-  ParseError,
-  string,
-  )
-import Trees.Types (PropFormula(..))
-import Trees.Parsing ()
+import Text.Parsec             (ParseError)
+import Trees.Parsing           ()
 
 import qualified Formula.Parsing as FP
 
@@ -361,10 +385,6 @@ instance Parse TruthValue where
   parseInput = escaped FP.parser
 
 
-instance Parse (PropFormula Char) where
-  parseInput = escaped FP.parser
-
-
 instance Parse [Namen] where
   parseInput = parseInstanceMultiChoice
 
@@ -373,7 +393,7 @@ instance Parse [Namen] where
 instance Parse Table where
   parseInput = do
     (headers,values) <- parseInput
-    let allHeaders = map (Just . Atomic) "ABCD" ++ headers
+    let allHeaders = map (Just . (:[])) "ABCD" ++ headers
     pure $ Table $ zip allHeaders $ transpose $ chunksOf 7 values
 
 
