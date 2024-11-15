@@ -16,7 +16,7 @@ A folder named after the task will be created, containing all of the .hs files a
 
 - stack
 - ghci version used in the package database (if you don't know, execute the script and look for an error message)
-- ansi2hmtl (colorized-logs)
+- ansi2html (colorized-logs)
 
 ## Notes
 
