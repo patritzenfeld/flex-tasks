@@ -62,7 +62,6 @@ import FlexTask.Generic.Form (
   buttonsEnum
   )
 import FlexTask.YesodConfig    (Handler, FlexForm, Rendered)
-import Data.Generics.Text      (gshow)
 import LogicTasks.Formula      (TruthValue(..))
 import Numeric                 (showBin)
 import Test.QuickCheck.Arbitrary (arbitrary)
