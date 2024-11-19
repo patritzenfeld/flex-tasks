@@ -18,6 +18,13 @@ type FormType = (String,[Namen])
 type Submission = (Table,String,[Namen])
 
 
+emptyColumns, staticColumns, totalColumns, rows :: Int
+emptyColumns  = 13
+staticColumns = 4
+totalColumns  = staticColumns + emptyColumns
+rows          = 2^staticColumns
+
+
 bothLangs :: OutputCapable m => String -> LangM m
 bothLangs s = translate $ german s >> english s
 
@@ -26,6 +33,7 @@ bothLangs s = translate $ german s >> english s
 {-# language FlexibleContexts #-}
 {-# language OverloadedStrings #-}
 {-# language QuasiQuotes #-}
+{-# language RecordWildCards #-}
 {-# language TupleSections #-}
 
 module TaskData (getTask) where
@@ -36,7 +44,7 @@ import Data.Char               (digitToInt)
 import Data.List               (transpose)
 import Data.List.Split         (chunksOf)
 import Data.Maybe              (fromJust)
-import Data.Text               (Text)
+import Data.Text               (Text, pack)
 import Data.String.Interpolate (i)
 import FlexTask.FormUtil (
   ($$>),
@@ -61,7 +69,8 @@ import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen
 import Yesod
 
-import Trees.Types (PropFormula(..), BinOp(..))
+import Trees.Types (BinOp(..), SynTree(..))
+import Trees.Print (simplestDisplay)
 
 import Global
 
@@ -87,7 +96,8 @@ getTask = do
     pure (show ((legend,hints),coming), checkers formula False True, getFormData (form names))
   where
     form :: (Text,Text,Text,Text) -> Rendered
-    form n = tableForm ["A","B","C","D"] 16 7 $$> formify (Nothing :: Maybe FormType) (nonTableFields n)
+    form n = tableForm ["A","B","C","D"] $$>
+             formify (Nothing :: Maybe FormType) (nonTableFields n)
 
     getNames :: Gen (Text,Text,Text,Text)
     getNames = do
@@ -99,11 +109,11 @@ getTask = do
 
 
 
-formulaAndHints :: Bool -> Bool -> Bool -> Bool -> (Text,Text,Text,Text) -> Gen (PropFormula Char, String, [String])
+formulaAndHints :: Bool -> Bool -> Bool -> Bool -> (Text,Text,Text,Text) -> Gen (SynTree BinOp Char, String, [String])
 formulaAndHints a b c d (aN,bN,cN,dN) = do
     shuffled <- shuffle (zip [part1,part2,part3,part4,part5] [hint1,hint2,hint3,hint4,hint5])
     let (parts,hints) = unzip shuffled
-    let formula = foldr1 (Assoc And) $ map Brackets parts
+    let formula = foldr1 (Binary And) parts
     pure (formula, namesLegend, hints)
   where
     namesLegend = [i|Sie fragt ihre Freunde #{aN} (A), #{bN} (B), #{cN} (C) und #{dN} (D), |]
@@ -132,55 +142,77 @@ formulaAndHints a b c d (aN,bN,cN,dN) = do
     auch :: String
     auch = " auch"
 
-    neg expr x = if expr then Neg (Atomic x) else Atomic x
-    part1 = Assoc Impl
-             (Brackets $ Assoc And (neg b 'B') (neg d 'D'))
+    neg expr x = if expr then Not (Leaf x) else Leaf x
+    part1 = Binary Impl
+             (Binary And (neg b 'B') (neg d 'D'))
              (neg (not c) 'C')
-    part2 = Assoc Impl (neg a 'A') (neg b 'B')
-    part3 = Assoc Impl (neg b 'B') (neg c 'C')
-    part4 = Assoc Impl (neg c 'C') (neg d 'D')
-    part5 = Assoc Impl
+    part2 = Binary Impl (neg a 'A') (neg b 'B')
+    part3 = Binary Impl (neg b 'B') (neg c 'C')
+    part4 = Binary Impl (neg c 'C') (neg d 'D')
+    part5 = Binary Impl
              (neg d 'D')
-             (Brackets $ Assoc Or (neg a 'A') (neg b 'B'))
+             (Binary Or (neg a 'A') (neg b 'B'))
 
 
 
-tableForm :: [Text] -> Int -> Int -> Rendered
-tableForm staticHeaders rowAmount columnAmount =
+tableForm :: [Text] -> Rendered
+tableForm staticHeaders =
   addCss css $ reader $ \extra -> do
-    let tableTextField :: Text -> MForm Handler (FormResult (Maybe Text),FieldView FlexForm)
-        tableTextField t = mopt textField (addNameAndCssClass t "tableInput") Nothing
+    let addAttr a fs@FieldSettings{..} = fs {fsAttrs = a : fsAttrs}
+        headerTextField t = mopt textField (addAttr ("tabindex",pack $ show 1) $ addNameAndCssClass t "header") Nothing
+        tableTextField tabOrd t = mopt textField (addAttr ("tabindex",pack $ show tabOrd) $ addNameAndCssClass t "tableInput") Nothing
 
-        headerList = replicate (columnAmount - length staticHeaders) "headers"
-        cellList = replicate (rowAmount*columnAmount) "cells"
+        headerList = replicate emptyColumns "headers"
+        cellList = replicate rows "cells"
 
-    headersRes <- traverse tableTextField headerList
-    columnsRes <- traverse tableTextField cellList
+    headersRes <- traverse headerTextField headerList
+    columnsRes <- traverse (\i -> traverse (tableTextField i) cellList) [2..totalColumns+1]
     let headers = map snd headersRes
-        rows = chunksOf columnAmount $ map snd columnsRes
+        rows = transpose $ map (map snd) columnsRes
     pure ( ["headers","cells"]
          , [whamlet|
-             #{extra}
-             <table>
-               <tr>
-                 $forall sh <- staticHeaders
-                   <th>#{sh}
-                 $forall header <- headers
-                   <th>^{fvInput header}
-               $forall row <- rows
-                 <tr>
-                   $forall input <- row
-                     <td>^{fvInput input}|]
+              #{extra}
+              <table>
+                <tr>
+                  $forall sh <- staticHeaders
+                    <th>#{sh}
+                  $forall header <- headers
+                    <th>^{fvInput header}
+                $forall row <- rows
+                  <tr>
+                    $forall input <- row
+                      <td>^{fvInput input}|]
          )
   where
     css = [cassius|
+      #flexident287
+        width: 600px
+        margin: 10px 10px
+      .header
+        width: 100%
+        text-align: center
+        height: 25px
       .tableInput
-        width: 100%;
-      table, th, td
-        border: 1px solid black;
-        border-collapse: collapse;
+        width: 100%
+        text-align: center
+      th, td
+        border: 1px solid black
+        border-collapse: collapse
+        text-align: center
+      table tr th:nth-child(-n+4)
+        width: 20px
+      table tr td:nth-child(-n+4)
+        height: 25px
+      table tr th:nth-child(n+5)
+        width: 30px
+      table tr th:nth-child(n+9)
+        width: 75px
+      table tr th:nth-child(n+14)
+        width: 125px
+      table tr th:last-child
+        padding: 10px 0px
       table
-       width: 100%;
+        table-layout: fixed
     |]
 
 
@@ -200,12 +232,12 @@ instance Formify [Namen] where
 
 startingTable :: [[Maybe TruthValue]]
 startingTable = map (Just . TruthValue . toEnum . digitToInt) <$>
-    transpose (pad . (`showBin` "") <$> [0..15 :: Int])
-  where pad s = replicate (4 - length s) '0' ++ s
+    transpose (pad . (`showBin` "") <$> [0..rows -1])
+  where pad s = replicate (staticColumns - length s) '0' ++ s
 
 
 
-checkers :: PropFormula Char -> Bool -> Bool -> String
+checkers :: SynTree BinOp Char -> Bool -> Bool -> String
 checkers fSol tableRequired showSolution = [i|
 
 {-\# language ApplicativeDo \#-}
@@ -214,6 +246,7 @@ checkers fSol tableRequired showSolution = [i|
 module Check (checkSemantics, checkSyntax) where
 
 
+import Control.Monad (when)
 import Control.OutputCapable.Blocks
 import Data.Foldable (toList)
 import Data.List     (intercalate, isInfixOf)
@@ -224,7 +257,8 @@ import Data.Ratio    ((%))
 import LogicTasks.Formula (TruthValue(..), isSemanticEqual, convert)
 import LogicTasks.Parsing (allSymbolParser, parser)
 import Formula.Parsing.Delayed
-import Trees.Types (PropFormula(..), BinOp(..))
+import Trees.Types (SynTree(..), PropFormula(..), BinOp(..))
+import Trees.Print (simplestDisplay)
 
 import qualified SAT.MiniSat as Sat
 import qualified Data.Text   as T
@@ -237,10 +271,11 @@ correctColumn :: (PropFormula Char,[Maybe TruthValue]) -> Bool
 correctColumn (f,bs) = all lookFor allocationsAndValues
   where
     ones = Sat.solve_all $ convert f
-    allocations = map (zip (toList f) . map (truth . fromJust)) #{transpose startingTable}
+    allocations = filter ((`elem` atoms) . fst) <$> map (zip "ABCD" . map (truth . fromJust)) #{transpose startingTable}
     allocationsAndValues = [(truth a,b) | (Just a,b) <- zip bs allocations]
     lookFor (True,a) = fromList a `elem` ones
     lookFor (False,a) = fromList a `notElem` ones
+    atoms = toList f
 
 
 
@@ -261,6 +296,16 @@ stringList xs = '[': intercalate "," (map stringMaybe xs) ++ "]"
     stringMaybe (Just s) = s
 
 
+toTree :: PropFormula Char -> SynTree BinOp Char
+toTree (Atomic c) = Leaf c
+toTree (Neg p) = Not $ toTree p
+toTree (Brackets p) = toTree p
+toTree (Assoc op l r) = Binary op (toTree l) (toTree r)
+
+
+dropStatic :: [a] -> [a]
+dropStatic = drop staticColumns
+
 
 checkSyntax :: OutputCapable m => a -> FilePath -> Submission -> LangM m
 checkSyntax _ _ (Table xs,formula,names) =
@@ -274,13 +319,26 @@ checkSyntax _ _ (Table xs,formula,names) =
 
 
 checkSyntax' :: OutputCapable m => [Namen] -> ([Maybe (PropFormula Char)],PropFormula Char) -> LangM m
-checkSyntax' n (xs,_) = do
-    assertion (all (`notElem` map (Just . Atomic) "ABCD") $ drop 4 xs) $ bothLangs
+checkSyntax' n (fs,f) = do
+    paragraph $ do
+      bothLangs $ do
+        "Die eingegebenen Formeln wurden folgendermaßen interpretiert:"
+      when (any (/=Nothing) entered) $ indent $ do
+        bothLangs "Tabellenspalten"
+        code $ unlines $ map (simplestDisplay . toTree) $ catMaybes entered
+        pure ()
+      indent $ do
+        bothLangs "Antwortformel"
+        code $ simplestDisplay $ toTree f
+        pure ()
+      pure ()
+    assertion (all (`notElem` map (Just . Atomic) "ABCD") entered) $ bothLangs
       "Tabellenspalten existieren nur einmal?"
     assertion (not (null n)) $ bothLangs
       "Es wurde mindestens ein Name angekreuzt? (Alleine gehen ist ausgeschlossen.)"
     pure ()
-
+  where
+    entered = dropStatic fs
 
 
 checkSemantics :: OutputCapable m => (a,[Namen]) -> FilePath -> Submission -> Rated m
@@ -296,18 +354,18 @@ checkSemantics (_,nSol) _ (Table xs,formula,names) =
 
 checkSemantics' :: OutputCapable m => [Namen] -> [[Maybe TruthValue]] -> [Namen] -> ([Maybe (PropFormula Char)],PropFormula Char) -> Rated m
 checkSemantics' nSol columns n (headers,f) = do
-    let correctStart = take 4 columns == #{startingTable}
+    let correctStart = take staticColumns columns == #{startingTable}
     #{checkType} correctStart $ bothLangs
       "Spalten der atomaren Formeln ergeben sinnvolle Wahrheitstafel?"
-    let subFormulas = all (`isSubFormula` f) $ catMaybes $ drop 4 headers
+    let subFormulas = all (`isSubFormula` f) $ catMaybes $ dropStatic headers
     #{checkType} subFormulas $ bothLangs
       "Tabellenspalten sind Teilformeln der Gesamtformel?"
-    let correctValues = all correctColumn [(sf,b)| (Just sf,b) <- drop 4 $ zip headers columns]
+    let correctValues = all correctColumn [(sf,b)| (Just sf,b) <- dropStatic $ zip headers columns]
     #{checkType} correctValues $ bothLangs
       "Tabellenspalten enthalten korrekte Wahrheitswerte?"
     yesNo (T.all (`elem` f) "ABCD") $ bothLangs
        "Formel enthält alle vorkommenden atomaren Formeln?"
-    let correctFormula = isSemanticEqual #{gshow fSol} f
+    let correctFormula = isSemanticEqual (#{fSol}) (toTree f)
     yesNo correctFormula $ bothLangs
         "Die aussagenlogische Formel ist korrekt?"
     let correctNames = n == nSol
@@ -320,7 +378,7 @@ checkSemantics' nSol columns n (headers,f) = do
   where
     maybeAnswer = flip (++) (show nSol) <$>
                     #{if showSolution
-                       then Just ("Formel:  " ++ show fSol ++ "\nBegleitende: ")
+                       then Just ("Formel:  " ++ simplestDisplay fSol ++ "\nBegleitende: ")
                        else Nothing
                     }
 
@@ -396,7 +454,7 @@ instance Parse Table where
   parseInput = do
     (headers,values) <- parseInput
     let allHeaders = map (Just . (:[])) "ABCD" ++ headers
-    pure $ Table $ zip allHeaders $ transpose $ chunksOf 7 values
+    pure $ Table $ zip allHeaders $ transpose $ chunksOf totalColumns values
 
 
 
