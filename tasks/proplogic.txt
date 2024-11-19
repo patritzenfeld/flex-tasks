@@ -73,7 +73,7 @@ instance MonadFail Gen where
 
 
 getParticipants :: Gen [Bool]
-getParticipants = vectorOf 4 arbitrary `suchThat` or
+getParticipants = vectorOf 4 arbitrary `suchThat` \bs -> or bs && not (and bs)
 
 
 getTask :: Gen (String, String, IO ([String],String))
