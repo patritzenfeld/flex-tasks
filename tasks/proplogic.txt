@@ -116,26 +116,27 @@ formulaAndHints a b c d (aN,bN,cN,dN) = do
   where
     namesLegend = [i|Sie fragt ihre Freunde #{aN} (A), #{bN} (B), #{cN} (C) und #{dN} (D), |]
     hint1 = (if b == d
-              then [i|Falls #{bN} und #{dN} #{nicht b} kommen,|]
+              then [i|Falls #{bN} und #{dN}#{nicht b} kommen,|]
               else
                 if b
                   then [i|Falls #{bN} nicht, aber #{dN} kommt,|]
                   else [i|Falls #{bN}, aber nicht #{dN} kommt,|]
             )
-            ++ [i| kommt #{cN} #{nicht (not c)}.|]
-    hint2 = [i|#{bN} kommt #{nicht b} mit, wenn #{aN} #{nicht a} mitkommt.|]
-    hint3 = [i|Wenn #{bN} #{nicht b} kommt, kommt #{if b == c then auch else ""} #{cN} #{nicht c}.|]
-    hint4 = [i|Wenn #{cN} #{nicht c} kommt, kommt #{if c == d then auch else ""} #{dN} #{nicht d}.|]
-    hint5 = [i|Wenn #{dN} #{nicht d} kommt, |]
+            ++ [i| kommt #{cN}#{nicht (not c)}.|]
+    hint2 = [i|#{bN} kommt#{nicht b} mit, wenn #{aN}#{nicht a} mitkommt.|]
+    hint3 = [i|Wenn #{bN}#{nicht b} kommt, kommt #{if b == c then auch else ""} #{cN}#{nicht c}.|]
+    hint4 = [i|Wenn #{cN}#{nicht c} kommt, kommt #{if c == d then auch else ""} #{dN}#{nicht d}.|]
+    hint5 = [i|Wenn #{dN}#{nicht d} kommt, |]
          ++ if a == b
-              then [i|kommen #{if d == a then auch else ""} #{aN} oder #{bN} #{nicht a}.|]
+              then [i|kommen #{if d == a then auch else ""} #{aN} oder #{bN}#{nicht a}.|]
               else
                 if a
                   then [i|kommt #{if d then auch else ""} #{aN} nicht oder #{bN} kommt.|]
                   else [i|kommt #{if d then "" else auch} #{aN} oder #{bN} kommt nicht.|]
 
     nicht :: Bool -> String
-    nicht f = if f then "nicht" else ""
+    nicht f = if f then " nicht" else ""
+
     -- to avoid inline type annotations due to String vs Text
     auch :: String
     auch = " auch"
