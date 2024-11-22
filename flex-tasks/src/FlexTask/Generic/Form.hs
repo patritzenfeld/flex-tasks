@@ -15,7 +15,7 @@ module FlexTask.Generic.Form
   , FieldInfo
   , SingleChoiceSelection
   , MultipleChoiceSelection
-
+  , Hidden(..)
     -- * Type Classes
   , BaseForm(..)
   , Formify(..)
@@ -141,6 +141,10 @@ data FieldInfo
 data Alignment = Horizontal | Vertical deriving (Eq,Show)
 
 
+-- | Wrapper type for generating hidden fields.
+newtype Hidden a = Hidden {getHidden :: a} deriving (Eq,Show)
+
+
 {- |
 Generic single choice answer type.
 Use if you want a 'choose one of multiple' style input
@@ -213,6 +217,14 @@ instance BaseForm Double where
   baseForm = doubleField
 
 
+instance PathPiece a => PathPiece (Hidden a) where
+  fromPathPiece = fmap Hidden . fromPathPiece
+  toPathPiece = toPathPiece . getHidden
+
+
+instance PathPiece a => BaseForm (Hidden a) where
+  baseForm = hiddenField
+
 
 {- |
 Class for generic generation of Html input forms for a given type.
@@ -283,6 +295,10 @@ instance Formify Bool where
 
 
 instance Formify Double where
+  formifyImplementation = formifyInstanceBasicField
+
+
+instance PathPiece a => Formify (Hidden a) where
   formifyImplementation = formifyInstanceBasicField
 
 
