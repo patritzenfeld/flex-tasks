@@ -364,7 +364,8 @@ formify (Just [\"Hallo\", \"Hello\", \"Hola\", \"Ciao\"]) [[listWithoutLabels Ve
 
 Renders a series of four input fields, each for the type String
 and organized vertically beneath each other.
-They are prefilled with the values given above, are assigned the Css class \"helloInput\" and have no labels attached to them.
+They are prefilled with the values given above,
+are assigned the Css class \"helloInput\" and have no labels attached to them.
 
 @
 formify
