@@ -108,7 +108,7 @@ __then the next form will only be rendered besides the last form component of th
 Input
 
 @
-[[listWithoutLabels Vertical 2],[listWithoutLabels Vertical 2]]
+[[listWithoutLabels Vertical 2 []],[listWithoutLabels Vertical 2 []]]
 @
 
 will __not__ result in
