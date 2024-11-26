@@ -359,12 +359,12 @@ formify (Nothing \@Int) [[single \"Age\"]]
 Renders an input field with /type=number/ attribute, no default value and label /Age/.
 
 @
-formify (Just [\"Hallo\", \"Hello\", \"Hola\", \"Ciao\"]) [[listWithoutLabels Vertical]]
+formify (Just [\"Hallo\", \"Hello\", \"Hola\", \"Ciao\"]) [[listWithoutLabels Vertical 4 [(\"class\",\"helloInput\")]]]
 @
 
 Renders a series of four input fields, each for the type String
 and organized vertically beneath each other.
-They are prefilled with the values given above and have no labels attached to them.
+They are prefilled with the values given above, are assigned the Css class \"helloInput\" and have no labels attached to them.
 
 @
 formify
