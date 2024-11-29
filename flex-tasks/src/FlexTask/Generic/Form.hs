@@ -255,7 +255,7 @@ class Formify a where
   formifyImplementation
       :: Maybe a -- ^ Optional default value for form.
       -> [[FieldInfo]] -- ^ Structure and type of form.
-      -> ([[FieldInfo]], [[Rendered]]) -- ^ remaining structure and rendered form.
+      -> ([[FieldInfo]], [[Rendered]]) -- ^ remaining form structure and completed sub-renders.
 
   default formifyImplementation
       :: (Generic a, GFormify (Rep a))
