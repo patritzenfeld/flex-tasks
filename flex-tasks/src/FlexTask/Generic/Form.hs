@@ -407,7 +407,7 @@ formifyComponents = checkAndApply id
 
 
 {- |
-like `formifyComponents`, but flattens the sub-widget list to a single level.
+like `formifyComponents`, but flattens the sub-render list to a single level.
 -}
 formifyComponentsFlat :: Formify a => Maybe a -> [[FieldInfo]] -> [Rendered]
 formifyComponentsFlat = checkAndApply concat
