@@ -246,6 +246,12 @@ __Exception: Types with multiple constructors.__
 Use utility functions for those or provide your own instance.
 -}
 class Formify a where
+  {- |
+  Direct use of this function is not recommended
+  due to possible undetected invalidity of the result.
+  It should only be used when writing manual instances of `Formify`.
+  Use `formify` or its variants instead.
+  -}
   formifyImplementation
       :: Maybe a -- ^ Optional default value for form.
       -> [[FieldInfo]] -- ^ Structure and type of form.
@@ -349,13 +355,12 @@ instance Formify MultipleChoiceSelection where
 
 
 {- |
-Alternative to `formifyImplementation`
-that only produces the rendered form.
-Will fail if remaining form structure is not empty,
-indicating the form is finished or faulty.
-
 This is the main way to build generic forms.
 Use in conjunction with `FieldInfo` builders to generate a form.
+
+Will fail if remaining `FieldInfo` structure is not empty,
+indicating the form is faulty.
+
 
 __Examples__
 
