@@ -48,7 +48,9 @@ module FlexTask.Generic.Form
   ) where
 
 
+import Control.Monad.Reader (Reader)
 import Data.List.Extra      (nubSort, uncons, unsnoc)
+import Data.Tuple.Extra     (first)
 import Data.Maybe           (fromMaybe)
 import GHC.Generics         (Generic(..), K1(..), M1(..), (:*:)(..))
 import GHC.Utils.Misc       (equalLength)
@@ -61,7 +63,7 @@ import FlexTask.Widgets
   , renderForm
   , verticalCheckboxesField
   )
-import FlexTask.YesodConfig (FlexForm, Handler, Rendered)
+import FlexTask.YesodConfig (FlexForm, Handler, Rendered, Widget)
 
 
 
@@ -411,15 +413,21 @@ like `formify`, but yields the individual sub-renders instead of a combined form
 Retains the layout structure given by the `FieldInfo` list argument.
 This can be used in custom forms to incorporate generated inputs.
 -}
-formifyComponents :: Formify a => Maybe a -> [[FieldInfo]] -> [[Rendered]]
-formifyComponents = checkAndApply id
+formifyComponents :: Formify a => Maybe a -> [[FieldInfo]] -> Reader Html (MForm Handler ([Text],[[Widget]]))
+formifyComponents = checkAndApply (fmap (tupleSequence . mapM sequence) . mapM sequence)
+  where tupleSequence = fmap (joinAndPart . map joinAndPart)
 
 
 {- |
 like `formifyComponents`, but flattens the sub-render list to a single level.
 -}
-formifyComponentsFlat :: Formify a => Maybe a -> [[FieldInfo]] -> [Rendered]
-formifyComponentsFlat = checkAndApply concat
+formifyComponentsFlat :: Formify a => Maybe a -> [[FieldInfo]] -> Reader Html (MForm Handler ([Text],[Widget]))
+formifyComponentsFlat = checkAndApply (fmap (tupleSequence . sequence) . sequence . concat)
+  where tupleSequence = fmap joinAndPart
+
+
+joinAndPart :: [([a],b)] -> ([a],[b])
+joinAndPart = first concat . unzip
 
 
 checkAndApply
