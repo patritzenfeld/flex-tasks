@@ -419,10 +419,11 @@ formifyComponents = checkAndApply (fmap (tupleSequence . mapM sequence) . mapM s
 
 
 {- |
-like `formifyComponents`, but flattens the sub-render list to a single level.
+like `formifyComponents`, but takes a simple list of `FieldInfo` values.
+The sub-renders will also be returned as a flat list without any additional structure.
 -}
-formifyComponentsFlat :: Formify a => Maybe a -> [[FieldInfo]] -> Reader Html (MForm Handler ([Text],[Widget]))
-formifyComponentsFlat = checkAndApply (fmap (tupleSequence . sequence) . sequence . concat)
+formifyComponentsFlat :: Formify a => Maybe a -> [FieldInfo] -> Reader Html (MForm Handler ([Text],[Widget]))
+formifyComponentsFlat ma = checkAndApply (fmap (tupleSequence . sequence) . sequence . concat) ma . (:[])
   where tupleSequence = fmap joinAndPart
 
 
