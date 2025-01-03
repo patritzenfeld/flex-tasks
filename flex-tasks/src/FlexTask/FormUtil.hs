@@ -1,5 +1,6 @@
 {-# language OverloadedStrings #-}
 {-# language QuasiQuotes #-}
+{-# language TypeFamilies #-}
 {-# language TypeOperators #-}
 
 {- | Functions for creating and composing forms.
