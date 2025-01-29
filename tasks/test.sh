@@ -64,5 +64,5 @@ expect "$expect_script" "$ghc_version" |
   ansi2html >ghc.html
 
 echo -e "${CYAN}writing Hlint report...${NC}"
-hlint . --report -q --hint="${script_path}/.hlint.yaml"
-echo -e "${CYAN}Done! Check the reports in ghc.html and report.html.${NC}"
+hlint . --report="hlint.html" -q --hint="${script_path}/.hlint.yaml"
+echo -e "${CYAN}Done! Check the reports in ghc.html and hlint.html.${NC}"
