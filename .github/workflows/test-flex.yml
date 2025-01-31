@@ -23,7 +23,7 @@ jobs:
   test_flex:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
