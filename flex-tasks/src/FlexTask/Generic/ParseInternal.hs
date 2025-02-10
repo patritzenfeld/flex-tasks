@@ -318,8 +318,8 @@ Provide error report with positional information relative to an input form.
 reportWithFieldNumber :: OutputCapable m => String -> ParseError -> LangM m
 reportWithFieldNumber input e = do
     translate $ do
-      german $ "Fehler in Eingabefeld" ++ " " ++ fieldNum ++ ":"
-      english $ "Error in input field" ++ " " ++ fieldNum ++ ":"
+      german $ "Fehler in Eingabefeld " ++ fieldNum ++ ":"
+      english $ "Error in input field " ++ fieldNum ++ ":"
     indent $ text errors
     pure ()
   where
@@ -339,7 +339,7 @@ displayInputAnd ::
   -> String -> Maybe a -> ParseError -> LangM m
 displayInputAnd messaging a ma err = do
   translate $ do
-    german $ "Fehler in" ++  " \"" ++ a ++ "\" : "
-    english $ "Error in" ++ " \"" ++ a ++ "\" : "
+    german $ "Fehler in \"" ++ a ++ "\" : "
+    english $ "Error in \"" ++ a ++ "\" : "
   indent $ messaging ma err
   pure ()

@@ -116,7 +116,7 @@ description _ input = do
 module Parse (parseSubmission) where
 
 
-import FlexTask.Generic.Parse  (parseInput, parseWithOrReport, reportWithFieldNumber)
+import FlexTask.Generic.Parse  (formParser, parseWithOrReport, reportWithFieldNumber)
 import Text.Parsec             (ParseError)
 
 import Global
@@ -125,4 +125,4 @@ import Global
 
 
 parseSubmission :: String -> Either ParseError Solution
-parseSubmission = parseWithOrReport parseInput reportWithFieldNumber
+parseSubmission = parseWithOrReport formParser reportWithFieldNumber
