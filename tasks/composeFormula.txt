@@ -1,49 +1,18 @@
 module Global where
 
-import Trees.Types (BinOp(..), SynTree(..), TreeFormulaAnswer)
-
-type Solution = [TreeFormulaAnswer]
-
-=============================================
-
-{-# language OverloadedStrings #-}
-{-# Language QuasiQuotes #-}
-
-module TaskData where
-
-import Data.String.Interpolate          (i)
 import Data.Map                         (Map)
-import Data.Text                        (Text)
-import FlexTask.FormUtil                (getFormData)
-import FlexTask.Generic.Form
-import FlexTask.Types                   (HtmlDict)
-import FlexTask.YesodConfig             (Rendered, Widget)
-import Tasks.ComposeFormula.Config      (ComposeFormulaConfig(..), TreeDisplayMode (TreeDisplay))
-import Tasks.ComposeFormula.Quiz        (generateComposeFormulaInst)
-import Test.QuickCheck.Gen              (Gen)
-import Yesod                            (RenderMessage(..), fieldSettingsLabel)
-import qualified Data.Map as Map        (fromList)
-
-import Tasks.SynTree.Config (
-  SynTreeConfig(..)
+import Tasks.ComposeFormula.Config (
+  ComposeFormulaConfig(..),
+  ComposeFormulaInst(..),
+  TreeDisplayMode (TreeDisplay),
   )
-import Trees.Types (BinOp(..))
+import Tasks.SynTree.Config             (SynTreeConfig(..))
+import Trees.Types                      (BinOp(..), SynTree(..), TreeFormulaAnswer)
+import qualified Data.Map               as Map (fromList)
 
-import Global
 
-
-data InputLabel = First | Second
-
-instance RenderMessage app InputLabel where
-  renderMessage _ ("en":_) First  = "First Formula"
-  renderMessage _ _        First  = "Erste Formel"
-  renderMessage _ ("en":_) Second = "Second Formula"
-  renderMessage _ _        Second = "Zweite Formel"
-
-getTask :: Gen (String, String, IO ([Text],HtmlDict))
-getTask = do
-    inst <- generateComposeFormulaInst task03
-    pure (show inst, checkers, getFormData form)
+type Submission = [TreeFormulaAnswer]
+type TaskData = ComposeFormulaInst
 
 listToFM :: Ord k => [(k, a)] -> Map k a
 listToFM = Map.fromList
@@ -76,6 +45,40 @@ task03 = ComposeFormulaConfig
   , offerUnicodeInput = True
   }
 
+=============================================
+
+{-# language OverloadedStrings #-}
+{-# Language QuasiQuotes #-}
+
+module TaskData where
+
+import Data.String.Interpolate          (i)
+import Data.Text                        (Text)
+import FlexTask.FormUtil                (getFormData)
+import FlexTask.Generic.Form
+import FlexTask.Types                   (HtmlDict)
+import FlexTask.YesodConfig             (Rendered, Widget)
+import Tasks.ComposeFormula.Quiz        (generateComposeFormulaInst)
+import Test.QuickCheck.Gen              (Gen)
+import Yesod                            (RenderMessage(..), fieldSettingsLabel)
+
+import Global
+
+
+data InputLabel = First | Second
+
+instance RenderMessage app InputLabel where
+  renderMessage _ ("en":_) First  = "First Formula"
+  renderMessage _ _        First  = "Erste Formel"
+  renderMessage _ ("en":_) Second = "Second Formula"
+  renderMessage _ _        Second = "Zweite Formel"
+
+
+getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
+getTask = do
+    inst <- generateComposeFormulaInst task03
+    pure (inst, checkers, getFormData form)
+
 fields :: [[FieldInfo]]
 fields = [[field First, field Second]]
   where field = single . fieldSettingsLabel
@@ -94,8 +97,6 @@ import Control.Monad.IO.Class           (MonadIO)
 import Control.OutputCapable.Blocks
 import Data.Functor                     (($>))
 import LogicTasks.Syntax.ComposeFormula (partialGrade', completeGrade')
-import Tasks.ComposeFormula.Config      (ComposeFormulaInst(..))
-import Trees.Types                      (BinOp(..), SynTree(..), TreeFormulaAnswer)
 
 import Global
 
@@ -103,16 +104,16 @@ import Global
 checkSyntax
   :: (MonadIO m, OutputCapable m)
   => FilePath
-  -> ComposeFormulaInst
-  -> Solution
+  -> TaskData
+  -> Submission
   -> LangM m
 checkSyntax _ = partialGrade'
 
 checkSemantics
   :: (MonadIO m, OutputCapable m)
   => FilePath
-  -> ComposeFormulaInst
-  -> Solution
+  -> TaskData
+  -> Submission
   -> Rated m
 checkSemantics path inst try = completeGrade' path inst try $> 1.0
 
@@ -125,14 +126,15 @@ checkSemantics path inst try = completeGrade' path inst try $> 1.0
 
 module Description (description) where
 
-import Control.Monad.IO.Class                    (MonadIO)
+import Global
+
+import Control.Monad.IO.Class           (MonadIO)
 import Control.OutputCapable.Blocks
-import Tasks.ComposeFormula.Config               (ComposeFormulaInst(..))
-import Trees.Types                               (BinOp(..), SynTree(..))
+import Tasks.ComposeFormula.Config      (ComposeFormulaInst(..))
 
 import qualified LogicTasks.Syntax.ComposeFormula as LT
 
-description :: (OutputCapable m, MonadIO m) => FilePath -> ComposeFormulaInst -> LangM m
+description :: (OutputCapable m, MonadIO m) => FilePath -> TaskData -> LangM m
 description path inst@ComposeFormulaInst{..} = do
   LT.description False (path <> "/") inst
   paragraph $ do
@@ -184,7 +186,7 @@ import Global
 parseSubmission ::
   (Monad m, OutputCapable (ReportT o m))
   => String
-  -> LangM' (ReportT o m) Solution
+  -> LangM' (ReportT o m) Submission
 parseSubmission input = parseWithOrReport formParser reportWithFieldNumber input $>>= \(input1,input2) ->
   parseIt input1 $>>= \formula1 ->
     parseIt input2 $>>= \formula2 ->

@@ -1,17 +1,20 @@
+{-# language DeriveDataTypeable #-}
 
 module Global where
 
 
-import LogicTasks.Formula (TruthValue)
+import Data.Data (Data)
+import LogicTasks.Formula (TruthValue(..))
 import Trees.Types (PropFormula)
 
 
 newtype Table = Table [(Maybe (PropFormula Char), [Maybe TruthValue])] deriving (Eq,Show)
 
-data Namen = A | B | C | D deriving (Eq,Enum,Bounded,Show)
+data Namen = A | B | C | D deriving (Data,Eq,Enum,Bounded,Show)
 
 type FormType = (String,[Namen])
 
+type TaskData = ((String, [String]),[Namen])
 type Submission = (Table,PropFormula Char,[Namen])
 
 
@@ -26,6 +29,7 @@ tableRequired, showSolution :: Bool
 tableRequired = False
 showSolution  = True
 
+
 =============================================
 
 {-# language FlexibleContexts #-}
@@ -38,10 +42,10 @@ module TaskData (getTask) where
 
 
 import Data.Char               (digitToInt)
-import Data.String             (fromString)
 import Data.List               (transpose)
 import Data.Maybe              (fromJust)
 import Data.Text               (Text)
+import Data.String             (fromString)
 import Data.String.Interpolate (i)
 import FlexTask.FormUtil (
   ($$>),
@@ -87,7 +91,7 @@ getParticipants :: Gen [Bool]
 getParticipants = vectorOf 4 arbitrary `suchThat` \bs -> or bs && not (and bs)
 
 
-getTask :: Gen (String, String, IO ([Text],HtmlDict))
+getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
 getTask = do
     [a,b,c,d] <- getParticipants
     names <- getNames
@@ -95,7 +99,7 @@ getTask = do
     let
       zipped = [(a, A), (b, B), (c, C), (d, D)]
       coming = [ n | (True,n) <- zipped ]
-    pure (show ((legend,hints),coming), checkers formula, getFormData (form names))
+    pure (((legend,hints),coming), checkers formula, getFormData (form names))
   where
     form :: (String,String,String,String) -> Rendered Widget
     form n = addCss formulaCss $
@@ -209,7 +213,6 @@ import Data.Containers.ListUtils        (nubOrd)
 import Data.Foldable                    (toList)
 import Data.List (
   delete,
-  intercalate,
   isInfixOf,
   transpose,
   )
