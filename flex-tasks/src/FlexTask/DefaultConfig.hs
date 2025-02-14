@@ -117,10 +117,10 @@ data Label = Product | Sum
 
 
 instance RenderMessage a Label where
-  renderMessage app ("de":_) Product = "Produkt"
-  renderMessage app ("de":_) Sum     = "Summe"
-  renderMessage app _        Product = "Product"
-  renderMessage app _        Sum     = "Sum"
+  renderMessage _ ("de":_) Product = "Produkt"
+  renderMessage _ ("de":_) Sum     = "Summe"
+  renderMessage _ _        Product = "Product"
+  renderMessage _ _        Sum     = "Sum"
 
 
 
