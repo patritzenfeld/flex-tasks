@@ -16,6 +16,7 @@ on:
       - "tasks/test.sh"
       - "tasks/runGhci.expect"
       - "tasks/.hlint.yaml"
+      - "flex-tasks/src/FlexTask/DefaultConfig.hs"
 
 permissions: read-all
 
