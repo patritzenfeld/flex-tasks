@@ -44,7 +44,7 @@ sigList = [
 
 {- all too long:
 
-  -- ekg-push-1.json
+  -- ekg-push-1.json -- no-spell-check
   toSignature [
       ("defaultPushOptions", [], "PushOptions"),
       ("prefix", ["PushOptions"], "Text"),
@@ -54,7 +54,7 @@ sigList = [
       ("makeOptions", ["Int", "Bool", "Text", "Text"], "PushOptions")
       ],
 
-  -- Euterpea-1.json
+  -- Euterpea-1.json -- no-spell-check
   toSignature [
       ("trackEnd", [], "Message"),
       ("key", ["Message"], "Key"),
@@ -64,7 +64,7 @@ sigList = [
       ("timeSignature", ["Int", "Int", "Int", "Int"], "Message")
       ],
 
-  -- hS3-1.json
+  -- hS3-1.json -- no-spell-check
   toSignature [
       ("defaultAmazonS3Port", [], "Int"),
       ("defaultAmazonS3Host", [], "String"),
@@ -74,7 +74,7 @@ sigList = [
       ("awsAccessKey", ["AWSConnection"], "String")
       ],
 
-  -- unliftio-path-1.json
+  -- unliftio-path-1.json -- no-spell-check
   toSignature [
       ("emptyPermissions", [], "Permissions"),
       ("exeExtension", [], "String"),
@@ -85,7 +85,7 @@ sigList = [
       ],
 -}
 
-  -- Cabal-syntax-2.json
+  -- Cabal-syntax-2.json -- no-spell-check
   toSignature [
       ("zeroPos", [], "Position"),
       ("retPos", ["Position"], "Position"),
@@ -95,7 +95,7 @@ sigList = [
       ("incPos", ["Int", "Position"], "Position")
       ],
 
-  -- french-cards-1.json
+  -- french-cards-1.json -- no-spell-check
   toSignature [
       ("rTwo", [], "Rank"),
       ("diamonds", [], "Suit"),
@@ -105,7 +105,7 @@ sigList = [
       ("cardSuit", ["Card"], "Suit")
       ],
 
-  -- ghc-26.json
+  -- ghc-26.json -- no-spell-check
   toSignature [
       ("boxedTuple", [], "TupleSort"),
       ("finalPhase", [], "CompilerPhase"),
@@ -115,7 +115,7 @@ sigList = [
       ("beginPhase", ["Activation"], "CompilerPhase")
       ],
 
-  -- haskellscrabble-2.json
+  -- haskellscrabble-2.json -- no-spell-check
   toSignature [
       ("emptyBoard", [], "Board"),
       ("posMax", [], "Int"),
@@ -125,7 +125,7 @@ sigList = [
       ("gridValue", ["Pos"], "String")
       ],
 
-  -- LPFP-core-3.json
+  -- LPFP-core-3.json -- no-spell-check
   toSignature [
       ("defaultPFS", [], "ParticleFieldState"),
       ("position", ["ParticleFieldState"], "Position"),
@@ -135,7 +135,7 @@ sigList = [
       ("charge", ["ParticleFieldState"], "R")
       ],
 
-  -- packedstring-2.json
+  -- packedstring-2.json -- no-spell-check
   toSignature [
       ("nilPS", [], "PackedString"),
       ("lengthPS", ["PackedString"], "Int"),
@@ -145,7 +145,7 @@ sigList = [
       ("unpackPS", ["PackedString"], "String")
       ],
 
-  -- prettyprint-avh4-2.json
+  -- prettyprint-avh4-2.json -- no-spell-check
   toSignature [
       ("space", [], "Line"),
       ("blankLine", [], "Block"),
@@ -155,7 +155,7 @@ sigList = [
       ("addSuffix", ["Line", "Block"], "Block")
       ],
 
-  -- protobuf-1.json
+  -- protobuf-1.json -- no-spell-check
   toSignature [
       ("empty", [], "Builder"),
       ("append", ["Builder", "Builder"], "Builder"),
@@ -165,7 +165,7 @@ sigList = [
       ("makeBuilder", ["Int", "Builder"], "Builder")
       ],
 
-  -- template-toolkit-1.json
+  -- template-toolkit-1.json -- no-spell-check
   toSignature [
       ("undef", [], "Val"),
       ("not", [], "UnOp"),
@@ -175,7 +175,7 @@ sigList = [
       ("vArrayRange", ["Expr", "Expr"], "Val")
       ],
 
-  -- time-1.json
+  -- time-1.json -- no-spell-check
   toSignature [
       ("midnight", [], "TimeOfDay"),
       ("midday", [], "TimeOfDay"),
@@ -185,7 +185,7 @@ sigList = [
       ("sinceMidnight", ["TimeOfDay"], "DiffTime")
       ],
 
-  -- web-rep-2.json
+  -- web-rep-2.json -- no-spell-check
   toSignature [
       ("defaultSocketConfig", [], "SocketConfig"),
       ("defaultSocketPage", [], "Page"),
