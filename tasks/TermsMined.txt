@@ -238,7 +238,7 @@ instance RenderMessage app HeaderLabel where
 
 getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
 getTask = do
-    config <- genConfig
+    config <- task04
     inst@SigInstance{..} <- genInst config
     pure (inst, checkers, getFormData $ form $ length terms)
 
@@ -249,8 +249,9 @@ form amount = formify
   [[buttons Vertical (fieldSettingsLabel HeaderLabel) $ map (fromString . (++ ".") . show) [1..amount]]]
 
 
-genConfig :: Gen Certain
-genConfig = elements sigList <&> makeConfig
+-- 2024: Weight 0.15 (in Modellierung)
+task04 :: Gen Certain
+task04 = elements sigList <&> makeConfig
 
 
 checkers :: String

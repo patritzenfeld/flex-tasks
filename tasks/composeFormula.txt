@@ -19,7 +19,7 @@ type TaskData = ComposeFormulaInst
 listToFM :: Ord k => [(k, a)] -> Map k a
 listToFM = Map.fromList
 
--- 2024: Weight 0.33
+-- 2024: Weight 0.33 (in Logik)
 task03 :: ComposeFormulaConfig
 task03 = ComposeFormulaConfig
   { syntaxTreeConfig = SynTreeConfig
