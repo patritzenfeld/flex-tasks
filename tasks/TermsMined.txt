@@ -42,7 +42,9 @@ makeConfig sig = Certain {
 sigList :: [Signature]
 sigList = [
 
-{- too long
+{- all too long:
+
+  -- ekg-push-1.json
   toSignature [
       ("defaultPushOptions", [], "PushOptions"),
       ("prefix", ["PushOptions"], "Text"),
@@ -52,6 +54,7 @@ sigList = [
       ("makeOptions", ["Int", "Bool", "Text", "Text"], "PushOptions")
       ],
 
+  -- Euterpea-1.json
   toSignature [
       ("trackEnd", [], "Message"),
       ("key", ["Message"], "Key"),
@@ -61,6 +64,7 @@ sigList = [
       ("timeSignature", ["Int", "Int", "Int", "Int"], "Message")
       ],
 
+  -- hS3-1.json
   toSignature [
       ("defaultAmazonS3Port", [], "Int"),
       ("defaultAmazonS3Host", [], "String"),
@@ -70,6 +74,7 @@ sigList = [
       ("awsAccessKey", ["AWSConnection"], "String")
       ],
 
+  -- unliftio-path-1.json
   toSignature [
       ("emptyPermissions", [], "Permissions"),
       ("exeExtension", [], "String"),
@@ -79,6 +84,8 @@ sigList = [
       ("executable", ["Permissions"], "Bool")
       ],
 -}
+
+  -- Cabal-syntax-2.json
   toSignature [
       ("zeroPos", [], "Position"),
       ("retPos", ["Position"], "Position"),
@@ -88,6 +95,7 @@ sigList = [
       ("incPos", ["Int", "Position"], "Position")
       ],
 
+  -- french-cards-1.json
   toSignature [
       ("rTwo", [], "Rank"),
       ("diamonds", [], "Suit"),
@@ -97,6 +105,7 @@ sigList = [
       ("cardSuit", ["Card"], "Suit")
       ],
 
+  -- ghc-26.json
   toSignature [
       ("boxedTuple", [], "TupleSort"),
       ("finalPhase", [], "CompilerPhase"),
@@ -106,6 +115,7 @@ sigList = [
       ("beginPhase", ["Activation"], "CompilerPhase")
       ],
 
+  -- haskellscrabble-2.json
   toSignature [
       ("emptyBoard", [], "Board"),
       ("posMax", [], "Int"),
@@ -115,6 +125,7 @@ sigList = [
       ("gridValue", ["Pos"], "String")
       ],
 
+  -- LPFP-core-3.json
   toSignature [
       ("defaultPFS", [], "ParticleFieldState"),
       ("position", ["ParticleFieldState"], "Position"),
@@ -124,6 +135,7 @@ sigList = [
       ("charge", ["ParticleFieldState"], "R")
       ],
 
+  -- packedstring-2.json
   toSignature [
       ("nilPS", [], "PackedString"),
       ("lengthPS", ["PackedString"], "Int"),
@@ -133,6 +145,7 @@ sigList = [
       ("unpackPS", ["PackedString"], "String")
       ],
 
+  -- prettyprint-avh4-2.json
   toSignature [
       ("space", [], "Line"),
       ("blankLine", [], "Block"),
@@ -142,6 +155,7 @@ sigList = [
       ("addSuffix", ["Line", "Block"], "Block")
       ],
 
+  -- protobuf-1.json
   toSignature [
       ("empty", [], "Builder"),
       ("append", ["Builder", "Builder"], "Builder"),
@@ -151,6 +165,7 @@ sigList = [
       ("makeBuilder", ["Int", "Builder"], "Builder")
       ],
 
+  -- template-toolkit-1.json
   toSignature [
       ("undef", [], "Val"),
       ("not", [], "UnOp"),
@@ -160,6 +175,7 @@ sigList = [
       ("vArrayRange", ["Expr", "Expr"], "Val")
       ],
 
+  -- time-1.json
   toSignature [
       ("midnight", [], "TimeOfDay"),
       ("midday", [], "TimeOfDay"),
@@ -169,6 +185,7 @@ sigList = [
       ("sinceMidnight", ["TimeOfDay"], "DiffTime")
       ],
 
+  -- web-rep-2.json
   toSignature [
       ("defaultSocketConfig", [], "SocketConfig"),
       ("defaultSocketPage", [], "Page"),
