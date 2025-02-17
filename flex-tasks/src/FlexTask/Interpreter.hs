@@ -133,7 +133,7 @@ makeDescription taskData global settings description extras picPath = do
   where
     descInter = do
       setTopLevelModules ["Description", "Global", "TaskSettings"]
-      setImports ["Control.OutputCapable.Blocks.Generic.Type"]
+      setImports ["Control.OutputCapable.Blocks.Generic.Type", "Data.Text"]
       interpret ("description " ++ show picPath ++ parens taskData) infer
 
 
@@ -230,6 +230,7 @@ checkSolution taskData globalCode settingsCode parseCode checkCode extraCode sub
       setImports
         [ "Control.OutputCapable.Blocks.Generic.Type"
         , "Data.Ratio"
+        , "Data.Text"
         ]
       setTopLevelModules ["Check", "Global", "Helper", "Parse"]
       interpret ("syntaxAndSemantics parseSubmission checkSyntax checkSemantics " ++ input ++ path ++ tData) infer
