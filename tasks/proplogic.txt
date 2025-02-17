@@ -19,7 +19,12 @@ type Submission = (Table,PropFormula Char,[Namen])
 
 -- 2024: Weight 1.0 (in Logik)
 
--- Configuration
+
+============================================
+
+module TaskSettings where
+
+
 emptyColumns, staticColumns, totalColumns, rows :: Int
 emptyColumns  = 13
 staticColumns = 4
@@ -76,7 +81,7 @@ import Trees.Types (BinOp(..), SynTree(..))
 import Trees.Print (simplestDisplay)
 
 import Global
-
+import TaskSettings
 
 
 
@@ -260,7 +265,7 @@ isSubFormula a b = noSpaces a `isInfixOf` noSpaces b
 
 
 dropStatic :: [a] -> [a]
-dropStatic = drop staticColumns
+dropStatic = drop #{staticColumns}
 
 
 checkSyntax :: OutputCapable m => FilePath -> a -> Submission -> LangM m
@@ -295,7 +300,7 @@ checkSyntax _ _ (Table xs,f,n) = do
     pure ()
   where
     fs = map fst xs
-    atomicColumns = take staticColumns $ map snd xs
+    atomicColumns = take #{staticColumns} $ map snd xs
     mColumns = dropStatic fs
     entered = catMaybes mColumns
     noDuplicate formula = formula `notElem` (map Atomic "ABCD" ++ delete formula entered)
@@ -305,7 +310,7 @@ checkSyntax _ _ (Table xs,f,n) = do
 
 checkSemantics :: OutputCapable m => FilePath -> (a,[Namen]) -> Submission -> Rated m
 checkSemantics _ (_,nSol) (Table xs,f,n) = do
-    let correctStart = take staticColumns columns == #{startingTable}
+    let correctStart = take #{staticColumns} columns == #{startingTable}
     #{checkType} correctStart $ text
       "Spalten der atomaren Formeln ergeben sinnvolle Wahrheitstafel?"
     let subFormulas = all (\\e -> e `isSubFormula` f || e `elem` negations) $ catMaybes $ dropStatic replaceFAll
@@ -408,7 +413,7 @@ import ParsingHelpers          (fully)
 import Trees.Types             (PropFormula(Atomic))
 
 import Global
-
+import TaskSettings
 
 
 instance Parse TruthValue where

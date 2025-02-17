@@ -75,12 +75,18 @@ genFlexInst
   -> a                                 -- ^ Generator seed
   -> IO FlexInst
 genFlexInst
-  FlexConf{commonModules = commonModules@CommonModules{globalModule, extraModules}, ..}
+  FlexConf{ commonModules = commonModules@CommonModules{
+    globalModule,
+    settingsModule,
+    extraModules
+    },
+    ..}
   genMethod
   seed
   = do
       filePaths <- writeUncachedAndGetPaths $
         [ ("Global", globalModule)
+        , ("TaskSettings", settingsModule)
         , ("TaskData", taskDataModule)
         ] ++ extraModules
       taskAndFormResult <- runWithPackageDB $
@@ -97,7 +103,7 @@ genFlexInst
     where
       tfInter :: Interpreter (Gen GenOutput)
       tfInter = do
-        setTopLevelModules ["TaskData", "Global"]
+        setTopLevelModules ["TaskData", "Global", "TaskSettings"]
         setImports [
             "Data.Generics.Text"
           , "Data.Map"
@@ -113,18 +119,20 @@ makeDescription
   => String
   -> String
   -> String
+  -> String
   -> [(String,String)]
   -> FilePath
   -> IO (Either InterpreterError (LangM m))
-makeDescription taskData global description extras picPath = do
+makeDescription taskData global settings description extras picPath = do
     filePaths <- writeUncachedAndGetPaths $
           [ ("Global", global)
+          , ("TaskSettings", settings)
           , ("Description", description)
           ] ++ extras
     runWithPackageDB $ loadModules filePaths >> descInter
   where
     descInter = do
-      setTopLevelModules ["Description", "Global"]
+      setTopLevelModules ["Description", "Global", "TaskSettings"]
       setImports ["Control.OutputCapable.Blocks.Generic.Type"]
       interpret ("description " ++ show picPath ++ parens taskData) infer
 
@@ -142,13 +150,19 @@ the description is interpreted again to regenerate the missing files.
 validDescription
   :: OutputCapable m
   => String       -- ^ Data available for making the description
-  -> String       -- ^ Additional code module
+  -> String       -- ^ Global module
+  -> String       -- ^ Settings module
   -> String       -- ^ Module containing the /description/ function
-  -> [(String,String)]
+  -> [(String,String)] -- ^ Additional code modules
   -> FilePath     -- ^ Path images will be stored in
   -> IO (LangM m) -- ^ `OutputCapable` representation of task description
-validDescription taskData globalModule descModule extras picPath = do
-  let fileName = hash $ descModule ++ taskData ++ globalModule ++ concatMap snd extras
+validDescription taskData globalModule settingsModule descModule extras picPath = do
+  let fileName = hash $ concat $ [
+          descModule
+        , taskData
+        , globalModule
+        , settingsModule
+        ] ++ map snd extras
   cDir <- cacheDir
   let path = cDir </> fileName
   isThere <- doesFileExist path
@@ -166,7 +180,7 @@ validDescription taskData globalModule descModule extras picPath = do
       makeDescAndWrite Nothing path
   where
     makeDescAndWrite mOldOutput p = do
-      res <- makeDescription taskData globalModule descModule extras picPath
+      res <- makeDescription taskData globalModule settingsModule descModule extras picPath
       output <- getOutputSequence $ extract res
       unless (mOldOutput == Just output) $ writeFile p $ show output
       return $ toOutputCapable output
@@ -194,16 +208,18 @@ Semantics feedback is coupled with a rating given as a Rational (0 to 1).
 -}
 checkSolution
   :: String   -- ^ Data made available to checker functions
-  -> String   -- ^ Additional code module
+  -> String   -- ^ Global module
+  -> String   -- ^ Module containing configuration options
   -> String   -- ^ Module containing /parseSubmission/
   -> String   -- ^ Module containing /checkSyntax/ and /checkSemantics/
-  -> [(String,String)]
+  -> [(String,String)] -- ^ Additional code modules
   -> String   -- ^ Student solution
   -> FilePath -- ^ Path images will be stored in
   -> IO (Either InterpreterError ([Output], Maybe (Maybe Rational, [Output])))
-checkSolution taskData globalCode parseCode checkCode extraCode submission picPath = do
+checkSolution taskData globalCode settingsCode parseCode checkCode extraCode submission picPath = do
     filePaths <- writeUncachedAndGetPaths $
       [ ("Global", globalCode)
+      , ("TaskSettings", settingsCode)
       , ("Parse", parseCode)
       , ("Check", checkCode)
       , ("Helper", helper)
@@ -215,7 +231,7 @@ checkSolution taskData globalCode parseCode checkCode extraCode submission picPa
         [ "Control.OutputCapable.Blocks.Generic.Type"
         , "Data.Ratio"
         ]
-      setTopLevelModules ["Check", "Parse", "Global", "Helper"]
+      setTopLevelModules ["Check", "Global", "Helper", "Parse"]
       interpret ("syntaxAndSemantics parseSubmission checkSyntax checkSemantics " ++ input ++ path ++ tData) infer
 
     tData = parens taskData

@@ -76,6 +76,7 @@ They are propagated to the generated task instance.
 -}
 data CommonModules = CommonModules {
     globalModule      ::  String, -- ^ Global code module available in all interpreter runs.
+    settingsModule    ::  String, -- ^ Module for task configuration constants.
     descriptionModule ::  String, -- ^ Module for producing the task description.
     parseModule       ::  String, -- ^ Module containing the Parser for the submission type.
     extraModules      :: [(String,String)] -- ^ User defined additional modules with format (Name,Code)
@@ -108,6 +109,7 @@ showFlexConfig :: FlexConf -> String
 showFlexConfig FlexConf{commonModules = CommonModules{..},..} =
     intercalate delimiter $
       [ globalModule
+      , settingsModule
       , taskDataModule
       , descriptionModule
       , parseModule
@@ -126,35 +128,36 @@ __and interpret everything following the last separator as part of the fourth mo
 -}
 parseFlexConfig :: Parser FlexConf
 parseFlexConfig = do
-      modules <- betweenEquals
-      case take 4 modules of
-        [globalModule,taskDataModule,descriptionModule,parseModule] -> do
-          let extra = drop 4 modules
-          let extraModules = mapMaybe getModNames extra
-          pure $
-            FlexConf {
-              taskDataModule,
-              commonModules = CommonModules {
-                globalModule,
-                descriptionModule,
-                parseModule,
-                extraModules
-              }
+    modules <- betweenEquals
+    case take 5 modules of
+      [globalModule,settingsModule,taskDataModule,descriptionModule,parseModule] -> do
+        let extra = drop 5 modules
+        let extraModules = mapMaybe getModNames extra
+        pure $
+          FlexConf {
+            taskDataModule,
+            commonModules = CommonModules {
+              globalModule,
+              settingsModule,
+              descriptionModule,
+              parseModule,
+              extraModules
             }
-        _ -> fail $
-               "Unexpected end of file. " ++
-               "Provide at least the following Modules (in this order): " ++
-               "Global, TaskData, Description, Parse"
-    where
-      atLeastThree = do
-        void $ string "==="
-        void $ many $ char '='
-      betweenEquals =
-        manyTill anyChar (try $ lookAhead $ eof <|> atLeastThree) `sepBy`
-        atLeastThree
-      getModNames code = do
-        b <- stripInfix "module" $ removeComments code
-        Just (headDef "" $ words $ snd b, code)
+          }
+      _ -> fail $
+             "Unexpected end of file. " ++
+             "Provide at least the following Modules (in this order): " ++
+             "Global, TaskSettings, TaskData (Check), Description, Parse"
+  where
+    atLeastThree = do
+      void $ string "==="
+      void $ many $ char '='
+    betweenEquals =
+      manyTill anyChar (try $ lookAhead $ eof <|> atLeastThree) `sepBy`
+      atLeastThree
+    getModNames code = do
+      b <- stripInfix "module" $ removeComments code
+      Just (headDef "" $ words $ snd b, code)
 
 
 removeComments :: String -> String
@@ -187,4 +190,4 @@ validateFlexConfig FlexConf{commonModules = CommonModules{..}}
   where
     reject = refuse . indent . translate
     moduleNames = map fst extraModules
-    required = ["Global","TaskData","Description","Parse","Check"]
+    required = ["Global","TaskSettings","TaskData","Description","Parse","Check"]

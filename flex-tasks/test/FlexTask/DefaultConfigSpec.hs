@@ -54,6 +54,7 @@ spec = do
             validDescription @TestReport
               taskData
               globalModule
+              settingsModule
               descriptionModule
               extraModules
               ""
@@ -63,6 +64,7 @@ spec = do
             checkSolution
               taskData
               globalModule
+              settingsModule
               parseModule
               checkModule
               extraModules

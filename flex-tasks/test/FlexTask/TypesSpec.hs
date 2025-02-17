@@ -23,6 +23,7 @@ spec = do
       \fConf@FlexConf{commonModules = CommonModules{..},..} ->
       showFlexConfig fConf `shouldBe` intercalate delimiter (
         [ globalModule
+        ,settingsModule
         ,taskDataModule
         ,descriptionModule
         ,parseModule
@@ -38,11 +39,12 @@ spec = do
       parse parseFlexConfig "" (showFlexConfig fConf) `shouldParse` fConf
 
     where
-      conf [globalModule, taskDataModule, descriptionModule, parseModule] =
+      conf [globalModule, settingsModule, taskDataModule, descriptionModule, parseModule] =
         FlexConf {
           taskDataModule,
           commonModules = CommonModules {
             globalModule,
+            settingsModule,
             descriptionModule,
             parseModule,
             extraModules = []
@@ -54,11 +56,18 @@ spec = do
 instance Arbitrary CommonModules where
   arbitrary = do
     globalModule <- arbitrary
+    settingsModule <- arbitrary
     descriptionModule <- arbitrary
     parseModule <- arbitrary
     amount <- chooseInt (1,5)
     extraModules <- filter ((/="") . snd) <$> vectorOf amount arbitrary
-    pure (CommonModules {globalModule, descriptionModule,parseModule,extraModules})
+    pure (CommonModules {
+      globalModule,
+      settingsModule,
+      descriptionModule,
+      parseModule,
+      extraModules
+      })
 
 
 instance Arbitrary FlexConf where
