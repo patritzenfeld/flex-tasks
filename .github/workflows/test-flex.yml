@@ -53,7 +53,7 @@ jobs:
           sudo mv -f new_stack.yaml stack.yaml
           insert='\'\
           "  - git: https://github.com/${{ github.repository }}\n"\
-          "    commit: ${{ github.sha }}\n"\
+          "    commit: ${{ github.event.client_payload.sha }}\n"\
           '    subdirs:\n'\
           '      - flex-tasks\n'\
           '      - flex-tasks-processing'
