@@ -32,6 +32,7 @@ import Control.OutputCapable.Blocks (
 import Control.OutputCapable.Blocks.Generic (
   toAbort,
   )
+import Data.List.Extra    (dropEnd, takeWhileEnd)
 import Data.Text          (Text)
 import GHC.Generics       (Generic(..), K1(..), M1(..), (:*:)(..))
 import Text.Parsec
@@ -335,12 +336,12 @@ Provide error report with positional information relative to an input form.
 reportWithFieldNumber :: OutputCapable m => String -> ParseError -> LangM m
 reportWithFieldNumber input e = do
     translate $ do
-      german $ "Fehler in Eingabefeld " ++ fieldNum ++ ":"
-      english $ "Error in input field " ++ fieldNum ++ ":"
+      german $ "Fehler in Eingabefeld" ++ errorInfo
+      english $ "Error in input field" ++ errorInfo
     indent $ text errors
     pure ()
   where
-    fieldNum = show $ length (filter (=='\a') consumed) `div` 2 + 1
+    fieldNum = show $ length (filter isDelimiter consumed) `div` 2 + 1
     errors = showErrorMessages
       "or"
       "unknown parse error"
@@ -348,7 +349,14 @@ reportWithFieldNumber input e = do
       "unexpected"
       "end of input"
       $ errorMessages e
-    consumed = take (sourceColumn $ errorPos e) input
+    isDelimiter = flip elem ['\a','\b']
+    errorAt = sourceColumn $ errorPos e
+    consumed = take errorAt input
+    restOfField = takeWhile (not . isDelimiter) $ drop errorAt input
+    fieldUntilError = takeWhileEnd (not . isDelimiter) consumed
+    causedError = drop 1 $ dropEnd 1 $ fieldUntilError ++ restOfField
+    errorInfo = " " ++ fieldNum ++ ", " ++ causedError ++ ":"
+
 
 displayInputAnd ::
   OutputCapable m =>
