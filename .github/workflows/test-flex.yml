@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.client_payload.ref }}
+          ref: ${{ github.event.client_payload.sha }}
 
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
