@@ -351,8 +351,8 @@ reportWithFieldNumber input e = do
       $ errorMessages e
     isDelimiter = flip elem ['\a','\b']
     errorAt = sourceColumn $ errorPos e
-    consumed = take errorAt input
-    restOfField = takeWhile (not . isDelimiter) $ drop errorAt input
+    (consumed, rest) = splitAt errorAt input
+    restOfField = takeWhile (not . isDelimiter) rest
     fieldUntilError = takeWhileEnd (not . isDelimiter) consumed
     causedError = drop 1 $ dropEnd 1 $ fieldUntilError ++ restOfField
     errorInfo = " " ++ fieldNum ++ ", " ++ causedError ++ ":"
