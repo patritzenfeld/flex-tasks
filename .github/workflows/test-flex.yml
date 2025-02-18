@@ -100,7 +100,7 @@ jobs:
       - name: Link Comment
         uses: peter-evans/commit-comment@v3
         with:
-          sha: ${{ github.event.client_payload.ref }}
+          sha: ${{ github.event.client_payload.sha }}
           body: |
             Changes in task folder or test-flex workflow. You may review the test results:
 
