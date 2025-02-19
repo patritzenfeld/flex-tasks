@@ -11,10 +11,9 @@ import TermTasks.DataType (
   Term(..),
   Type(..),
   )
-import FlexTask.Generic.Form           (MultipleChoiceSelection)
 
 
-type Submission = MultipleChoiceSelection
+type Submission = [Int]
 type TaskData = SigInstance
 
 =============================================
@@ -284,7 +283,6 @@ module Check where
 
 import Control.Applicative              (Alternative)
 import Control.OutputCapable.Blocks
-import FlexTask.Generic.Form            (getAnswers)
 import TermTasks.Direct                 (completeGrade, partialGrade)
 
 import Global                           (Submission, TaskData)
@@ -297,7 +295,7 @@ checkSyntax
   -> TaskData
   -> Submission
   -> LangM m
-checkSyntax _ taskData = partialGrade taskData . getAnswers
+checkSyntax _ = partialGrade
 
 
 checkSemantics
@@ -306,7 +304,7 @@ checkSemantics
   -> TaskData
   -> Submission
   -> Rated m
-checkSemantics _ taskData = completeGrade taskData . getAnswers
+checkSemantics _ = completeGrade
 
 |]
 
@@ -334,6 +332,8 @@ import Control.OutputCapable.Blocks (
   OutputCapable,
   ReportT,
   )
+import Data.Functor            ((<&>))
+import FlexTask.Generic.Form   (getAnswers)
 import FlexTask.Generic.Parse  (formParser, parseInfallibly)
 
 import Global                  (Submission)
@@ -344,4 +344,4 @@ parseSubmission ::
   OutputCapable m
   => String
   -> LangM' m Submission
-parseSubmission = parseInfallibly formParser
+parseSubmission input = parseInfallibly formParser input <&> getAnswers
