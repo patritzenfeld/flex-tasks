@@ -20,7 +20,7 @@ module FlexTask.Processing.Text
   ) where
 
 
-import Data.Char  (isAscii, isHexDigit)
+import Data.Char  (isAscii, isDigit)
 import Data.Maybe (fromMaybe)
 import Data.Text  (Text)
 import Numeric    (showHex)
@@ -116,10 +116,14 @@ Remove excessive escape characters in front of Unicode
 caused by conversion between Haskell and JavaScript representation.
 -}
 removeUnicodeEscape :: String -> String
-removeUnicodeEscape cs@(a:b:c:d:xs)
-    | a == '\\' && all isHexDigit [b,c,d] = b:c:d: removeUnicodeEscape xs
-    | otherwise                = a : removeUnicodeEscape (drop 1 cs)
-removeUnicodeEscape xs         = xs
+removeUnicodeEscape (x:xs)
+    | x == '\\' && length unicodeIdent >= 3 && inUnicodeRange
+      = unicodeIdent ++ removeUnicodeEscape rest
+    | otherwise = x : removeUnicodeEscape xs
+  where
+    (unicodeIdent,rest) = span isDigit xs
+    inUnicodeRange = read unicodeIdent <= (1114111 :: Int)
+removeUnicodeEscape xs = xs
 
 
 
