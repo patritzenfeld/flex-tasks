@@ -6,15 +6,15 @@ module Global where
 import TermTasks.Records (
   SigInstance(..),
   )
-
 import TermTasks.DataType (
   Symbol(..),
   Term(..),
   Type(..),
   )
+import FlexTask.Generic.Form           (MultipleChoiceSelection)
 
 
-type Submission = [Int]
+type Submission = MultipleChoiceSelection
 type TaskData = SigInstance
 
 =============================================
@@ -284,6 +284,7 @@ module Check where
 
 import Control.Applicative              (Alternative)
 import Control.OutputCapable.Blocks
+import FlexTask.Generic.Form            (getAnswers)
 import TermTasks.Direct                 (completeGrade, partialGrade)
 
 import Global                           (Submission, TaskData)
@@ -296,7 +297,7 @@ checkSyntax
   -> TaskData
   -> Submission
   -> LangM m
-checkSyntax _ = partialGrade
+checkSyntax _ taskData = partialGrade taskData . getAnswers
 
 
 checkSemantics
@@ -305,7 +306,7 @@ checkSemantics
   -> TaskData
   -> Submission
   -> Rated m
-checkSemantics _ = completeGrade
+checkSemantics _ taskData = completeGrade taskData . getAnswers
 
 |]
 
