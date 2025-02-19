@@ -32,7 +32,7 @@ import Control.OutputCapable.Blocks (
 import Control.OutputCapable.Blocks.Generic (
   toAbort,
   )
-import Data.List.Extra    (dropEnd, takeWhileEnd)
+import Data.List.Extra    (drop1, dropEnd1, takeWhileEnd)
 import Data.Text          (Text)
 import GHC.Generics       (Generic(..), K1(..), M1(..), (:*:)(..))
 import Text.Parsec
@@ -337,7 +337,9 @@ reportWithFieldNumber :: OutputCapable m => String -> ParseError -> LangM m
 reportWithFieldNumber input e = do
     translate $ do
       german $ "Fehler in Eingabefeld" ++ errorInfo
+      german $ "an Position" ++ relativeErrorPos
       english $ "Error in input field" ++ errorInfo
+      english $ "at position" ++ relativeErrorPos
     indent $ text errors
     pure ()
   where
@@ -354,8 +356,9 @@ reportWithFieldNumber input e = do
     (consumed, rest) = splitAt errorAt input
     restOfField = takeWhile (not . isDelimiter) rest
     fieldUntilError = takeWhileEnd (not . isDelimiter) consumed
-    causedError = drop 1 $ dropEnd 1 $ fieldUntilError ++ restOfField
-    errorInfo = " " ++ fieldNum ++ ", " ++ causedError ++ ":"
+    causedError = drop1 $ dropEnd1 $ fieldUntilError ++ restOfField
+    relativeErrorPos = " " ++ show (length fieldUntilError -2)
+    errorInfo = " " ++ fieldNum ++ ": " ++ causedError ++ " "
 
 
 displayInputAnd ::
