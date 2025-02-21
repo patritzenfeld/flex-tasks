@@ -28,7 +28,7 @@ jobs:
 
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: zsh hlint expect colorized-logs texlive texlive-latex-extra
+          packages: zsh hlint expect colorized-logs texlive-full
           version: 1.0
 
       - name: Cache DB
