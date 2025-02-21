@@ -5,6 +5,7 @@ env:
   tasks: tasks
   config: pkgdb-config
   script: tasks
+  TERM: xterm
 
 on:
   repository_dispatch:
