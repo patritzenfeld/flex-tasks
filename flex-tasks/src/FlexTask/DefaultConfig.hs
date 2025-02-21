@@ -153,12 +153,11 @@ instance RenderMessage a Label where
 
 getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
 getTask = do
-    numbers <- vectorOf 3 $ elements [1..6 :: Int]
-    let
-      descData = (numbers !! 0, numbers !! 1, numbers !! 2)
-      checkData = (product numbers, sum numbers)
-    pure ((descData,checkData), checkers, getFormData form)
-
+    numbers@(n1,n2,n3) <- (,,) <$> intInRange <*> intInRange <*> intInRange
+    let checkData = (product [n1,n2,n3], sum [n1,n2,n3])
+    pure ((numbers,checkData), checkers, getFormData form)
+  where
+    intInRange = chooseInt (1,6)
 
 
 fieldNames :: [[FieldInfo]]

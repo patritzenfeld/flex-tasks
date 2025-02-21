@@ -330,7 +330,6 @@ module Parse (parseSubmission) where
 import Control.OutputCapable.Blocks (
   LangM',
   OutputCapable,
-  ReportT,
   )
 import Data.Functor            ((<&>))
 import FlexTask.Generic.Form   (getAnswers)
