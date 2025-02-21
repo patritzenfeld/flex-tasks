@@ -94,6 +94,7 @@ jobs:
           for name in "${files[@]}"; do
             bash ../${{ env.script }}/test.sh "$name" root
             folder="$(basename "$name" .txt)"
+            hlint_removed=false
             if grep -q "No hints" "$folder/hlint.html"; then
               rm "$folder/hlint.html"
               hlint_removed=true
