@@ -14,7 +14,7 @@ data Namen = A | B | C | D deriving (Data,Eq,Enum,Bounded,Show)
 
 type FormType = (String,[Namen])
 
-type TaskData = ((String, [String]),[Namen])
+type TaskData = (String,[String],[Namen])
 type Submission = (Table,PropFormula Char,[Namen])
 
 
@@ -58,11 +58,8 @@ validateSettings
 
 =============================================
 
-{-# language FlexibleContexts #-}
 {-# language OverloadedStrings #-}
 {-# language QuasiQuotes #-}
-{-# language RecordWildCards #-}
-{-# language TupleSections #-}
 
 module TaskData (getTask) where
 
@@ -125,7 +122,7 @@ getTask = do
     let
       zipped = [(a, A), (b, B), (c, C), (d, D)]
       coming = [ n | (True,n) <- zipped ]
-    pure (((legend,hints),coming), checkers formula, getFormData (form names))
+    pure ((legend, hints, coming), checkers formula, getFormData (form names))
   where
     form :: (String,String,String,String) -> Rendered Widget
     form n = addCss formulaCss $
@@ -288,7 +285,7 @@ dropStatic :: [a] -> [a]
 dropStatic = drop #{staticColumns}
 
 
-checkSyntax :: OutputCapable m => FilePath -> a -> Submission -> LangM m
+checkSyntax :: OutputCapable m => a -> b -> Submission -> LangM m
 checkSyntax _ _ (Table xs,f,n) = do
     paragraph $ do
       text "Es wurden Formeln wie folgt gelesen:"
@@ -328,8 +325,8 @@ checkSyntax _ _ (Table xs,f,n) = do
 
 
 
-checkSemantics :: OutputCapable m => FilePath -> (a,[Namen]) -> Submission -> Rated m
-checkSemantics _ (_,nSol) (Table xs,f,n) = do
+checkSemantics :: OutputCapable m => a -> (b,c,[Namen]) -> Submission -> Rated m
+checkSemantics _ (_,_,nSol) (Table xs,f,n) = do
     let correctStart = take #{staticColumns} columns == #{startingTable}
     #{checkType} correctStart $ text
       "Spalten der atomaren Formeln ergeben sinnvolle Wahrheitstafel?"
@@ -381,8 +378,8 @@ import LogicTasks.Keys                  (keyHeading, basicOpKey, arrowsKey)
 
 
 
-description :: OutputCapable m => FilePath -> ((String,[String]),a) -> LangM m
-description _ ((legend,hints),_) = do
+description :: OutputCapable m => a -> (String,[String],b) -> LangM m
+description _ (legend,hints,_) = do
     paragraph $ text
       ( "Eva möchte gerne auf ein Konzert ihrer Lieblingsband gehen. " ++
         legend ++
