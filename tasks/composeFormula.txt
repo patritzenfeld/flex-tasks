@@ -121,8 +121,8 @@ import Global                           (TaskData, Submission)
 
 
 checkSyntax
-  :: (MonadIO m, OutputCapable m)
-  => FilePath
+  :: OutputCapable m
+  => a
   -> TaskData
   -> Submission
   -> LangM m
