@@ -66,4 +66,4 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           event-type: CI-Completed
-          client-payload: '{"sha": "${{ github.sha }}"}'
+          client-payload: '{"sha": "${{ github.sha }}", "message": "${{ github.event.head_commit.message }}"}'

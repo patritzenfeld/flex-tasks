@@ -125,6 +125,5 @@ jobs:
         with:
           sha: ${{ github.event.client_payload.sha }}
           body: |
-            Changes in task folder or test-flex workflow. You may review the test results:
-
+            The flex-task test workflow reported issues or suggestions for a commit with message ${{ github.event.client_payload.message }}.
             [Download Reports](${{ steps.upload-artifact.outputs.artifact-url }})
