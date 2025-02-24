@@ -323,10 +323,6 @@ description _ = TD.description False
 module Parse (parseSubmission) where
 
 
-import Control.OutputCapable.Blocks (
-  LangM',
-  OutputCapable,
-  )
 import Data.Functor            ((<&>))
 import FlexTask.Generic.Form   (getAnswers)
 import FlexTask.Generic.Parse  (formParser, parseInfallibly)
