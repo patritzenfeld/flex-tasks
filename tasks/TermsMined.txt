@@ -216,7 +216,8 @@ makeConfig sig = Certain {
     wrongTerms = [(1, Swap), (1, TypeChange), (1, OneMore), (1, OneLess)],
     properTerms = 5,
     extraFeedback = True,
-    printSolution = True
+    printSolution = True,
+    extraText = Nothing
   }
 }
 
