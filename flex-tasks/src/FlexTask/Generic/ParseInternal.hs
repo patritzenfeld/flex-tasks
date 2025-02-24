@@ -288,10 +288,10 @@ Use when you know that there will be no error (e.g., when the parser used is `fo
 the input form is "infallible" since only constructed from String text fields, single, multiple choice).
 -}
 parseInfallibly ::
-  OutputCapable m
+  Applicative m
   => Parser a
   -> String
-  -> LangM' m a
+  -> m a
 parseInfallibly parser answer =
   case parse parser "" answer of
     Left failure  -> error $ "The impossible happened: " ++ show failure
