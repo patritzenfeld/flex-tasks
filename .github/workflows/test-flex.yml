@@ -43,7 +43,9 @@ jobs:
         id: restore-cache-db
         uses: actions/cache@v3
         with:
-          path: ${{ env.tasks }}/root
+          path: |
+            ${{ env.tasks }}/root
+            haskell-template-setup/stack.yaml
           key:
             ${{ hashFiles(format('{0}/stack.yaml', env.config), format('{0}/package.yaml', env.config)) }}-${{ hashFiles('*/src/**/*hs') }}
 
