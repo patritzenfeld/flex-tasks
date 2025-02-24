@@ -108,10 +108,10 @@ jobs:
                 ((no_hint_tasks++))
               fi
             fi
-            if [ $task_amount -eq $no_hint_tasks]; then
-              rm ../haskell-template-setup/stack.yaml
-            fi
           done
+          if [ $task_amount -eq $no_hint_tasks]; then
+            rm ../haskell-template-setup/stack.yaml
+          fi
           set +ex
 
       - name: Upload artifact
