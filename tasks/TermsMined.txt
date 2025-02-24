@@ -228,7 +228,6 @@ validateSettings = traverse_ (verifyCertain . makeConfig) sigList
 
 {-# language OverloadedStrings #-}
 {-# language QuasiQuotes #-}
-{-# language RecordWildCards #-}
 
 module TaskData where
 
@@ -253,10 +252,6 @@ import TaskSettings                     (task04)
 data HeaderLabel = HeaderLabel
 
 
-instance MonadFail Gen where
-  fail = error
-
-
 instance RenderMessage app HeaderLabel where
   renderMessage _ ("en":_) HeaderLabel  = "Correct Terms"
   renderMessage _ _        HeaderLabel  = "Korrekte Terme"
@@ -265,8 +260,8 @@ instance RenderMessage app HeaderLabel where
 getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
 getTask = do
     config <- task04
-    inst@SigInstance{..} <- genInst config
-    pure (inst, checkers, getFormData $ form $ length terms)
+    inst <- genInst config
+    pure (inst, checkers, getFormData $ form $ length $ terms inst)
 
 
 form :: Int -> Rendered Widget
@@ -291,7 +286,7 @@ import Global                           (Submission, TaskData)
 
 checkSyntax
   :: OutputCapable m
-  => FilePath
+  => a
   -> TaskData
   -> Submission
   -> LangM m
@@ -300,7 +295,7 @@ checkSyntax _ = partialGrade
 
 checkSemantics
   :: (Alternative m, OutputCapable m)
-  => FilePath
+  => a
   -> TaskData
   -> Submission
   -> Rated m
@@ -319,7 +314,7 @@ import Global                           (TaskData)
 
 
 
-description :: OutputCapable m => FilePath -> TaskData -> LangM m
+description :: OutputCapable m => a -> TaskData -> LangM m
 description _ = TD.description False
 
 =============================================
@@ -340,7 +335,7 @@ import Global                  (Submission)
 
 
 parseSubmission ::
-  OutputCapable m
+  Applicative m
   => String
-  -> LangM' m Submission
+  -> m Submission
 parseSubmission input = parseInfallibly formParser input <&> getAnswers
