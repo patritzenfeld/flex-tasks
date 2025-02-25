@@ -99,11 +99,10 @@ getTask = do
     pure (inst, checkers, getFormData form)
 
 fields :: [[FieldInfo]]
-fields = [[field First, field Second]]
-  where field = single . fieldSettingsLabel
+fields = [[list Horizontal $ map fieldSettingsLabel [First, Second]]]
 
 form :: Rendered Widget
-form = formify (Nothing :: Maybe (String,String)) fields
+form = formify (Nothing :: Maybe [String]) fields
 
 checkers :: String
 checkers = [i|
@@ -205,10 +204,7 @@ parseSubmission ::
   (Monad m, OutputCapable (ReportT o m))
   => String
   -> LangM' (ReportT o m) Submission
-parseSubmission input = parseInfallibly formParser input $>>= \(input1,input2) ->
-  parseIt input1 $>>= \formula1 ->
-    parseIt input2 $>>= \formula2 ->
-      pure [formula1,formula2]
+parseSubmission input = parseInfallibly formParser input $>>= traverse parseIt
   where
     parseIt = parseWithFallback
       (fully parser)
