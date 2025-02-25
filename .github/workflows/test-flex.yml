@@ -75,7 +75,6 @@ jobs:
           sed -i "s@/autotool/default@$(realpath $PWD/../${{ env.tasks }}/root)@" env
           ./create.sh
           sudo mv root ../${{ env.tasks }}
-          sudo cp stack.yaml ../${{ env.tasks }}
           set +ex
 
       - name: Determine GHC-Version
@@ -97,6 +96,7 @@ jobs:
       - name: Run Test Script
         run: |
           set -ex
+          sudo cp haskell-template-setup/stack.yaml ${{ env.tasks }}
           cd ${{ env.tasks }}
           export GHC_PACKAGE_PATH=root/pkgdb
           expect defaultConf.expect ${{ steps.ghc-version.outputs.version }}
