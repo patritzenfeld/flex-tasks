@@ -181,8 +181,12 @@ TaskData is the actual type of the flexible data generated above.
 It is stored in the task instance and passed to both check functions.
 Used to store variable data affected by random generation (part of the data might
 not be needed in the checkers but in the Description module discussed below).
-Submission is the actual type of the student submission after parsing and possibly post-processing.
-The FilePath argument is the server path for storing and loading images and other data.
+
+Note that the `TaskData` type has to support the `Data` type class, and its
+data constructors need to be in scope in the `Global` module.
+
+The `Submission` type is the actual type of the student submission after parsing and possibly post-processing.
+The `FilePath` argument is the server path for storing and loading images and other data.
 It is supplied by the caller of the checker functions and can be used as is, if file creation is required.
 The type signature must also be adjusted in this case.
 A 'MonadIO m' constraint must be set for file operations to work (including an import of the type class).
