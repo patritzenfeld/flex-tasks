@@ -45,7 +45,7 @@ jobs:
         with:
           path: |
             ${{ env.tasks }}/root
-            haskell-template-setup/stack.yaml
+            ${{ env.tasks }}/stack.yaml
           key:
             ${{ hashFiles(format('{0}/stack.yaml', env.config), format('{0}/package.yaml', env.config)) }}-${{ hashFiles('*/src/**/*hs') }}
 
@@ -75,6 +75,7 @@ jobs:
           sed -i "s@/autotool/default@$(realpath $PWD/../${{ env.tasks }}/root)@" env
           ./create.sh
           sudo mv root ../${{ env.tasks }}
+          sudo mv stack.yaml ../${{ env.tasks }}
           set +ex
 
       - name: Determine GHC-Version
@@ -120,7 +121,7 @@ jobs:
             fi
           done
           if [ $task_amount -eq $no_hint_tasks ]; then
-            rm ../haskell-template-setup/stack.yaml
+            rm stack.yaml
           fi
           set +ex
 
@@ -132,7 +133,7 @@ jobs:
           path: |
             ${{ env.tasks }}/*/*.html
             ${{ env.tasks }}/*/Check.hs
-            haskell-template-setup/stack.yaml
+            ${{ env.tasks }}/stack.yaml
           if-no-files-found: ignore
           overwrite: true
 
