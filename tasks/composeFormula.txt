@@ -155,7 +155,7 @@ import qualified LogicTasks.Syntax.ComposeFormula as LT
 
 description :: (OutputCapable m, MonadIO m) => FilePath -> TaskData -> LangM m
 description path inst@ComposeFormulaInst{..} = do
-  LT.description False (path <> "/") inst
+  LT.description False path inst
   paragraph $ do
     translate $ do
       german "Ein Lösungsversuch könnte beispielsweise aus den folgenden beiden Eingaben bestehen: "
