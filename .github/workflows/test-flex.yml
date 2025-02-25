@@ -75,7 +75,7 @@ jobs:
           sed -i "s@/autotool/default@$(realpath $PWD/../${{ env.tasks }}/root)@" env
           ./create.sh
           sudo mv root ../${{ env.tasks }}
-          sudo mv stack.yaml ../${{ env.tasks }}
+          sudo mv stack.yaml ../${{ env.tasks }}/stack.yaml
           set +ex
 
       - name: Determine GHC-Version
