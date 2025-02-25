@@ -23,7 +23,6 @@ defaultConfig =
 
 dGlobalDefs :: String
 dGlobalDefs = [rQ|
-
 {-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Module for shared definitions. Can be imported in any other segment.
@@ -37,14 +36,12 @@ module Global where
 type Submission = (Int,Int)
 type DescData = (Int,Int,Int)
 type TaskData = (DescData,Submission)
-
 |]
 
 
 
 dSettings :: String
 dSettings = [rQ|
-
 {-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Module for configuration constants. Can be imported in any other segment.
@@ -66,12 +63,10 @@ import Control.OutputCapable.Blocks (LangM, OutputCapable)
 
 validateSettings :: OutputCapable m => LangM m
 validateSettings = pure ()
-
 |]
 
 dTaskData :: String
 dTaskData = [rQ|
-
 {-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Module for generating static task data, possibly randomized.
@@ -245,13 +240,11 @@ checkSemantics _ (_,sol) try
       pure 0.0
 
 |~]
-
 |]
 
 
 dDescription :: String
 dDescription = [rQ|
-
 {-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Module for writing the task description.
@@ -292,13 +285,11 @@ description _ ((one,two,three),_) = do
     german "Was ist die Summe dieser Zahlen?"
     english "What is the sum of these numbers?"
   pure ()
-
 |]
 
 
 dParse :: String
 dParse = [rQ|
-
 {-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Module for parsing the student submission.

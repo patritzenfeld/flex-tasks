@@ -32,12 +32,13 @@ import Text.Parsec (
     char,
     eof,
     lookAhead,
-    many,
     manyTill,
     string,
+    skipMany,
     try,
     sepBy,
     )
+import Text.Parsec.Char                  (endOfLine, oneOf)
 import Text.Parsec.String                (Parser)
 import Yesod                             (Lang)
 
@@ -86,7 +87,7 @@ data CommonModules = CommonModules {
 
 -- | Visual module separator for configuration display.
 delimiter :: String
-delimiter = "============================================="
+delimiter = "\r\n=============================================\r\n"
 
 
 
@@ -149,8 +150,15 @@ parseFlexConfig = do
              "Global, TaskSettings, TaskData (Check), Description, Parse"
   where
     atLeastThree = do
+      void endOfLine
+      whiteSpace
       void $ string "==="
-      void $ many $ char '='
+      skipMany $ char '='
+      whiteSpace
+      void endOfLine
+
+    whiteSpace = skipMany $ oneOf [' ', '\t']
+
     betweenEquals =
       manyTill anyChar (try $ lookAhead $ eof <|> atLeastThree) `sepBy`
       atLeastThree
