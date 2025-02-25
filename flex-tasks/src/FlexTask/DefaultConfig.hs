@@ -26,7 +26,7 @@ dGlobalDefs = [rQ|
 {-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Module for shared definitions. Can be imported in any other segment.
-Adjust the submission type or add utility functions here.
+Adjust the submission and task data types or add utility types and functions here.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 -}
 
@@ -51,8 +51,8 @@ See the section on `Check` for more information.
 
 Define a constant `validateSettings` which checks the values defined in this module for validity.
 It can be defined as `pure ()` if no checks are required.
-`validateSettings` is executed upon uploading the task configuration to Autotool.
-The validated properties are then guaranteed to hold when students access the task.
+`validateSettings` is meant for sanity checks preventing the lecturer from
+choosing inappropriate settings during task configuration.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 -}
 module TaskSettings where
@@ -72,13 +72,13 @@ dTaskData = [rQ|
 Module for generating static task data, possibly randomized.
 This includes (in order):
 
-- Flexible data available to both the task description and the checks/feedback. (String)
+- Flexible data available to both the task description and the checks/feedback. (TaskData)
 - The entire "Check" module, containing a syntax and a semantics check. (String, use QuasiQuoting)
 - An HTML input form represented by the names of all contained input fields
   and a map of languages to translated HTML code, wrapped in IO. (IO ([Text],HtmlDict))
 
 Provide a function
-getTask :: Gen (String, String, IO ([Text],HtmlDict))
+getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
 implementing a generator for these elements.
 
 If no specific form is required, you may use 'formify' to generate a generic form for you,
@@ -179,8 +179,9 @@ checkSemantics :: OutputCapable m => FilePath -> TaskData -> Submission -> Rated
 
 TaskData is the actual type of the flexible data generated above.
 It is stored in the task instance and passed to both check functions.
-Used to store variable data affected by random generation.
-Submission is the actual type of the student submission after parsing.
+Used to store variable data affected by random generation (part of the data might
+not be needed in the checkers but in the Description module discussed below).
+Submission is the actual type of the student submission after parsing and possibly post-processing.
 The FilePath argument is the server path for storing and loading images and other data.
 It is supplied by the caller of the checker functions and can be used as is, if file creation is required.
 The type signature must also be adjusted in this case.
@@ -189,13 +190,13 @@ Otherwise, the FilePath argument can be completely ignored.
 
 The functions' result types are taken from 'Control.OutputCapable.Blocks'.
 They model a type-independent representation of checks and corresponding feedback.
-Refer to the libraries' documentation for help.
+Refer to the library's documentation for help.
 LangM is feedback without a score.
 Rated is feedback with a final score as a fraction, i.e. 0 to 1.
 
 As this function produces a String, you can also use interpolation.
-Use to precompute data and interpolate the results directly into the module.
-This is most useful for static data, that is not affected by random generation, and expensive calculations.
+Use that to precompute data and interpolate the results directly into the module.
+This is most useful for static data that is not affected by random generation, and expensive calculations.
 Note that slashes must be escaped.
 I.e. when introducing an anonymous function, write
 '\\x -> ...' instead of '\x -> ...' to avoid compile failure.
@@ -222,12 +223,7 @@ import Global
 
 
 checkSyntax :: OutputCapable m => FilePath -> TaskData -> Submission -> LangM m
-checkSyntax _ (_,sol) try
-  | try == sol = pure ()
-  | otherwise =
-      refuse $ indent $ translate $ do
-        german "syntaktisch falsch"
-        english "syntactically wrong"
+checkSyntax _ _ _  = pure ()  -- nothing to check here
 
 
 checkSemantics :: OutputCapable m => FilePath -> TaskData -> Submission -> Rated m
@@ -282,8 +278,8 @@ description _ ((one,two,three),_) = do
     german [i|Die erste ist #{one}, die zweite ist #{two}, die letzte ist #{three}.|~]
     english [i|On the first throw I roll #{one}, the second #{two} and on the third one #{three}.|~]
   indent $ paragraph $ translate $ do
-    german "Was ist die Summe dieser Zahlen?"
-    english "What is the sum of these numbers?"
+    german "Was sind Summe und Produkt dieser Zahlen?"
+    english "What are the sum and the product of these numbers?"
   pure ()
 |]
 
