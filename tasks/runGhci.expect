@@ -2,7 +2,7 @@
 
 # GHC version to use
 set ver [lindex $argv 0];
-set timeout 2
+set timeout 3
 
 log_user 0
 spawn ghci-$ver Global TaskSettings TaskData Description Parse -Wall -Wno-orphans
