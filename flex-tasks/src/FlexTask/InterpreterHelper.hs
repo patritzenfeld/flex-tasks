@@ -5,7 +5,7 @@ module FlexTask.InterpreterHelper (syntaxAndSemantics) where
 import Control.OutputCapable.Blocks     (LangM, LangM', Rated, ReportT)
 import Control.OutputCapable.Blocks.Type (
   Output,
-  getOutputSequenceAndResult,
+  getOutputSequenceWithResult,
   getOutputSequenceWithRating,
   )
 
@@ -23,11 +23,11 @@ syntaxAndSemantics
   -> a
   -> IO ([Output], Maybe (Maybe Rational, [Output]))
 syntaxAndSemantics preprocess syntax semantics input path tData = do
-  (mParseResult,parseOutput) <- getOutputSequenceAndResult $ preprocess input
+  (mParseResult,parseOutput) <- getOutputSequenceWithResult $ preprocess input
   case mParseResult of
     Nothing          -> pure (parseOutput,Nothing)
     Just parseResult -> do
-      (synSuccess,synRes) <- getOutputSequenceAndResult $ syntax path tData parseResult
+      (synSuccess,synRes) <- getOutputSequenceWithResult $ syntax path tData parseResult
       let parseAndSyntax = parseOutput ++ synRes
       case synSuccess of
         Nothing -> pure (parseAndSyntax,Nothing)
