@@ -4,7 +4,7 @@ packages:
   - .
 extra-deps:
   - git: https://github.com/fmidue/logic-tasks.git
-    commit: b3c446cc96081b5eec4dee465cb4e56211d42601
+    commit: 381f8cfd97fe860f05a98044789eb86a4137f91a
   - git: https://github.com/fmidue/term-tasks
     commit: cb2bfac5e0145c01fbbab7e4f995d624db72dcad
   - latex-svg-image-0.2@sha256:b282a74a96724037ec3d24b664118e51170c8152aff12f363ddb715a38ef053a,1830
