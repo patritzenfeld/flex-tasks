@@ -30,7 +30,7 @@ import TermTasks.Records (
   )
 import TermTasks.DataType (
   Error(..),
-  Signature(..),
+  Signature,
   toSignature,
   )
 import Data.Functor (
@@ -41,10 +41,152 @@ import Test.QuickCheck.Gen (
   elements,
   )
 
+import Choices                         (sigList)
 
 -- 2024: Weight 0.15 (in Modellierung)
 task04 :: Gen Certain
 task04 = elements sigList <&> makeConfig
+
+
+-- Making the config to use for this task. Signatures will be randomly picked out of a pool of options.
+makeConfig :: Signature -> Certain
+makeConfig sig = Certain {
+  signatures = sig,
+  root = Nothing,
+  baseConf = Base {
+    termSizeRange = ( 6, 10 ),
+    wrongTerms = [(1, Swap), (1, TypeChange), (1, OneMore), (1, OneLess)],
+    properTerms = 5,
+    extraFeedback = True,
+    printSolution = True,
+    extraText = Nothing
+  }
+}
+
+
+validateSettings :: OutputCapable m => LangM m
+validateSettings = traverse_ (verifyCertain . makeConfig) sigList
+
+=============================================
+
+{-# language OverloadedStrings #-}
+{-# language QuasiQuotes #-}
+
+module TaskData where
+
+import Data.String                      (fromString)
+import Data.String.Interpolate          (i)
+import Data.Text                        (Text)
+import FlexTask.FormUtil                (getFormData)
+import FlexTask.Generic.Form
+import FlexTask.Types                   (HtmlDict)
+import FlexTask.YesodConfig             (Rendered, Widget)
+import TermTasks.Direct                 (genInst)
+import TermTasks.Records (
+  SigInstance(..),
+  )
+import Test.QuickCheck.Gen              (Gen)
+import Yesod                            (RenderMessage(..), fieldSettingsLabel)
+
+import Global                           (TaskData)
+import TaskSettings                     (task04)
+
+
+data HeaderLabel = HeaderLabel
+
+
+instance RenderMessage app HeaderLabel where
+  renderMessage _ ("en":_) HeaderLabel  = "Correct Terms"
+  renderMessage _ _        HeaderLabel  = "Korrekte Terme"
+
+
+getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
+getTask = do
+    config <- task04
+    inst <- genInst config
+    pure (inst, checkers, getFormData $ form $ length $ terms inst)
+
+
+form :: Int -> Rendered Widget
+form amount = formify
+  (Nothing :: Maybe MultipleChoiceSelection)
+  [[buttons Vertical (fieldSettingsLabel HeaderLabel) $ map (fromString . (++ ".") . show) [1..amount]]]
+
+
+checkers :: String
+checkers = [i|
+
+module Check where
+
+
+import Control.Applicative              (Alternative)
+import Control.OutputCapable.Blocks
+import TermTasks.Direct                 (completeGrade, partialGrade)
+
+import Global                           (Submission, TaskData)
+
+
+
+checkSyntax
+  :: OutputCapable m
+  => a
+  -> TaskData
+  -> Submission
+  -> LangM m
+checkSyntax _ = partialGrade
+
+
+checkSemantics
+  :: (Alternative m, OutputCapable m)
+  => a
+  -> TaskData
+  -> Submission
+  -> Rated m
+checkSemantics _ = completeGrade
+
+|]
+
+=============================================
+
+module Description (description) where
+
+import Control.OutputCapable.Blocks
+import qualified TermTasks.Direct       as TD
+
+import Global                           (TaskData)
+
+
+
+description :: OutputCapable m => a -> TaskData -> LangM m
+description _ = TD.description False
+
+=============================================
+
+module Parse (parseSubmission) where
+
+
+import Data.Functor            ((<&>))
+import FlexTask.Generic.Form   (getAnswers)
+import FlexTask.Generic.Parse  (formParser, parseInfallibly)
+
+import Global                  (Submission)
+
+
+
+parseSubmission ::
+  Applicative m
+  => String
+  -> m Submission
+parseSubmission input = parseInfallibly formParser input <&> getAnswers
+
+
+=============================================
+
+module Choices where
+
+
+import TermTasks.DataType (Signature, toSignature)
+
 
 
 -- Possible signatures to roll for the task
@@ -205,134 +347,3 @@ sigList = [
       ]
   ]
 
-
--- Making the config to use for this task. Signatures will be randomly picked out of a pool of options.
-makeConfig :: Signature -> Certain
-makeConfig sig = Certain {
-  signatures = sig,
-  root = Nothing,
-  baseConf = Base {
-    termSizeRange = ( 6, 10 ),
-    wrongTerms = [(1, Swap), (1, TypeChange), (1, OneMore), (1, OneLess)],
-    properTerms = 5,
-    extraFeedback = True,
-    printSolution = True,
-    extraText = Nothing
-  }
-}
-
-
-validateSettings :: OutputCapable m => LangM m
-validateSettings = traverse_ (verifyCertain . makeConfig) sigList
-
-=============================================
-
-{-# language OverloadedStrings #-}
-{-# language QuasiQuotes #-}
-
-module TaskData where
-
-import Data.String                      (fromString)
-import Data.String.Interpolate          (i)
-import Data.Text                        (Text)
-import FlexTask.FormUtil                (getFormData)
-import FlexTask.Generic.Form
-import FlexTask.Types                   (HtmlDict)
-import FlexTask.YesodConfig             (Rendered, Widget)
-import TermTasks.Direct                 (genInst)
-import TermTasks.Records (
-  SigInstance(..),
-  )
-import Test.QuickCheck.Gen              (Gen)
-import Yesod                            (RenderMessage(..), fieldSettingsLabel)
-
-import Global                           (TaskData)
-import TaskSettings                     (task04)
-
-
-data HeaderLabel = HeaderLabel
-
-
-instance RenderMessage app HeaderLabel where
-  renderMessage _ ("en":_) HeaderLabel  = "Correct Terms"
-  renderMessage _ _        HeaderLabel  = "Korrekte Terme"
-
-
-getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
-getTask = do
-    config <- task04
-    inst <- genInst config
-    pure (inst, checkers, getFormData $ form $ length $ terms inst)
-
-
-form :: Int -> Rendered Widget
-form amount = formify
-  (Nothing :: Maybe MultipleChoiceSelection)
-  [[buttons Vertical (fieldSettingsLabel HeaderLabel) $ map (fromString . (++ ".") . show) [1..amount]]]
-
-
-checkers :: String
-checkers = [i|
-
-module Check where
-
-
-import Control.Applicative              (Alternative)
-import Control.OutputCapable.Blocks
-import TermTasks.Direct                 (completeGrade, partialGrade)
-
-import Global                           (Submission, TaskData)
-
-
-
-checkSyntax
-  :: OutputCapable m
-  => a
-  -> TaskData
-  -> Submission
-  -> LangM m
-checkSyntax _ = partialGrade
-
-
-checkSemantics
-  :: (Alternative m, OutputCapable m)
-  => a
-  -> TaskData
-  -> Submission
-  -> Rated m
-checkSemantics _ = completeGrade
-
-|]
-
-=============================================
-
-module Description (description) where
-
-import Control.OutputCapable.Blocks
-import qualified TermTasks.Direct       as TD
-
-import Global                           (TaskData)
-
-
-
-description :: OutputCapable m => a -> TaskData -> LangM m
-description _ = TD.description False
-
-=============================================
-
-module Parse (parseSubmission) where
-
-
-import Data.Functor            ((<&>))
-import FlexTask.Generic.Form   (getAnswers)
-import FlexTask.Generic.Parse  (formParser, parseInfallibly)
-
-import Global                  (Submission)
-
-
-
-parseSubmission ::
-  Applicative m
-  => String
-  -> m Submission
-parseSubmission input = parseInfallibly formParser input <&> getAnswers
