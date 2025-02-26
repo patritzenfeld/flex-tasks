@@ -31,7 +31,6 @@ import TermTasks.Records (
 import TermTasks.DataType (
   Error(..),
   Signature,
-  toSignature,
   )
 import Data.Functor (
   (<&>),
