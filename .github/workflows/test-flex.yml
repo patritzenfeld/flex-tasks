@@ -109,11 +109,11 @@ jobs:
             folder="$(basename "$name" .txt)"
             hlint_removed=false
             if grep -q "No hints" "$folder/hlint.html"; then
-              rm -f "$folder/hlint.html"
+              rm "$folder/hlint.html"
               hlint_removed=true
             fi
             if [ $(grep -vw "Compiling" -c "$folder/ghc.html") -eq 51 ]; then
-              rm -f "$folder/ghc.html"
+              rm "$folder/ghc.html"
               if $hlint_removed; then
                 rm -f "$folder/Check.hs"
                 no_hint_tasks=$(($no_hint_tasks+1))

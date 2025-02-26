@@ -62,8 +62,13 @@ jobs:
         env:
           BUILD: ${{ matrix.plan.build }}
 
+      - name: Escape commit message
+        id: escape
+        run: |
+          echo "commit=$(echo "${{github.event.head_commit.message}}" | jq -Rs .)" >> "$GITHUB_OUTPUT"
+
       - name: Trigger Test-Flex
         uses: peter-evans/repository-dispatch@v3
         with:
           event-type: CI-Completed
-          client-payload: '{"sha": "${{ github.sha }}", "message": "${{ github.event.head_commit.message }}"}'
+          client-payload: '{"sha": "${{ github.sha }}", "message": ${{ steps.escape.outputs.commit }}}'
