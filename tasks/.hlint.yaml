@@ -1,2 +1,4 @@
 ---
-ignore: {name: Redundant pure}
+- ignore: {name: Redundant pure}
+- warn: {lhs: if True then a else b, rhs: a, name: Evaluate}
+- warn: {lhs: if False then a else b, rhs: b, name: Evaluate}
