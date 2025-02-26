@@ -109,19 +109,19 @@ jobs:
             folder="$(basename "$name" .txt)"
             hlint_removed=false
             if grep -q "No hints" "$folder/hlint.html"; then
-              rm "$folder/hlint.html"
+              rm -f "$folder/hlint.html"
               hlint_removed=true
             fi
             if [ $(grep -vw "Compiling" -c "$folder/ghc.html") -eq 51 ]; then
-              rm "$folder/ghc.html"
+              rm -f "$folder/ghc.html"
               if $hlint_removed; then
-                rm "$folder/Check.hs"
+                rm -f "$folder/Check.hs"
                 no_hint_tasks=$(($no_hint_tasks+1))
               fi
             fi
           done
           if [ $task_amount -eq $no_hint_tasks ]; then
-            rm stack.yaml
+            rm -f stack.yaml
           fi
           set +ex
 
