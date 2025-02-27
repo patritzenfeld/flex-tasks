@@ -9,11 +9,11 @@ REPORT="scan_check.html"
 > "$REPORT"
 
 echo "<style>" \
-  "body {background-color: aliceblue;}" \
+  "body {background-color: aliceBlue;}" \
   "p {text-indent:2em;}" \
   ".problem {color: red;}" \
-  ".clone {color: darkred;}" \
-  ".header {margin: 2em 0; color: darkorange; font-size: 1.5em;}" \
+  ".clone {color: darkRed;}" \
+  ".header {margin: 2em 0; color: darkOrange; font-size: 1.5em;}" \
 "</style>" >> $REPORT
 
 echo "<body>" >> $REPORT
@@ -35,12 +35,12 @@ awk -v max="$MAX_LENGTH" -v min_clone="$MIN_CLONE" -v report="$REPORT" '
         # Skip substrings made up solely of whitespace.
         if (sub_str ~ /^[ \t]+$/)
             continue
-        occ = NR ":" i
+        occurence = NR ":" i
         if (sub_str in seen) {
-            seen[sub_str] = seen[sub_str] ", " occ
+            seen[sub_str] = seen[sub_str] ", " occurence
             count[sub_str]++
         } else {
-            seen[sub_str] = occ
+            seen[sub_str] = occurence
             count[sub_str] = 1
         }
     }
@@ -50,9 +50,9 @@ END {
     for (s in count) {
         if (count[s] > 1) {
             # Split the occurrence list (format: line:offset, line:offset, ...)
-            n = split(seen[s], occ_arr, ", ")
+            n = split(seen[s], occurence_arr, ", ")
             # Use the first occurrence as the base.
-            split(occ_arr[1], parts, ":")
+            split(occurence_arr[1], parts, ":")
             base_line = parts[1]
             base_offset = parts[2] + 0
 
@@ -60,7 +60,7 @@ END {
             base_prev = (base_offset > 1) ? substr(lines[base_line], base_offset - 1, 1) : ""
             extendable_back = 1
             for (k = 1; k <= n; k++) {
-                split(occ_arr[k], parts, ":")
+                split(occurence_arr[k], parts, ":")
                 cur_line = parts[1]
                 cur_offset = parts[2] + 0
                 cur_prev = (cur_offset > 1) ? substr(lines[cur_line], cur_offset - 1, 1) : ""
@@ -81,7 +81,7 @@ END {
                 ext_char = substr(lines[base_line], pos, 1)
                 match_all = 1
                 for (k = 2; k <= n; k++) {
-                    split(occ_arr[k], parts, ":")
+                    split(occurence_arr[k], parts, ":")
                     cur_line = parts[1]
                     cur_offset = parts[2] + 0
                     pos2 = cur_offset + min_clone + ext
@@ -104,11 +104,11 @@ END {
             clone_str = substr(lines[base_line], base_offset, clone_length)
 
             # Build a unique key based on the set of affected lines.
-            n_occ = split(seen[s], occ_arr, ", ")
+            n_occurence = split(seen[s], occurence_arr, ", ")
             delete lineNumbers
             lineKey = ""
-            for (k = 1; k <= n_occ; k++) {
-                split(occ_arr[k], parts, ":")
+            for (k = 1; k <= n_occurence; k++) {
+                split(occurence_arr[k], parts, ":")
                 ln = parts[1]
                 if (!(ln in lineNumbers)) {
                     lineNumbers[ln] = 1
