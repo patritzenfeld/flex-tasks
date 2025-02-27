@@ -115,7 +115,7 @@ jobs:
             fi
             if [ $(grep -vw "Compiling" -c "$folder/ghc.html") -eq 51 ]; then
               rm "$folder/ghc.html"
-              ghc_removed=true              
+              ghc_removed=true
             fi
             if [ $(grep -w "class=header" -c "$folder/scan_check.html") -eq 0 ]; then
               rm "$folder/scan_check.html"

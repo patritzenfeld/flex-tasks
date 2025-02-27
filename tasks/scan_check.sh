@@ -6,7 +6,7 @@ MIN_CLONE=80
 REPORT="scan_check.html"
 
 # Clear any existing report.
-> "$REPORT"
+true >"$REPORT"
 
 echo "<style>" \
   "body {background-color: aliceBlue;}" \
@@ -14,9 +14,9 @@ echo "<style>" \
   ".problem {color: red;}" \
   ".clone {color: darkRed;}" \
   ".header {margin: 2em 0; color: darkOrange; font-size: 1.5em;}" \
-"</style>" >> $REPORT
+"</style>" \
+"<body>" >>"$REPORT"
 
-echo "<body>" >> $REPORT
 awk -v max="$MAX_LENGTH" -v min_clone="$MIN_CLONE" -v report="$REPORT" '
 {
     line = $0
@@ -123,7 +123,7 @@ END {
             }
         }
     }
-    
+
     # Second pass: if a candidate'\''s set of lines is a subset of another'\''s,
     # drop the one with fewer lines.
     for (k1 in bestClone) {
@@ -152,15 +152,16 @@ END {
             }
         }
     }
-    
+
     # Accumulate clone output.
     for (lk in bestClone) {
         if (!(lk in toRemove)) {
-            clone_output = clone_output sprintf("<pre class=problem>Duplicate (length %d) at lines %s:</pre> <p class=clone>%s</p>" \
-                                               , bestClone[lk], bestClonePos[lk], bestCloneStr[lk])
+            clone_output = clone_output sprintf(\
+              "<pre class=problem>Duplicate (length %d) at lines %s:</pre> <p class=clone>%s</p>",
+              bestClone[lk], bestClonePos[lk], bestCloneStr[lk])
         }
     }
-    
+
     # Output section headings only if their respective messages exist.
     if (long_output != "") {
         printf (\
@@ -184,5 +185,5 @@ END {
 }
 ' "$FILE"
 
-echo "</body>" >> $REPORT
+echo "</body>" >>$REPORT
 

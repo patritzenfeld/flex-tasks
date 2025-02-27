@@ -56,6 +56,6 @@ echo -e "${CYAN}Writing Hlint report...${NC}"
 hlint . --report="hlint.html" -q --hint="${script_path}/.hlint.yaml"
 
 echo -e "${CYAN}Running Check.hs report...${NC}"
-$script_path/scan_check.sh
+"$script_path"/scan_check.sh
 
 echo -e "${CYAN}Done! Check the reports in ghc.html and hlint.html.${NC}"
