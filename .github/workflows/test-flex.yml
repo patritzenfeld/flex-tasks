@@ -144,5 +144,5 @@ jobs:
           sha: ${{ github.event.client_payload.sha }}
           body: |
             The flex-task test workflow reported issues or suggestions for the following commit:
-            _${{ github.event.client_payload.message }}_
+            __${{ github.event.client_payload.message }}__
             [Download Reports](${{ steps.upload-artifact.outputs.artifact-url }})
