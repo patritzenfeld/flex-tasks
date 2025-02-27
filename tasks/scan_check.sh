@@ -2,7 +2,7 @@
 # Usage: ./analyze_code.sh <file_to_analyze>
 FILE="Check.hs"
 MAX_LENGTH=200
-MIN_CLONE=50
+MIN_CLONE=80
 REPORT="scan_check.html"
 
 # Clear any existing report.

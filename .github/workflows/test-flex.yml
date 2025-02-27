@@ -117,7 +117,7 @@ jobs:
               rm "$folder/ghc.html"
               ghc_removed=true              
             fi
-            if [ $(grep -vw "class=header" -c "$folder/scan_check.html") -eq 0 ]; then
+            if [ $(grep -w "class=header" -c "$folder/scan_check.html") -eq 0 ]; then
               rm "$folder/scan_check.html"
               if $hlint_removed && $ghc_removed; then
                 rm -f "$folder/Check.hs"
