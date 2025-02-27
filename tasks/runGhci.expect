@@ -9,7 +9,6 @@ spawn ghci-$ver Global TaskSettings TaskData Description Parse -Wall -Wno-orphan
 log_user 1
 expect_before timeout { exit 1 }
 
-expect "GHCi, version*Ok, five modules loaded.\r"
 expect "ghci> "
 send "import Test.QuickCheck.Gen\r"
 expect "ghci> "

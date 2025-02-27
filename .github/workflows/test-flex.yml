@@ -108,13 +108,18 @@ jobs:
             bash ../${{ env.script }}/test.sh "$name" root
             folder="$(basename "$name" .txt)"
             hlint_removed=false
+            ghc_removed=false
             if grep -q "No hints" "$folder/hlint.html"; then
               rm "$folder/hlint.html"
               hlint_removed=true
             fi
             if [ $(grep -vw "Compiling" -c "$folder/ghc.html") -eq 51 ]; then
               rm "$folder/ghc.html"
-              if $hlint_removed; then
+              ghc_removed=true              
+            fi
+            if [ $(grep -vw "class=header" -c "$folder/scan_check.html") -eq 0 ]; then
+              rm "$folder/scan_check.html"
+              if $hlint_removed && $ghc_removed; then
                 rm -f "$folder/Check.hs"
                 no_hint_tasks=$(($no_hint_tasks+1))
               fi

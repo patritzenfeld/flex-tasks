@@ -52,6 +52,10 @@ expect "$expect_script" "$ghc_version" |
   sed -e 's/.*\*\*\*/\*\*\*/g' -e '/GHCi, version/d' -e '/ghci> /d' -e '/modules loaded./d' |
   ansi2html >ghc.html
 
-echo -e "${CYAN}writing Hlint report...${NC}"
+echo -e "${CYAN}Writing Hlint report...${NC}"
 hlint . --report="hlint.html" -q --hint="${script_path}/.hlint.yaml"
+
+echo -e "${CYAN}Running Check.hs report...${NC}"
+$script_path/scan_check.sh
+
 echo -e "${CYAN}Done! Check the reports in ghc.html and hlint.html.${NC}"
