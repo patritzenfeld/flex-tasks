@@ -25,7 +25,7 @@ awk -v max="$MAX_LENGTH" -v min_clone="$MIN_CLONE" -v report="$REPORT" '
     lines[NR] = line
 
     # Accumulate long line messages.
-    if (L > max) {
+    if (L > max && line !~ /--ignore-length[ \t]*$/) {
         long_output = long_output sprintf("<pre class=problem>Line %d: %d characters long.</pre>", NR, L)
     }
 
@@ -168,9 +168,9 @@ END {
           "<pre class=header>The following lines are longer than %d characters. " \
           "It is likely they are large interpolated data structures.\n" \
           "Consider one of the following approaches:\n" \
-          "  1. Evaluate them before interpolation\n" \
-          "  2. Directly define the interpolated value inside the Check module instead of interpolating it.\n" \
-          "  3. Supply them via the saved TaskData instead.</pre>",
+          "  1. Evaluate them before interpolation. Move function calls on the interpolated value into the interpolation.\n" \
+          "  2. Supply them via the saved TaskData instead. (only if they change depending on the task instance)\n" \
+          "  3. Disable the length check if none of the above applies. Add \"--ignore-length\" at the end of the line.</pre>",
           max) >> report
         print long_output >> report
     }
