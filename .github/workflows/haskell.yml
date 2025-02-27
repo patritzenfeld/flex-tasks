@@ -67,7 +67,7 @@ jobs:
         env:
           COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
-          echo "commit_msg=$(echo "$COMMIT_MSG" | jq -Rs .)" >> "$GITHUB_OUTPUT"
+          echo "commit_msg=$(echo "$COMMIT_MSG" | jq -Rjs .)" >> "$GITHUB_OUTPUT"
 
       - name: Trigger Test-Flex
         uses: peter-evans/repository-dispatch@v3
