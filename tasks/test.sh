@@ -75,7 +75,7 @@ if [ "$(grep -vw "Compiling" -c "ghc.html")" -eq 51 ]; then
   ghc_removed=true
   echo -e "${GREEN}No Warnings!\n${NC}"
 else
-  echo -e "${GREEN}GHC reported warnings!\n${NC}"
+  echo -e "${RED}GHC reported warnings!\n${NC}"
 fi
 
 echo -e "${CYAN}Writing Hlint report...${NC}"
