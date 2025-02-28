@@ -6,6 +6,7 @@ formify
 gformify
 gparse
 gshow
+gsub
 hlint
 lindex
 oss
