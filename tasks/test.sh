@@ -70,49 +70,45 @@ cd "$base_name" || exit 1
 expect "$expect_script" "$ghc_version" |
   sed -e 's/.*\*\*\*/\*\*\*/g' -e '/GHCi, version/d' -e '/ghci> /d' -e '/modules loaded./d' |
   ansi2html >ghc.html
-if [ $(grep -vw "Compiling" -c "ghc.html") -eq 51 ]
-  then
-    rm "ghc.html"
-    ghc_removed=true
-    echo -e "${GREEN}No Warnings!\n${NC}"
-  else
-    echo -e "${GREEN}GHC reported warnings!\n${NC}"
+if [ "$(grep -vw "Compiling" -c "ghc.html")" -eq 51 ]; then
+  rm ghc.html
+  ghc_removed=true
+  echo -e "${GREEN}No Warnings!\n${NC}"
+else
+  echo -e "${GREEN}GHC reported warnings!\n${NC}"
 fi
 
 echo -e "${CYAN}Writing Hlint report...${NC}"
 hlint . --report="hlint.html" -q --hint="${script_path}/.hlint.yaml"
-if grep -q "No hints" hlint.html
-  then
-    rm hlint.html
-    hlint_removed=true
-    echo -e "${GREEN}No Suggestions!\n${NC}"
-  else
-    echo -e "${RED}Suggestions available!\n${NC}"
+if grep -q "No hints" hlint.html; then
+  rm hlint.html
+  hlint_removed=true
+  echo -e "${GREEN}No Suggestions!\n${NC}"
+else
+  echo -e "${RED}Suggestions available!\n${NC}"
 fi
 
 echo -e "${CYAN}Running Check.hs scan...${NC}"
 "$script_path"/scan_check.sh
-if [ $(grep -w "class=header" -c scan_check.html) -eq 0 ]
-  then
-    rm scan_check.html
-    scan_removed=true
-    echo -e "${GREEN}No Issues!\n${NC}"
-  else
-    echo -e "${RED}Issues detected!\n${NC}"
+if [ "$(grep -w "class=header" -c scan_check.html)" -eq 0 ]; then
+  rm scan_check.html
+  scan_removed=true
+  echo -e "${GREEN}No Issues!\n${NC}"
+else
+  echo -e "${RED}Issues detected!\n${NC}"
 fi
 
 echo -e "${CYAN}Deleting intermediate files...\n${NC}"
 
-if $hlint_removed && $ghc_removed && $scan_removed && ! $leave_check
-  then
-    cd ..
-    rm -f -r $base_name
-  else
-    files=("${files[@]#$base_name/}")
-    rm -f config.txt
-    for file in "${files[@]}"; do
-      rm -f $file
-    done
+if $hlint_removed && $ghc_removed && $scan_removed && ! $leave_check; then
+  cd ..
+  rm -f -r "$base_name"
+else
+  files=("${files[@]#$base_name/}")
+  rm -f config.txt
+  for file in "${files[@]}"; do
+    rm -f "$file"
+  done
 fi
 
 echo -e "${LIGHT_GREEN}Done! Check the reports in ghc.html, hlint.html and scan_check.html.\n${NC}"
