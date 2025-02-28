@@ -65,6 +65,7 @@ module TaskData (getTask) where
 
 
 import Data.Char               (digitToInt)
+import Data.Foldable           (toList)
 import Data.List               (transpose)
 import Data.Maybe              (fromJust)
 import Data.Text               (Text)
@@ -225,7 +226,6 @@ checkers :: SynTree BinOp Char -> String
 checkers fSol = [i|
 
 {-\# language ApplicativeDo \#-}
-{-\# language OverloadedStrings \#-}
 
 module Check (checkSemantics, checkSyntax) where
 
@@ -239,7 +239,7 @@ import Data.List (
   isInfixOf,
   transpose,
   )
-import Data.Maybe                       (catMaybes, fromJust)
+import Data.Maybe                       (catMaybes)
 import Data.Map                         (fromList)
 import Data.Ratio                       ((%))
 
@@ -257,7 +257,6 @@ import Trees.Types (
 import Trees.Print                      (simplestDisplay)
 
 import qualified SAT.MiniSat            as Sat
-import qualified Data.Text              as T
 
 import Global
 
@@ -267,7 +266,8 @@ correctColumn :: (PropFormula Char,[Maybe TruthValue]) -> Bool
 correctColumn (f,bs) = all lookFor allocationsAndValues
   where
     ones = Sat.solve_all $ convert f
-    allocations = filter ((`elem` atoms) . fst) <$> map (zip "ABCD" . map (truth . fromJust)) #{transpose startingTable}
+    allocations = filter ((`elem` atoms) . fst) <$>
+      #{map (zip "ABCD" . map (truth . fromJust)) $ transpose startingTable} --ignore-length
     allocationsAndValues = [(truth a,b) | (Just a,b) <- zip bs allocations]
     lookFor (True,a) = fromList a `elem` ones
     lookFor (False,a) = fromList a `notElem` ones
@@ -285,6 +285,10 @@ dropStatic :: [a] -> [a]
 dropStatic = drop #{staticColumns}
 
 
+startingTable :: [[Maybe TruthValue]]
+startingTable = #{startingTable} --ignore-length
+
+
 checkSyntax :: OutputCapable m => a -> b -> Submission -> LangM m
 checkSyntax _ _ (Table xs,f,n) = do
     paragraph $ do
@@ -298,7 +302,7 @@ checkSyntax _ _ (Table xs,f,n) = do
         code $ simplestDisplay $ toSynTree f
         pure ()
       pure ()
-    when (atomicColumns == map reverse #{startingTable}) $ refuse $ indent $ text $
+    when (atomicColumns == map reverse startingTable) $ refuse $ indent $ text $
       "Die Spalten der atomaren Formeln sind invertiert. " ++
       "Bitte legen Sie die Tafel so an wie in der Vorlesung vorgegeben."
     assertion (nubOrd atomicRows == atomicRows) $ text
@@ -306,8 +310,8 @@ checkSyntax _ _ (Table xs,f,n) = do
     assertion (notElem 'E' $ concatMap toList $ f : entered) $ text
       "Eva (E) kommt nicht in Formeln vor?"
     assertion (
-      all (`elem` ('F': toList (#{fSol}))) (concatMap toList entered) &&
-      all (`elem` toList (#{fSol})) (toList f)
+      all (`elem` ('F': solutionAtoms)) (concatMap toList entered) &&
+      all (`elem` solutionAtoms) (toList f)
       )
       $ text "Es wurden nur bekannte atomare Formeln genutzt?"
     assertion (all noDuplicate entered) $ text
@@ -322,12 +326,12 @@ checkSyntax _ _ (Table xs,f,n) = do
     entered = catMaybes mColumns
     noDuplicate formula = formula `notElem` (map Atomic "ABCD" ++ delete formula entered)
     atomicRows = filter (notElem Nothing) $ transpose atomicColumns
-
+    solutionAtoms = #{show $ toList fSol} --ignore-length
 
 
 checkSemantics :: OutputCapable m => a -> (b,c,[Namen]) -> Submission -> Rated m
 checkSemantics _ (_,_,nSol) (Table xs,f,n) = do
-    let correctStart = take #{staticColumns} columns == #{startingTable}
+    let correctStart = take #{staticColumns} columns == startingTable
     #{checkType} correctStart $ text
       "Spalten der atomaren Formeln ergeben sinnvolle Wahrheitstafel?"
     let subFormulas = all (\\e -> e `isSubFormula` f || e `elem` negations) $ catMaybes $ dropStatic replaceFAll
@@ -336,9 +340,9 @@ checkSemantics _ (_,_,nSol) (Table xs,f,n) = do
     let correctValues = all correctColumn zippedEntries && not (all (null . catMaybes . snd) zippedEntries)
     #{checkType} correctValues $ text
       "Tafel ist gefüllt und Tabellenspalten enthalten nur korrekt ermittelte Wahrheitswerte?"
-    yesNo (T.all (`elem` f) "ABCD") $ text
+    yesNo (all (`elem` f) "ABCD") $ text
        "Gesamtformel enthält alle vorkommenden atomaren Formeln?"
-    let correctFormula = isSemanticEqual (#{fSol}) (toSynTree f)
+    let correctFormula = isSemanticEqual (#{fSol}) (toSynTree f) --ignore-length
     yesNo correctFormula $ text "Gesamtformel ist korrekt?"
     let correctNames = n == nSol
     yesNo correctNames $ text "Die Auflistung der Begleitenden ist korrekt?"
@@ -348,11 +352,12 @@ checkSemantics _ (_,_,nSol) (Table xs,f,n) = do
     pure res
   where
     (headers,columns) = unzip xs
-    maybeAnswer = flip (++) (show nSol) <$>
-                    #{if showSolution
-                       then Just ("Formel: " ++ simplestDisplay fSol ++ "\nKorrekte Einträge in Wahrheitstafel.\nBegleitende: ")
-                       else Nothing
-                    }
+    maybeAnswer =
+      flip (++) (show nSol) <$>
+        #{if showSolution
+            then Just ("Formel: " ++ simplestDisplay fSol ++ "\nKorrekte Einträge in Wahrheitstafel.\nBegleitende: ")
+            else Nothing
+         } --ignore-length
     replaceF (Just (Atomic 'F')) = Just f
     replaceF a                   = a
 

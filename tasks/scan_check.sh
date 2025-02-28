@@ -117,6 +117,9 @@ END {
                     lineKey = (lineKey == "" ? ln : lineKey "," ln)
                 }
             }
+            # Only consider clones that occur on at least two different lines.
+            if (index(lineKey, ",") == 0)
+                continue
             # Record the candidate for this set of lines, keeping the longest clone.
             if (!(lineKey in bestClone) || clone_length > bestClone[lineKey]) {
                 bestClone[lineKey] = clone_length

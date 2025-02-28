@@ -79,7 +79,6 @@ import FlexTask.YesodConfig             (Rendered, Widget)
 import Tasks.ComposeFormula.Quiz        (generateComposeFormulaInst)
 import Test.QuickCheck.Gen              (Gen)
 import Yesod                            (RenderMessage(..), fieldSettingsLabel)
-import Data.List.Extra                  (word1)
 
 import Global                           (TaskData)
 import TaskSettings                     (task03)

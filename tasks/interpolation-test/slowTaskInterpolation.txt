@@ -37,7 +37,7 @@ import Global
 
 getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
 getTask = do
-    numbers <- vectorOf 200 $ chooseInt (-100000,100000)
+    numbers <- vectorOf 50 $ chooseInt (-100,100)
     pure (numbers, checkers numbers, getFormData form)
 
 
@@ -63,24 +63,23 @@ import Control.OutputCapable.Blocks
 import Global
 
 
+
 checkSyntax :: OutputCapable m => FilePath -> a -> Submission -> LangM m
 checkSyntax _ _ (a,b)= do
-    assertion (all (`elem` sol) [a,b]) $
+    assertion (all (`elem` #{solution}) [a,b]) $ --ignore-length
       translate $ do
         german "Das Tupel kommt im Kreuzprodukt vor?"
         english "Tuple is inside the cross product?"
     pure ()
-  where
-    sol = #{solution}
 
 
 checkSemantics :: OutputCapable m => FilePath -> a -> Submission -> Rated m
 checkSemantics _ _ (a,b) = do
-    assertion (all (`elem` #{noNegNeighbours}) [a,b]) $
+    assertion (all (`elem` #{noNegNeighbours}) [a,b]) $ --ignore-length
       translate $ do
         german "Mindestens ein Nachbar ist positiv?"
         english "At least one Neighbour is positive?"
-    assertion (all (`elem` #{noDiv3Neighbours}) [a,b]) $
+    assertion (all (`elem` #{noDiv3Neighbours}) [a,b]) $ --ignore-length
       translate $ do
         german "Nachbarn sind nicht durch drei teilbar?"
         english "Neighbours are not divisible by three?"
