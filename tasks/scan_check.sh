@@ -2,7 +2,7 @@
 # Usage: ./analyze_code.sh <file_to_analyze>
 FILE="Check.hs"
 MAX_LENGTH=200
-MIN_CLONE=80
+MIN_CLONE=60
 REPORT="scan_check.html"
 
 # Clear any existing report.
@@ -10,9 +10,9 @@ true >"$REPORT"
 
 echo "<style>" \
   "body {background-color: aliceBlue;}" \
-  "p {text-indent:2em;}" \
+  "p {margin-left:2em;}" \
   ".problem {color: red;}" \
-  ".clone {color: darkRed;}" \
+  ".match {color: darkRed;}" \
   ".header {margin: 2em 0; color: darkOrange; font-size: 1.5em;}" \
   "</style>" \
   "<body>" >>"$REPORT"
@@ -26,7 +26,7 @@ awk -v max="$MAX_LENGTH" -v min_clone="$MIN_CLONE" -v report="$REPORT" '
 
     # Accumulate long line messages.
     if (L > max && line !~ /--ignore-length[ \t]*$/) {
-        long_output = long_output sprintf("<pre class=problem>Line %d: %d characters long.</pre>", NR, L)
+        long_output = long_output sprintf("<pre class=problem>Line %d (length %d):</pre><p class=match>%s</p>", NR, L, lines[NR])
     }
 
     # For each possible substring of length min_clone in the line...
@@ -157,7 +157,7 @@ END {
     for (lk in bestClone) {
         if (!(lk in toRemove)) {
             clone_output = clone_output sprintf(\
-              "<pre class=problem>Duplicate (length %d) at lines %s:</pre> <p class=clone>%s</p>",
+              "<pre class=problem>Duplicate (length %d) at lines %s:</pre> <p class=match>%s</p>",
               bestClone[lk], bestClonePos[lk], bestCloneStr[lk])
         }
     }
