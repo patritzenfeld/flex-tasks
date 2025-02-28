@@ -20,6 +20,7 @@ If there are no suggestions, the folder won't be created.
 
 - stack
 - ghci version used in the package database (if you don't know, execute the script and look for an error message)
+- expect
 - ansi2html (colorized-logs)
 
 ## Notes
