@@ -26,4 +26,4 @@ If there are no suggestions, the folder won't be created.
 
 - Generate a package database using [our tool](https://github.com/fmidue/haskell-template-setup)
 - Both `TASK_PATH` and `PKG_DB_PATH` are given as relative paths (have to be in this folder)
-- The `-c` flag can optionally be supplied to preserve the generated Check.hs file even if no reports were generated
+- The `-c` flag can optionally be supplied to preserve the generated `Check.hs` file even if no reports were generated
