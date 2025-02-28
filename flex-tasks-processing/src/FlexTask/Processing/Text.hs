@@ -117,12 +117,13 @@ caused by conversion between Haskell and JavaScript representation.
 -}
 removeUnicodeEscape :: String -> String
 removeUnicodeEscape (x:xs)
-    | x == '\\' && length unicodeIdent >= 3 && inUnicodeRange
+    | x == '\\' && ident > 127 && inUnicodeRange
       = unicodeIdent ++ removeUnicodeEscape rest
     | otherwise = x : removeUnicodeEscape xs
   where
     (unicodeIdent,rest) = span isDigit xs
-    inUnicodeRange = read unicodeIdent <= (1114111 :: Int)
+    ident = fromMaybe 0 $ readMaybe unicodeIdent
+    inUnicodeRange = ident <= (1114111 :: Int)
 removeUnicodeEscape xs = xs
 
 

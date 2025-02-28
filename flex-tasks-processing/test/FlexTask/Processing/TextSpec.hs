@@ -8,8 +8,14 @@ import Data.List                        (intersperse)
 import Data.Maybe                       (fromJust, fromMaybe)
 import Data.Text                        (Text, isInfixOf, pack)
 import Test.Hspec                       (Spec, describe, it, shouldBe)
-import Test.Hspec.QuickCheck            (prop)
-import Test.QuickCheck                  (arbitrary, chooseInt, forAll, suchThat)
+import Test.Hspec.QuickCheck            (modifyMaxSize, prop)
+import Test.QuickCheck (
+  Gen,
+  arbitrary,
+  chooseInt,
+  forAll,
+  suchThat,
+  )
 import Test.QuickCheck.Instances.Text   ()
 
 import FlexTask.Processing.Text
@@ -22,17 +28,19 @@ spec :: Spec
 spec = do
   describe "formatAnswer" $ do
     it "returns Nothing if there is no input" $
-      forAll (arbitrary `suchThat` all null) $ \tss ->
+      forAll genEmpty $ \tss ->
         formatAnswer tss `shouldBe` Nothing
     it "correctly encodes a simple unit test" $
       formatAnswer [["one"],[],[""],["two","three"]]
       `shouldBe`
       Just formatUnitTest
-    it "inserts delimiters and marks input correctly" $
-      forAll (arbitrary `suchThat` (not . all null)) $ \tss ->
+    modifyMaxSize (const 40) $
+      prop "inserts delimiters and marks input correctly" $ \tss ->
         formatAnswer tss
         `shouldBe`
-        Just (T.intercalate argDelimiter $ map processArg tss)
+        if all null tss
+          then Nothing
+          else Just $ T.intercalate argDelimiter $ map processArg tss
     prop "escaped Text does not contain control sequences" $ \t ->
       not $ any
         (`T.isInfixOf` (content $ fromMaybe "" $ formatAnswer [[t]]))
@@ -47,10 +55,10 @@ spec = do
 
   describe "removeUnicodeEscape" $ do
     it "leaves ascii chars alone" $
-      forAll (arbitrary `suchThat` all isAscii) $ \s ->
-        removeUnicodeEscape s `shouldBe` s
+      forAll (('\\' :) <$> genTestString 0 127) $ \i ->
+        removeUnicodeEscape i `shouldBe` i
     it "strips an escape char off of any unicode." $
-      forAll (show <$> chooseInt (1,1114111)) $ \i ->
+      forAll (genTestString 128 1114111) $ \i ->
         removeUnicodeEscape ('\\': i) `shouldBe` i
 
   where
@@ -75,6 +83,14 @@ spec = do
 
     content = T.drop 2 . T.dropEnd 2
     noUnicode t = T.all isAscii t && not ("\\u" `isInfixOf` t)
+
+    genTestString upper lower = show <$> chooseInt (upper,lower)
+
+
+genEmpty :: Gen [[Text]]
+genEmpty = do
+  amount <- chooseInt (0,10000)
+  pure $ replicate amount []
 
 
 processArg :: [Text] -> Text
