@@ -100,32 +100,9 @@ jobs:
           cd ${{ env.tasks }}
           export GHC_PACKAGE_PATH=root/pkgdb
           expect defaultConf.expect ${{ steps.ghc-version.outputs.version }}
-          mapfile -t files \
-            < <( find . -name '*.txt' -and -not -name "*NoInterpolation.txt")
-          task_amount=${#files[@]}
-          no_hint_tasks=0
-          for name in "${files[@]}"; do
-            bash ../${{ env.script }}/test.sh "$name" root
-            folder="$(basename "$name" .txt)"
-            hlint_removed=false
-            ghc_removed=false
-            if grep -q "No hints" "$folder/hlint.html"; then
-              rm "$folder/hlint.html"
-              hlint_removed=true
-            fi
-            if [ $(grep -vw "Compiling" -c "$folder/ghc.html") -eq 51 ]; then
-              rm "$folder/ghc.html"
-              ghc_removed=true
-            fi
-            if [ $(grep -w "class=header" -c "$folder/scan_check.html") -eq 0 ]; then
-              rm "$folder/scan_check.html"
-              if $hlint_removed && $ghc_removed; then
-                rm -f "$folder/Check.hs"
-                no_hint_tasks=$(($no_hint_tasks+1))
-              fi
-            fi
-          done
-          if [ $task_amount -eq $no_hint_tasks ]; then
+          find . -name '*.txt' -and -not -name "*NoInterpolation.txt" \
+                 -exec bash ../${{ env.script }}/test.sh {} root \;
+          if [ $(find . -name "Check.hs" | wc -l) -eq 0 ]; then
             rm -f stack.yaml
           fi
           set +ex
