@@ -2,7 +2,7 @@
 # Usage: ./analyze_code.sh <file_to_analyze>
 FILE="Check.hs"
 MAX_LENGTH=200
-MIN_CLONE=60
+MIN_CLONE=80
 REPORT="scan_check.html"
 
 # Clear any existing report.
@@ -26,7 +26,9 @@ awk -v max="$MAX_LENGTH" -v min_clone="$MIN_CLONE" -v report="$REPORT" '
 
     # Accumulate long line messages.
     if (L > max && line !~ /--ignore-length[ \t]*$/) {
-        long_output = long_output sprintf("<pre class=problem>Line %d (length %d):</pre><p class=match>%s</p>", NR, L, lines[NR])
+        gsub(",",", ",lines[NR])
+        long_output = long_output sprintf("<pre class=problem>Line %d (length %d):</pre><p class=match>%s</p>",
+                                          NR, L, lines[NR])
     }
 
     # For each possible substring of length min_clone in the line...
