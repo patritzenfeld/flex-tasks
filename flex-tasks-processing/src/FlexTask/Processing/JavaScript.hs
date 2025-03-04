@@ -77,7 +77,14 @@ lockForm lock
     function () {
       fieldNames.forEach(name => {
         Array.from(document.getElementsByName(name))
-          .forEach(elem => elem.disabled = true);
+          .forEach(elem => {
+            if (elem.getAttribute("type")?.toLowerCase()=== "radio" || elem.tagName.toLowerCase === "select"){
+              elem.disabled = true;
+            }
+            else {
+              elem.readOnly = true;
+            }
+          });
       });
     };|]
   | otherwise = mempty
