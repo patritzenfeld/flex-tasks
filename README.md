@@ -1,6 +1,6 @@
 # Flex-Tasks
 
-Runtime interpreted flexible exercises, mainly for use in [Autotool](https://gitlab.imn.htwk-leipzig.de/autotool/all0).
+Runtime interpreted flexible exercises, mainly for use in [Autotool](https://git.imn.htwk-leipzig.de/waldmann/autotool).
 Also automatic HTML form and parser generation for input data types.
 
 
