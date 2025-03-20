@@ -20,7 +20,10 @@ module FlexTask.FormUtil
   , addAttributes
   , addCssClass
   , addNameAndCssClass
+  -- * Convenience for internationalization
   , supportedLanguages
+  , universalLabel
+  , showToUniversalLabel
   -- * functions for custom forms
   , newFlexId
   , newFlexName
@@ -31,6 +34,7 @@ module FlexTask.FormUtil
 import Control.Monad.Reader            (runReader)
 import Data.Containers.ListUtils       (nubOrd)
 import Data.Map                        (fromList)
+import Data.String                     (fromString)
 import Data.Text                       (Text, pack)
 import Data.Tuple.Extra                (second)
 import System.Log.FastLogger           (defaultBufSize, newStdoutLoggerSet)
@@ -150,6 +154,16 @@ addAttributes as fs =  fs { fsAttrs = as ++ fsAttrs fs}
 -- | Add a CSS class to the given FieldSettings
 addCssClass :: Text -> FieldSettings app -> FieldSettings app
 addCssClass c fs = fs { fsAttrs = addClass c $ fsAttrs fs}
+
+
+-- | Turn a String into a label for all languages.
+universalLabel :: String -> SomeMessage FlexForm
+universalLabel = fromString
+
+
+-- | Turn the Show instance of a value into a label for all languages
+showToUniversalLabel :: Show a => a -> SomeMessage FlexForm
+showToUniversalLabel = universalLabel . show
 
 
 {- |
