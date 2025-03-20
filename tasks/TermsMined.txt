@@ -73,10 +73,9 @@ validateSettings = traverse_ (verifyCertain . makeConfig) sigList
 
 module TaskData where
 
-import Data.String                      (fromString)
 import Data.String.Interpolate          (i)
 import Data.Text                        (Text)
-import FlexTask.FormUtil                (getFormData)
+import FlexTask.FormUtil                (getFormData, universalLabel)
 import FlexTask.Generic.Form
 import FlexTask.Types                   (HtmlDict)
 import FlexTask.YesodConfig             (Rendered, Widget)
@@ -109,7 +108,7 @@ getTask = do
 form :: Int -> Rendered Widget
 form amount = formify
   (Nothing :: Maybe MultipleChoiceSelection)
-  [[buttons Vertical (fieldSettingsLabel HeaderLabel) $ map (fromString . (++ ".") . show) [1..amount]]]
+  [[buttons Vertical (fieldSettingsLabel HeaderLabel) $ map (universalLabel . (++ ".") . show) [1..amount]]]
 
 
 checkers :: String

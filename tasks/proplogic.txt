@@ -69,13 +69,13 @@ import Data.Foldable           (toList)
 import Data.List               (transpose)
 import Data.Maybe              (fromJust)
 import Data.Text               (Text)
-import Data.String             (fromString)
 import Data.String.Interpolate (i)
 import FlexTask.FormUtil (
   ($$>),
   addCss,
   addCssClass,
   getFormData,
+  universalLabel,
   )
 import FlexTask.Generic.Form (
   Alignment(..),
@@ -206,7 +206,7 @@ nonTableFields (a,b,c,d) = [
     ]
   where
     nameMatching = [(A, a), (B, b), (C, c), (D, d)]
-    getName = fromString . fromJust . flip lookup nameMatching
+    getName = universalLabel . fromJust . flip lookup nameMatching
 
 
 
