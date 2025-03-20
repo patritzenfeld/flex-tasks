@@ -11,7 +11,6 @@ module FlexTask.Interpreter
   ( checkSolution
   , genFlexInst
   , prettyError
-  , runWithPackageDB
   , validateSettings
   , validDescription
   ) where
