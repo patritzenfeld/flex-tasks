@@ -229,7 +229,7 @@ Use task data and interpret three code modules to evaluate a submission.
 The submission ist parsed by function /parseSubmission/.
 The result is evaluated by functions /checkSyntax/ and /checkSemantics/.
 The result is a tuple of syntax feedback and optional semantics feedback.
-If the syntax check fail, then no semantics feedback is provided.
+If the syntax check fails, then no semantics feedback is provided.
 Semantics feedback is coupled with a rating given as a Rational (0 to 1).
 -}
 checkSolution
