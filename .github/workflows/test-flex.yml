@@ -102,7 +102,7 @@ jobs:
           expect defaultConf.expect ${{ steps.ghc-version.outputs.version }}
           find . -name '*.txt' -and -not -name "*NoInterpolation.txt" \
                  -exec bash ../${{ env.script }}/test.sh {} root \;
-          if [ $(find . -name "Check.hs" | wc -l) -eq 0 ]; then
+          if [ $(find . -name "Check.hs" -or -name "ghc.html" | wc -l) -eq 0 ]; then
             rm -f stack.yaml
           fi
           set +ex
