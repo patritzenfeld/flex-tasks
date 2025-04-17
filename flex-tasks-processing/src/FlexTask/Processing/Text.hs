@@ -136,11 +136,18 @@ __temporary solution: Will be replaced in future versions.__
 -}
 formatIfFlexSubmission :: Text -> Text
 formatIfFlexSubmission t
-    | not (T.isInfixOf argDelimiter t) = t
+    | not ( argDelimiter  `T.isInfixOf` t ||
+            listDelimiter `T.isInfixOf` t ||
+            escapeWrapped
+          ) = t
+    | length splitArgs == 1 = stripEscape t
     | null splitArgs || any T.null splitArgs = ""
     | otherwise = T.unlines numberInputs
     where
+      escapeSeq = inputEscape <> inputEscape
+      escapeWrapped = escapeSeq `T.isPrefixOf` t && escapeSeq `T.isSuffixOf` t
       splitArgs = T.splitOn argDelimiter t
-      unescaped = map (read . T.unpack . T.drop 1 . T.dropEnd 1) . T.splitOn listDelimiter <$> splitArgs
+      stripEscape = read . T.unpack . T.drop 1 . T.dropEnd 1
+      unescaped = map stripEscape . T.splitOn listDelimiter <$> splitArgs
       fieldIndices = map (\i -> "Field " <> T.pack (show @Int i) <> ": ") [1..]
       numberInputs = zipWith (<>) fieldIndices $ map (T.intercalate ",") unescaped
