@@ -5,26 +5,29 @@ Various text processing functions used to format input for display.
 -}
 
 module FlexTask.Processing.Text
-  ( -- * Control sequences
+  ( -- * Control Sequences
     -- $control
     argDelimiter
   , listDelimiter
   , inputEscape
   , missingMarker
   , emptyMarker
-    -- * formatting functions
+    -- * Formatting Functions
   , formatAnswer
   , formatIfFlexSubmission
   , formatForJS
   , removeUnicodeEscape
+    -- * Internationalization
+  , supportedLanguages
   ) where
 
 
-import Data.Char  (isAscii, isDigit)
-import Data.Maybe (fromMaybe)
-import Data.Text  (Text)
-import Numeric    (showHex)
-import Text.Read  (readMaybe)
+import Data.Char                        (isAscii, isDigit)
+import Data.Maybe                       (fromMaybe)
+import Data.Text                        (Text)
+import Numeric                          (showHex)
+import Text.Read                        (readMaybe)
+import Text.Shakespeare.I18N            (Lang)
 
 import qualified Data.Text as T
 
@@ -151,3 +154,9 @@ formatIfFlexSubmission t
       unescaped = map stripEscape . T.splitOn listDelimiter <$> splitArgs
       fieldIndices = map (\i -> "Field " <> T.pack (show @Int i) <> ": ") [1..]
       numberInputs = zipWith (<>) fieldIndices $ map (T.intercalate ",") unescaped
+
+
+
+-- | List of languages to cover for input form HTML in instances of `RenderMessage` for custom translations.
+supportedLanguages :: [Lang]
+supportedLanguages = ["de","en"]

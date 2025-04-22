@@ -21,7 +21,6 @@ module FlexTask.FormUtil
   , addCssClass
   , addNameAndCssClass
   -- * Convenience for internationalization
-  , supportedLanguages
   , universalLabel
   , showToUniversalLabel
   -- * functions for custom forms
@@ -50,6 +49,7 @@ import qualified Data.Text               as T     (replace)
 import qualified Yesod.Core.Unsafe       as Unsafe
 
 import FlexTask.Types                  (HtmlDict)
+import FlexTask.Processing.Text        (supportedLanguages)
 import FlexTask.YesodConfig (
   FlexForm(..),
   Handler,
@@ -187,11 +187,6 @@ The format is "flex[number]"
 -}
 newFlexName :: MForm Handler Text
 newFlexName = T.replace "f" "flex" <$> newFormIdent
-
-
--- | List of languages to cover in instances of `RenderMessage` for custom translations.
-supportedLanguages :: [Lang]
-supportedLanguages = ["de","en"]
 
 
 {- |
