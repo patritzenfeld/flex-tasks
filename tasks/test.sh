@@ -77,6 +77,17 @@ temp="${ghc_file##*/ghci-}"
 ghc_version="${temp%-*.conf*}"
 
 cd "$base_name" || exit 1
+
+echo -e "${CYAN}Writing Hlint report on static files...${NC}"
+hlint . --report="hlint.html" -q --hint="${script_path}/.hlint.yaml"
+if grep -q "No hints" "hlint.html"; then
+  rm  "hlint.html"
+  echo -e "${GREEN}No Suggestions!\n${NC}"
+else
+  hlint_hints=true
+  echo -e "${RED}Suggestions available!\n${NC}"
+fi
+
 expect "$script_path/mutator.expect" "$ghc_version" "../$mutator" "$config_mutations" >/dev/null
 echo "Testing a total of $(grep -c ^ settings_variants.txt) config mutations."
 for i in $(seq 1 "$(grep -c ^ settings_variants.txt)"); do
@@ -106,13 +117,14 @@ for i in $(seq 1 "$(grep -c ^ settings_variants.txt)"); do
     ghc_hints=true
   fi
 
-  echo -e "${CYAN}Writing Hlint report...${NC}"
-  hlint . --report="$settings/hlint.html" -q --hint="${script_path}/.hlint.yaml"
-  if grep -q "No hints" "$settings/hlint.html"; then
-    rm "$settings/hlint.html"
+  echo -e "${CYAN}Writing Check.hs Hlint report...${NC}"
+  hlint "Check.hs" --report="hlint2.html" -q --hint="${script_path}/.hlint.yaml"
+  if grep -q "No hints" "hlint2.html"; then
+    rm  "hlint2.html"
     echo -e "${GREEN}No Suggestions!\n${NC}"
   else
     hlint_hints=true
+    mv "hlint2.html" "$settings/hlint.html"
     echo -e "${RED}Suggestions available!\n${NC}"
   fi
 

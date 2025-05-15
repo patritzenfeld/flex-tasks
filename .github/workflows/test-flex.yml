@@ -120,6 +120,7 @@ jobs:
             ${{ env.tasks }}/*/*/*.html
             ${{ env.tasks }}/*/*/Check.hs
             ${{ env.tasks }}/stack.yaml
+            ${{ env.tasks }}/*/hlint.html
           if-no-files-found: ignore
           overwrite: true
 
