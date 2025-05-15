@@ -117,8 +117,8 @@ jobs:
         with:
           name: reports
           path: |
-            ${{ env.tasks }}/*/*.html
-            ${{ env.tasks }}/*/Check.hs
+            ${{ env.tasks }}/*/*/*.html
+            ${{ env.tasks }}/*/*/Check.hs
             ${{ env.tasks }}/stack.yaml
           if-no-files-found: ignore
           overwrite: true
