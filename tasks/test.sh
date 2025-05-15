@@ -81,7 +81,7 @@ cd "$base_name" || exit 1
 echo -e "${CYAN}Writing Hlint report on static files...${NC}"
 hlint . --report="hlint.html" -q --hint="${script_path}/.hlint.yaml"
 if grep -q "No hints" "hlint.html"; then
-  rm  "hlint.html"
+  rm "hlint.html"
   echo -e "${GREEN}No Suggestions!\n${NC}"
 else
   hlint_hints=true
@@ -120,7 +120,7 @@ for i in $(seq 1 "$(grep -c ^ settings_variants.txt)"); do
   echo -e "${CYAN}Writing Check.hs Hlint report...${NC}"
   hlint "Check.hs" --report="hlint2.html" -q --hint="${script_path}/.hlint.yaml"
   if grep -q "No hints" "hlint2.html"; then
-    rm  "hlint2.html"
+    rm "hlint2.html"
     echo -e "${GREEN}No Suggestions!\n${NC}"
   else
     hlint_hints=true
