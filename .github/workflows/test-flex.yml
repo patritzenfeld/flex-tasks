@@ -74,8 +74,8 @@ jobs:
           '      - flex-tasks-processing'
           sed -i "/extra-deps/a $insert" stack.yaml
           sed -i "s@/autotool/default@$(realpath $PWD/../${{ env.tasks }}/root)@" env
-          eval $(ssh-agent)
-          ssh-add
+          eval "$(ssh-agent -s)"
+          ssh-add <(echo "${{ secrets.SSH_PRIVATE_KEY }}")
           ./create.sh
           sudo mv root ../${{ env.tasks }}
           set +ex
