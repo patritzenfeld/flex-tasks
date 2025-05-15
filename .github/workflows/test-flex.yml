@@ -104,7 +104,7 @@ jobs:
           export GHC_PACKAGE_PATH=root/pkgdb
           expect defaultConf.expect ${{ steps.ghc-version.outputs.version }}
           for file in $(find . -name '*.txt' -and -not -name "*NoInterpolation.txt"); do
-            ../${{ env.script }}/test.sh file root ${{ env.settings-gens }}/$(basename file .txt).hs \;
+            ../${{ env.script }}/test.sh $file root ${{ env.settings-gens }}/$(basename $file .txt).hs \;
           done
           if [ $(find . -name "Check.hs" -or -name "ghc.html" | wc -l) -eq 0 ]; then
             rm -f stack.yaml
