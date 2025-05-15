@@ -90,11 +90,12 @@ fi
 
 expect "$script_path/mutator.expect" "$ghc_version" "../$mutator" "$config_mutations" >/dev/null
 echo "Testing a total of $(grep -c ^ settings_variants.txt) config mutations."
+sed -i "s/,\ /;/g" "settings_variants.txt"
 for i in $(seq 1 "$(grep -c ^ settings_variants.txt)"); do
   echo "Config $i:"
   echo "testing with these settings: "
   settings="$(head -n 1 settings_variants.txt)"
-  IFS=',' read -ra pairs <<<"$settings"
+  IFS=';' read -ra pairs <<<"$settings"
   mkdir -p "$i"
 
   for pair in "${pairs[@]}"; do
