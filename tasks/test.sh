@@ -95,7 +95,7 @@ for i in $(seq 1 "$(grep -c ^ settings_variants.txt)"); do
   echo "testing with these settings: "
   settings="$(head -n 1 settings_variants.txt)"
   IFS=',' read -ra pairs <<<"$settings"
-  mkdir -p "$settings"
+  mkdir -p "$i"
 
   for pair in "${pairs[@]}"; do
     trimmed=$(echo "$pair" | xargs)
@@ -108,9 +108,9 @@ for i in $(seq 1 "$(grep -c ^ settings_variants.txt)"); do
   echo -e "${CYAN}\nInterpreting the code files...${NC}"
   expect "$expect_script" "$ghc_version" |
     sed -e 's/.*\*\*\*/\*\*\*/g' -e '/GHCi, version/d' -e '/ghci> /d' -e '/modules loaded./d' |
-    ansi2html >"$settings/ghc.html"
-  if [ "$(grep -vw "Compiling" -c "$settings/ghc.html")" -eq 51 ]; then
-    rm "$settings/ghc.html"
+    ansi2html >"$i/ghc.html"
+  if [ "$(grep -vw "Compiling" -c "$i/ghc.html")" -eq 51 ]; then
+    rm "$i/ghc.html"
     echo -e "${GREEN}No Warnings!\n${NC}"
   else
     echo -e "${RED}GHC reported warnings!\n${NC}"
@@ -124,21 +124,22 @@ for i in $(seq 1 "$(grep -c ^ settings_variants.txt)"); do
     echo -e "${GREEN}No Suggestions!\n${NC}"
   else
     hlint_hints=true
-    mv "hlint2.html" "$settings/hlint.html"
+    mv "hlint2.html" "$i/hlint.html"
     echo -e "${RED}Suggestions available!\n${NC}"
   fi
 
   echo -e "${CYAN}Running Check.hs scan...${NC}"
-  "$script_path"/scan_check.sh "$settings"
-  if [ "$(grep -w "class=header" -c "$settings/scan_check.html")" -eq 0 ]; then
-    rm "$settings/scan_check.html"
+  "$script_path"/scan_check.sh "$i"
+  if [ "$(grep -w "class=header" -c "$i/scan_check.html")" -eq 0 ]; then
+    rm "$i/scan_check.html"
     echo -e "${GREEN}No Issues!\n${NC}"
   else
     scan_hints=true
     echo -e "${RED}Issues detected!\n${NC}"
   fi
-  if [ -n "$(ls -A "$settings")" ] || $leave_check; then
-    cp "Check.hs" "$settings/Check.hs"
+  if [ -n "$(ls -A "$i")" ] || $leave_check; then
+    cp "Check.hs" "$i/Check.hs"
+    echo "$settings" >"$i/settings.txt"
   fi
 done
 

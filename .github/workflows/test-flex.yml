@@ -118,6 +118,7 @@ jobs:
           name: reports
           path: |
             ${{ env.tasks }}/*/*/*.html
+            ${{ env.tasks }}/*/*/settings.txt
             ${{ env.tasks }}/*/*/Check.hs
             ${{ env.tasks }}/stack.yaml
             ${{ env.tasks }}/*/hlint.html
