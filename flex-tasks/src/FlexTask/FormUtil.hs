@@ -20,6 +20,7 @@ module FlexTask.FormUtil
   , addAttributes
   , addCssClass
   , addNameAndCssClass
+  , readOnly
   -- * Convenience for internationalization
   , universalLabel
   , showToUniversalLabel
@@ -154,6 +155,11 @@ addAttributes as fs =  fs { fsAttrs = as ++ fsAttrs fs}
 -- | Add a CSS class to the given FieldSettings
 addCssClass :: Text -> FieldSettings app -> FieldSettings app
 addCssClass c fs = fs { fsAttrs = addClass c $ fsAttrs fs}
+
+
+-- | Turn FieldSettings into a read-only input field
+readOnly :: FieldSettings app -> FieldSettings app
+readOnly = addAttributes [("readonly",""),("style","background-color: #EEEEEE")]
 
 
 -- | Turn a String into a label for all languages.
