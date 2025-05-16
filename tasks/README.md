@@ -2,7 +2,7 @@
 
 Use the test.sh script to develop your task configurations.
 It interprets the individual files in GHC and runs HLint on them.
-A matching settings generator has to be supplied for your task (also see below section). 
+A matching settings generator has to be supplied for your task (also see below section).
 In addition, the script interpolates the `Check.hs` module and scans it for optimization opportunities.
 
 If any suggestions are found, a folder named after your task is created.
