@@ -6,7 +6,7 @@ A matching settings generator has to be supplied for your task (also see below s
 In addition, the script interpolates the `Check.hs` module and scans it for optimization opportunities.
 
 If any suggestions are found, a folder named after your task is created.
-This folder contains subfolders for each settings combination with matching modified `Check.hs` modules and HTML summaries of the three phases described above.
+This folder contains sub-folders for each settings combination with matching modified `Check.hs` modules and HTML summaries of the three phases described above.
 If there are no suggestions, the folder won't be created.
 
 ## Usage
@@ -26,12 +26,12 @@ If there are no suggestions, the folder won't be created.
 
 ## Settings Generators
 
-Use an external generator to produce different variations of your tasks settings for testing.
+Use an external generator to produce different variations of your task's settings for testing.
 This Haskell file need to satisfy the following:
 
 - module name is `SettingsGen`
 - contains type definition for a record type `Settings`
-- this type's fields are named exactly as your configuration's options (located in TaskSettings) 
+- this type's fields are named exactly as your configuration's options (located in TaskSettings)
 - the type derives `Show`
 - it contains a function `rollSettings :: Gen Settings` that generates a value of your `Settings` type
 
