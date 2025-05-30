@@ -83,6 +83,9 @@ f1 $$> f2 = do
       pure (nubOrd $ names1 ++ names2, wid1 >> wid2)
 
 
+{- |
+Apply some function to the embedded widget of a `Rendered` value.
+-}
 applyToWidget :: Functor m => (w -> w') -> Rendered' m w -> Rendered' m w'
 applyToWidget f form = fmap (second f) <$> form
 

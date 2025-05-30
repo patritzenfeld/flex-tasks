@@ -622,6 +622,8 @@ zipWithEnum labels
 
 {- |
 Same as `buttons`, but using an explicit enum type.
+Use this with custom enum types to automatically create labels
+for all constructors according to the given showing scheme.
 -}
 buttonsEnum
   :: (Bounded a, Enum a)
@@ -637,6 +639,8 @@ buttonsEnum align t f = ChoicesButtons align t $ map f [minBound .. maxBound]
 Create FieldInfo for a button field.
 Will turn into either radio buttons or checkboxes
 depending on the form type.
+Use with SingleChoiceSelection or MultipleChoiceSelection.
+__Usage with a custom enum type is not recommended due to error proneness.__
 -}
 buttons
   :: Alignment
@@ -649,6 +653,8 @@ buttons = ChoicesButtons
 
 {- |
 Same as `dropdown`, but using an explicit enum type.
+Use this with custom enum types to automatically create labels
+for all constructors according to the given showing scheme.
 -}
 dropdownEnum
   :: (Bounded a, Enum a)
@@ -663,6 +669,8 @@ dropdownEnum t f = ChoicesDropdown t $ map f [minBound .. maxBound]
 Create FieldInfo for a dropdown menu field.
 Will turn into either single or multiple selection field
 depending on the form type.
+Use with SingleChoiceSelection or MultipleChoiceSelection.
+__Usage with a custom enum types is not recommended due to error proneness.__
 -}
 dropdown
   :: FieldSettings FlexForm  -- ^ FieldSettings for select input
