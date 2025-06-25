@@ -143,18 +143,19 @@ formatIfFlexSubmission t
             listDelimiter `T.isInfixOf` t ||
             escapeWrapped
           ) = t
-    | length splitArgs == 1 = stripEscape t
+    | length splitArgs == 1 && length splitLists == 1 = stripEscape t
     | null splitArgs || any T.null splitArgs = ""
     | otherwise = T.unlines numberInputs
     where
       escapeSeq = inputEscape <> inputEscape
       escapeWrapped = escapeSeq `T.isPrefixOf` t && escapeSeq `T.isSuffixOf` t
       splitArgs = T.splitOn argDelimiter t
-      stripEscape = read . T.unpack . T.drop 1 . T.dropEnd 1
+      splitLists = T.splitOn listDelimiter t
+      stripEscape = fromMaybe failureMessage . readMaybe . T.unpack . T.drop 1 . T.dropEnd 1
       unescaped = map stripEscape . T.splitOn listDelimiter <$> splitArgs
       fieldIndices = map (\i -> "Field " <> T.pack (show @Int i) <> ": ") [1..]
       numberInputs = zipWith (<>) fieldIndices $ map (T.intercalate ",") unescaped
-
+      failureMessage = "failed to format value for display"
 
 
 -- | List of languages to cover for input form HTML in instances of `RenderMessage` for custom translations.
