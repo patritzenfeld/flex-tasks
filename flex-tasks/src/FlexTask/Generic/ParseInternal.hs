@@ -117,13 +117,18 @@ instance Parse a => GParse (K1 i a) where
 
 
 
-instance Parse Int where
+instance Parse Integer where
   formParser = escaped $ do
     sign <- optionMaybe $ char '-'
     ds <- many1 digit
     pure $ read $ case sign of
       Nothing -> ds
       Just s  -> s : ds
+
+
+
+instance Parse Int where
+  formParser = fromIntegral <$> formParser @Integer
 
 
 

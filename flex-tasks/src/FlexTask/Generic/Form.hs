@@ -213,9 +213,11 @@ class BaseForm a where
   baseForm :: Field Handler a
 
 
-instance BaseForm Int where
+instance BaseForm Integer where
   baseForm = intField
 
+instance BaseForm Int where
+  baseForm = intField
 
 instance BaseForm Text where
   baseForm = textField
@@ -303,9 +305,11 @@ instance Formify a => GFormify (K1 i a) where
   gformify mDefault = formifyImplementation $ unK1 <$> mDefault
 
 
-instance Formify Int where
+instance Formify Integer where
   formifyImplementation = formifyInstanceBasicField
 
+instance Formify Int where
+  formifyImplementation = formifyInstanceBasicField
 
 instance Formify Text where
   formifyImplementation = formifyInstanceBasicField
