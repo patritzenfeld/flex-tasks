@@ -116,7 +116,6 @@ module Check where
 
 import Control.Monad.IO.Class           (MonadIO)
 import Control.OutputCapable.Blocks
-import Data.Functor                     (($>))
 import LogicTasks.Syntax.ComposeFormula (partialGrade', completeGrade')
 
 import Global                           (TaskData, Submission)
@@ -136,7 +135,7 @@ checkSemantics
   -> TaskData
   -> Submission
   -> Rated m
-checkSemantics path inst try = completeGrade' path inst try $> 1.0
+checkSemantics = completeGrade'
 
 |]
 
