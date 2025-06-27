@@ -114,6 +114,7 @@ checkers = [i|
 
 module Check where
 
+import Control.Applicative              (Alternative)
 import Control.Monad.IO.Class           (MonadIO)
 import Control.OutputCapable.Blocks
 import LogicTasks.Syntax.ComposeFormula (partialGrade', completeGrade')
@@ -130,7 +131,7 @@ checkSyntax
 checkSyntax _ = partialGrade'
 
 checkSemantics
-  :: (MonadIO m, OutputCapable m)
+  :: (Alternative m, MonadIO m, OutputCapable m)
   => FilePath
   -> TaskData
   -> Submission
