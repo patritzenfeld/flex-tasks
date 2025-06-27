@@ -72,6 +72,7 @@ import FlexTask.Generic.Form
   , SingleChoiceSelection
   , multipleChoiceAnswer
   , singleChoiceAnswer
+  , singleChoiceEmpty
   )
 
 
@@ -205,7 +206,7 @@ instance Parse a => Parse (Maybe a) where
 
 
 instance Parse SingleChoiceSelection where
-  formParser = singleChoiceAnswer <$> formParser
+  formParser = maybe singleChoiceEmpty singleChoiceAnswer <$> formParser
 
 
 instance Parse MultipleChoiceSelection where
