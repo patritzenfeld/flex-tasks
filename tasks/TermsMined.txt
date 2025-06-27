@@ -78,7 +78,6 @@ import Data.Text                        (Text)
 import FlexTask.FormUtil                (getFormData, universalLabel)
 import FlexTask.Generic.Form
 import FlexTask.Types                   (HtmlDict)
-import FlexTask.YesodConfig             (Rendered, Widget)
 import TermTasks.DataType               (inMathit)
 import TermTasks.Direct                 (genInst)
 import TermTasks.Records (
@@ -106,7 +105,7 @@ getTask = do
     pure (inst, checkers, getFormData $ form inst)
   where
     latexLabel = zipWith
-      (\i -> universalLabel . (show i ++) . (". \\(" ++) . (++ "\\)") . inMathit)
+      (\n -> universalLabel . (show n ++) . (". \\(" ++) . (++ "\\)") . inMathit)
       [1 :: Int ..]
       . terms
     form inst = formify
