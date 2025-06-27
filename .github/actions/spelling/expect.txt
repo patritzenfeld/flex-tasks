@@ -10,6 +10,7 @@ gshow
 gsub
 hlint
 lindex
+Mathit
 oss
 pfs
 proplogic
