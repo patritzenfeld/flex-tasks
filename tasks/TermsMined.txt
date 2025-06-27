@@ -79,6 +79,7 @@ import FlexTask.FormUtil                (getFormData, universalLabel)
 import FlexTask.Generic.Form
 import FlexTask.Types                   (HtmlDict)
 import FlexTask.YesodConfig             (Rendered, Widget)
+import TermTasks.DataType               (inMathit)
 import TermTasks.Direct                 (genInst)
 import TermTasks.Records (
   SigInstance(..),
@@ -102,13 +103,15 @@ getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
 getTask = do
     config <- task04
     inst <- genInst config
-    pure (inst, checkers, getFormData $ form $ length $ terms inst)
-
-
-form :: Int -> Rendered Widget
-form amount = formify
-  (Nothing :: Maybe MultipleChoiceSelection)
-  [[buttons Vertical (fieldSettingsLabel HeaderLabel) $ map (universalLabel . (++ ".") . show) [1..amount]]]
+    pure (inst, checkers, getFormData $ form inst)
+  where
+    latexLabel = zipWith
+      (\i -> universalLabel . (show i ++) . (". \\(" ++) . (++ "\\)") . inMathit)
+      [1 :: Int ..]
+      . terms
+    form inst = formify
+      (Nothing :: Maybe MultipleChoiceSelection)
+      [[buttons Vertical (fieldSettingsLabel HeaderLabel) $ latexLabel inst]]
 
 
 checkers :: String
