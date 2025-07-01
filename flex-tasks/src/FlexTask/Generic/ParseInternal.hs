@@ -18,7 +18,7 @@ module FlexTask.Generic.ParseInternal
   ) where
 
 
-import Control.Monad      (void)
+import Control.Monad      (ap, void)
 import Control.OutputCapable.Blocks (
   LangM,
   LangM',
@@ -61,6 +61,7 @@ import Text.Parsec.String (Parser)
 import Text.ParserCombinators.Parsec.Number (
   floating2,
   int,
+  sign,
   )
 import Yesod              (Textarea(..))
 
@@ -138,7 +139,7 @@ parseBool = do
 
 
 parseDouble :: Parser Double
-parseDouble = floating2 True
+parseDouble = ap sign $ floating2 True
 
 
 

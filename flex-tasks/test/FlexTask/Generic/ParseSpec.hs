@@ -12,7 +12,9 @@ import Test.Hspec (
   Spec,
   context,
   describe,
+  expectationFailure,
   specify,
+  shouldSatisfy,
   )
 import Test.Hspec.QuickCheck            (prop)
 import Test.Hspec.Parsec                (shouldFailOn, shouldParse)
@@ -54,7 +56,7 @@ spec = do
       prop "Textarea" $ testParsingString $ Textarea . pack
       prop "Bool" $ testParsing boolShow
       prop "Int" $ testParsing @Int show
-      prop "Double" $ testParsing @Double show
+      prop "Double" $ \a -> parsesNear @Double (escapedSingle (show a)) a $ doubleInaccuracy a
 
     context "should work for lists" $ do
       prop "String" $ testParsingStringList id
@@ -62,7 +64,8 @@ spec = do
       prop "Textarea" $ testParsingStringList (Textarea . pack)
       prop "Bool" $ testParsingList boolShow
       prop "Int" $ testParsingList @Int show
-      prop "Double" $ testParsingList @Double show
+      prop "Double" $ \a -> parsesNear @[Double] (escapedList $ map show a) a $
+        and . zipWith doubleInaccuracy a
 
     context "should work for optional values" $ do
       prop "String" $ testParsingMaybe id
@@ -70,7 +73,8 @@ spec = do
       prop "Textarea" $ testParsingMaybe (Textarea . pack)
       prop "Bool" $ testParsing $ maybeShow boolShow
       prop "Int" $ testParsing @(Maybe Int) $ maybeShow show
-      prop "Double" $ testParsing @(Maybe Double) $ maybeShow show
+      prop "Double" $ \a -> parsesNear @(Maybe Double) (escapedSingle $ maybeShow show a) a $
+        compareMaybeDoubles a
 
     context "should work for lists of optional values" $ do
       prop "String" $ testParsingMaybeStringList id
@@ -78,7 +82,8 @@ spec = do
       prop "Textarea" $ testParsingMaybeStringList (Textarea . pack)
       prop "Bool" $ testParsingList $ maybeShow boolShow
       prop "Int" $ testParsingList @(Maybe Int) $ maybeShow show
-      prop "Double" $ testParsingList @(Maybe Double) $ maybeShow show
+      prop "Double" $ \a -> parsesNear @[Maybe Double] (escapedList $ map (maybeShow show) a) a
+        $ and . zipWith compareMaybeDoubles a
 
   describe "anonymous choice selection parsers" $ do
     prop "single choice works" $ \i ->
@@ -102,7 +107,7 @@ spec = do
 
     testParsingMaybeStringList fromString = testParsingStringList (format fromString)
     testParsingMaybe from = testParsingString (format from)
-
+    compareMaybeDoubles a mRes = mRes == a || (doubleInaccuracy <$> a <*> mRes) == Just True
 
 testParsingString :: (Eq a, Parse a, Show a) => (String -> a) -> String -> IO ()
 testParsingString fromString s = escapedSingle s `parsesTo` fromString (trim $ stripEscape s)
@@ -150,3 +155,23 @@ withParser p = parse p ""
 
 parsesTo :: (Show a, Eq a, Parse a) => String -> a -> Expectation
 parsesTo input output = withParser formParser input `shouldParse` output
+
+
+parsesNear :: (Show a, Parse a) => String -> a -> (a -> Bool) -> IO ()
+parsesNear input = shouldParseWith $ withParser formParser input
+
+
+shouldParseWith
+  :: Show a
+  => Either ParseError a
+  -> a
+  -> (a -> Bool)
+  -> IO ()
+shouldParseWith i o p = case i of
+  Left e -> expectationFailure $ "expected: " ++ show o ++
+    "\nbut parsing failed with error:\n" ++ show e
+  Right x -> x `shouldSatisfy` p
+
+
+doubleInaccuracy :: Double -> Double -> Bool
+doubleInaccuracy a b = abs (a-b) < 0.001
