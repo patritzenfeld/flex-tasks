@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.37.0.
+-- This file has been generated from package.yaml by hpack version 0.38.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -52,6 +52,7 @@ library
     , mtl
     , output-blocks
     , parsec
+    , parsec-numbers
     , raw-strings-qq
     , shakespeare
     , text
@@ -103,6 +104,7 @@ test-suite flex-tasks-test
     , mtl
     , output-blocks
     , parsec
+    , parsec-numbers
     , quickcheck-instances
     , raw-strings-qq
     , shakespeare

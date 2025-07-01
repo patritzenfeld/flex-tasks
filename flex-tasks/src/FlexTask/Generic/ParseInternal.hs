@@ -43,7 +43,6 @@ import Text.Parsec
   , between
   , lookAhead
   , manyTill
-  , many1
   , notFollowedBy
   , optionMaybe
   , parse
@@ -52,13 +51,17 @@ import Text.Parsec
   , spaces
   , try
   )
-import Text.Parsec.Char   (anyChar, char, digit, string)
+import Text.Parsec.Char   (anyChar, char, string)
 import Text.Parsec.Error (
   errorMessages,
   errorPos,
   showErrorMessages,
   )
 import Text.Parsec.String (Parser)
+import Text.ParserCombinators.Parsec.Number (
+  floating2,
+  int,
+  )
 import Yesod              (Textarea(..))
 
 import qualified Data.Text    as T
@@ -120,14 +123,6 @@ instance Parse a => GParse (K1 i a) where
   gparse = K1 <$> formParser
 
 
-parseInt :: Parser Integer
-parseInt = do
-  sign <- optionMaybe $ char '-'
-  ds <- many1 digit
-  pure $ read $ case sign of
-    Nothing -> ds
-    Just s  -> s : ds
-
 
 parseString :: Parser String
 parseString = manyTill anyChar $ try $ lookAhead $
@@ -143,26 +138,12 @@ parseBool = do
 
 
 parseDouble :: Parser Double
-parseDouble = do
-  sign <- optionMaybe $ char '-'
-  whole <- many1 digit
-  dot <- optionMaybe (char '.' <|> char ',')
-  frac <- case dot of
-    Nothing -> pure []
-    Just _  -> ('.':) <$> do
-      num <- many1 digit
-      maybe num (num ++) <$> optionMaybe eParser
-  pure $ read $ case sign of
-    Nothing ->     whole
-    Just s  -> s : whole
-    ++ frac
-  where
-    eParser = (++) <$> string "e-" <*> many1 digit
+parseDouble = floating2 True
 
 
 
 instance Parse Integer where
-  formParser = escaped parseInt
+  formParser = escaped int
 
 
 
@@ -239,11 +220,11 @@ instance Parse MultipleChoiceSelection where
 
 
 instance Parse (SingleInputList Integer) where
-  formParser = parseInstanceSingleInputList parseInt
+  formParser = parseInstanceSingleInputList int
 
 
 instance Parse (SingleInputList Int) where
-  formParser = parseInstanceSingleInputList $ fromIntegral <$> parseInt
+  formParser = parseInstanceSingleInputList int
 
 
 instance Parse (SingleInputList String) where
