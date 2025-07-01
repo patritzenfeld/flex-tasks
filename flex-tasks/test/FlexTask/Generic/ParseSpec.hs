@@ -169,7 +169,7 @@ shouldParseWith
   -> IO ()
 shouldParseWith i o p = case i of
   Left e -> expectationFailure $ "expected: " ++ show o ++
-    "\nbut parsing failed with error:\n" ++ show e
+    '\n' : "but parsing failed with error:\n" ++ show e
   Right x -> x `shouldSatisfy` p
 
 
