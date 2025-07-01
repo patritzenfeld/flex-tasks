@@ -10,7 +10,6 @@ import Data.Text                        (Text, isInfixOf, pack)
 import Test.Hspec                       (Spec, describe, it, shouldBe)
 import Test.Hspec.QuickCheck            (modifyMaxSize, prop)
 import Test.QuickCheck (
-  ASCIIString(..),
   Gen,
   NonEmptyList(..),
   arbitrary,
@@ -55,9 +54,9 @@ spec = do
       formatForJS (fromJust $ formatAnswer [[jsUnitTest]]) `shouldBe` "[\"\\u04d2\\u29b6\"]"
 
   describe "removeUnicodeEscape" $ do
-    prop "leaves ascii chars alone" $
-      \(ASCIIString i) -> let addSlash = '\\' : i in
-        removeUnicodeEscape addSlash `shouldBe` addSlash
+    it "leaves ascii chars alone" $
+      forAll (('\\' :) <$> genTestString 0 127) $ \i ->
+        removeUnicodeEscape i `shouldBe` i
     it "strips an escape char off of any unicode." $
       forAll (genTestString 128 1114111) $ \i ->
         removeUnicodeEscape ('\\': i) `shouldBe` i
