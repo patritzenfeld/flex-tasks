@@ -32,7 +32,7 @@ jobs:
           packages: zsh hlint expect colorized-logs
           version: 1.0
 
-      - uses: teatimeguest/setup-texlive-action@v3
+      - uses: TeX-Live/setup-texlive-action@v3
         with:
           packages: |
             scheme-basic
