@@ -131,11 +131,9 @@ removeUnicodeEscape xs = xs
 
 
 
--- Stopgap solution until Autotool frontend is updated to allow for display of task form in comments
 {- |
 Format an answer String into a vertical text listing of individual values.
-
-__temporary solution: Will be replaced in future versions.__
+This is used to display Flex submissions in a non-HTML context, e.g. in a downloadable text file.
 -}
 formatIfFlexSubmission :: Text -> Text
 formatIfFlexSubmission t
