@@ -78,7 +78,9 @@ lockForm lock
       fieldNames.forEach(name => {
         Array.from(document.getElementsByName(name))
           .forEach(elem => {
-            if (elem.getAttribute("type")?.toLowerCase()=== "radio" || elem.tagName.toLowerCase === "select"){
+            if (elem.getAttribute("type")?.toLowerCase()=== "radio" ||
+                elem.getAttribute("type")?.toLowerCase()=== "checkbox" ||
+                elem.tagName.toLowerCase() === "select"){
               elem.disabled = true;
             }
             else {
