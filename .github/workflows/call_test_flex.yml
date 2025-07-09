@@ -1,0 +1,24 @@
+---
+name: Call Flex Workflow
+
+
+on:
+  repository_dispatch:
+    types: [CI-Completed]
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  call:
+    uses: ./.github/workflows/test-flex.yml
+    secrets: inherit
+    with:
+      tasks: flex-tasks/tasks
+      config: pkgdb-config
+      settings-gens: flex-tasks/tasks/settings-gens
+      package-locations: '*'
+      subdirs: '[flex-tasks, flex-tasks-processing]'
+      commit: ${{ github.event.client_payload.sha }}
+      latex-setup: true
