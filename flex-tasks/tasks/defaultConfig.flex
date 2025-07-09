@@ -96,7 +96,7 @@ import FlexTask.Generic.Form
 import FlexTask.Types          (HtmlDict)
 import FlexTask.YesodConfig    (Rendered, Widget)
 import Data.String.Interpolate (i)
-import Data.Text               (Text)
+import Data.Text               (Text, unpack)
 import Test.QuickCheck.Gen
 import Yesod                   (RenderMessage(..), fieldSettingsLabel)
 
