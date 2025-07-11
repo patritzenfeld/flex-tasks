@@ -321,6 +321,7 @@ imageLinks = concatMap gatherLinks
         together = concatMap (\(a,b) -> [a,b]) os
     gatherLinks (Itemized oss)   = imageLinks $ concat oss
     gatherLinks (Indented os)    = imageLinks os
+    gatherLinks (Folded _ _ os)  = imageLinks os
     gatherLinks _                = []
 
 
