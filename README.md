@@ -13,7 +13,7 @@ Directory `flex-tasks/tasks` includes a collection of sample tasks and a test sc
 
 ### flex-tasks
 
-Supplies both a way to run tasks, as well as utilities to simplify the creation of said tasks.
+Supplies both a way to run tasks and utilities to simplify the creation of said tasks.
 * `FlexTask.Types` defines task configurations and instances.
 * `FlexTask.Interpreter` contains functions to evaluate such tasks at runtime.
 * The remaining modules implement various utility functions and automations for creating tasks, for example:
@@ -31,7 +31,7 @@ The package is incorporated into Autotool. The task evaluation is currently not 
 In Autotool, you can select the task type `Flex` to input a task configuration. A default is given, which can be edited or completely overwritten by one of the sample tasks in this repository (or your own).
 For task development, consider using the provided test script in `flex-tasks/tasks`. Please refer to its own readme file.
 
-The generic parsers and input forms can be used as a standalone feature, independently from Autotool.
+The generic parsers and input forms can be used as a standalone feature, independently of Autotool.
 
 
 ## Running local tests
