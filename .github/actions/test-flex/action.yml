@@ -28,8 +28,9 @@ inputs:
     type: string
     default: ${{ github.event.client_payload.sha }}
   ssh-key:
-    required: true
+    required: false
     type: string
+    default: ''
 
 runs:
   using: composite
@@ -102,7 +103,9 @@ runs:
         ' stack.yaml > stack.yaml.new && mv stack.yaml.new stack.yaml
         sed -i "s@/autotool/default@$(realpath $PWD/../${{ inputs.tasks }}/root)@" env
         eval "$(ssh-agent -s)"
-        ssh-add <(echo "${{ inputs.ssh-key}}")
+        if [[! -n "${{ ssh-key }}"]]; then
+          ssh-add <(echo "${{ inputs.ssh-key}}")
+        fi
         ./create.sh
         sudo mv root ../${{ inputs.tasks }}
         set +ex
