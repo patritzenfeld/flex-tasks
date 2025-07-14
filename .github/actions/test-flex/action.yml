@@ -26,7 +26,7 @@ inputs:
   commit:
     required: false
     type: string
-    default: ${{ github.sha }}
+    default: ${{ github.event.client_payload.sha }}
   ssh-key:
     required: true
     type: string

@@ -3,10 +3,8 @@ name: Test Flex Tasks
 
 
 on:
-  push:
-    branches: ["comp-action"]
-#  repository_dispatch:
-#    types: [CI-Completed]
+  repository_dispatch:
+    types: [CI-Completed]
 
 permissions:
   contents: write
@@ -18,13 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: fmidue/flex-tasks/.github/actions/test-flex@comp-action
+      - uses: fmidue/flex-tasks/.github/actions/test-flex@main
         with:
           tasks: flex-tasks/tasks
           config: pkgdb-config
           settings-gens: flex-tasks/tasks/settings-gens
           package-locations: '*'
           subdirs: '[flex-tasks, flex-tasks-processing]'
-#          commit: ${{ github.event.client_payload.sha }}
           latex-setup: true
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
