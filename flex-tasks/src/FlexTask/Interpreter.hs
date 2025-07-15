@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# Language QuasiQuotes #-}
 {-# LANGUAGE RecordWildCards #-}
@@ -318,20 +319,20 @@ cacheDir = do
 
 
 imageLinks :: [Output] -> [FilePath]
-imageLinks = concatMap gatherLinks
-  where
-    gatherLinks :: Output -> [FilePath]
-    gatherLinks (Image l)        = [l]
-    gatherLinks (Images m)       = elems m
-    gatherLinks (YesNo _ os)     = imageLinks os
-    gatherLinks (Paragraph os)   = imageLinks os
-    gatherLinks (Enumerated os)  = imageLinks $ concat together
-      where
-        together = concatMap (\(a,b) -> [a,b]) os
-    gatherLinks (Itemized oss)   = imageLinks $ concat oss
-    gatherLinks (Indented os)    = imageLinks os
-    gatherLinks (Folded _ _ os)  = imageLinks os
-    gatherLinks _                = []
+imageLinks = concatMap $ foldMapOutputBy (++) (\case
+  Image l       -> [l]
+  Images m      -> elems m
+  YesNo {}      -> []
+  Paragraph {}  -> []
+  Enumerated {} -> []
+  Itemized {}   -> []
+  Indented {}   -> []
+  Folded {}     -> []
+  Latex {}      -> []
+  Code {}       -> []
+  Translated {} -> []
+  Special {}    -> []
+  )
 
 
 {- |
