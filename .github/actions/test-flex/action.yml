@@ -41,7 +41,7 @@ runs:
         version: 1.0
 
     - name: Setup LaTeX
-      if: ${{ inputs.latex-setup }}
+      if: ${{ inputs.latex-setup == 'true' }}
       uses: TeX-Live/setup-texlive-action@v3
       with:
         packages: |
