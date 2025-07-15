@@ -60,7 +60,7 @@ runs:
         key: >-
           ${{ hashFiles(format('{0}/stack.yaml', inputs.config), format('{0}/package.yaml', inputs.config)) }}-${{
               hashFiles(format('{0}/src/**/*hs', inputs.package-locations)) }}-${{
-              hashFiles(stack.yaml, format('{0}/package.yaml', inputs.package-locations)) }}
+              hashFiles('stack.yaml', format('{0}/package.yaml', inputs.package-locations)) }}
 
     - uses: actions/checkout@v4
       if: steps.restore-cache-db.outputs.cache-hit != 'true'
