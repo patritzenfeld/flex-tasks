@@ -31,7 +31,7 @@ If there's anything to report, the action will finally submit a comment containi
     # see the Readme of the test script for more information.
     #
     # Required
-    setings-gens: ''
+    settings-gens: ''
 
     # Indicate whether a tex-live distribution should be installed and cached.
     # This is necessary for some tasks using LaTeX formula rendering.
