@@ -26,7 +26,7 @@
 ^This reverts commit [0-9a-f]{40}\.$
 
 # GitHub SHAs (markdown)
-(?:\[`?[0-9a-f]+`?\]\(https:/|)/(?:www\.|)github\.com(?:/[^/\s"]+){2,}(?:/[^/\s")]+)(?:[0-9a-f]+(?:[-0-9a-zA-Z/#.]*|)\b|)
+\bcommit: [0-9a-f]*\b
 
 # ignore long runs of a single character:
 \b([A-Za-z])\g{-1}{3,}\b
