@@ -166,6 +166,7 @@ makeDescription taskData global settings description extras picPath = do
         [ "Capabilities.Graphviz.IO"
         , "Capabilities.Cache.IO"
         , "Capabilities.Diagrams.IO"
+        , "Capabilities.LatexSvg.IO"
         , "Control.OutputCapable.Blocks.Generic.Type"
         , "Data.Text"
         ]
@@ -265,6 +266,7 @@ checkSolution taskData globalCode settingsCode parseCode checkCode extraCode sub
       setImports
         [ "Capabilities.Cache.IO"
         , "Capabilities.Diagrams.IO"
+        , "Capabilities.LatexSvg.IO"
         , "Capabilities.Graphviz.IO"
         , "Control.OutputCapable.Blocks.Generic.Type"
         , "Control.OutputCapable.Blocks"

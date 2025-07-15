@@ -8,7 +8,7 @@ extra-deps:
   - git: https://github.com/fmidue/term-tasks
     commit: cb2bfac5e0145c01fbbab7e4f995d624db72dcad
   - git: https://github.com/fmidue/autotool-capabilities.git
-    commit: fa712df18cba66ce45acfbd3c2a5fbf7ba756dbb
+    commit: abf9b15ad431e517ae0700ad9dfb6f6941e10538
     subdirs:
       - autotool-capabilities
       - autotool-capabilities-io-instances
