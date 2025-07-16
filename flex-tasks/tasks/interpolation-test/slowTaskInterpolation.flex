@@ -37,7 +37,7 @@ import Global
 
 getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
 getTask = do
-    numbers <- vectorOf 15 $ chooseInt (0,90)
+    numbers <- vectorOf 15 $ chooseInt (0,1000)
     pure (numbers, checkers numbers, getFormData form)
 
 
