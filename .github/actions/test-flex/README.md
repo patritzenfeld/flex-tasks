@@ -40,7 +40,7 @@ If there's anything to report, the action will finally submit a comment containi
 
     # A glob pattern for matching the location of all Haskell packages in your repository.
     # (the folder where each package.yaml is located)
-    # Can be ommited if your repository only contains one package.
+    # Can be omitted if your repository only contains one package.
     #
     # E.g. with two packages in folders `repo-root/first-pkg` and `repo-root/second-pkg`
     # you can pass pattern '*' to indicate `package.yaml`s can be found one directory deep,
