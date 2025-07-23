@@ -31,6 +31,10 @@ inputs:
     required: false
     type: string
     default: ''
+  ssh-key2:
+    required: false
+    type: string
+    default: ''
 
 runs:
   using: composite
@@ -106,6 +110,9 @@ runs:
         eval "$(ssh-agent -s)"
         if [[! -n "${{ inputs.ssh-key }}"]]; then
           ssh-add <(echo "${{ inputs.ssh-key }}")
+        fi
+        if [[! -n "${{ inputs.ssh-key2 }}"]]; then
+          ssh-add <(echo "${{ inputs.ssh-key2 }}")
         fi
         ./create.sh
         sudo mv root ../${{ inputs.tasks }}

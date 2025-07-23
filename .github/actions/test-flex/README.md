@@ -76,6 +76,16 @@ If there's anything to report, the action will finally submit a comment containi
     # Default: ''
     ssh-key: ''
 
+    # Another SSH private key to use while building the package database.
+    # This is currently necessary for exactly one user of this action
+    # pulling two private repositories for the package database.
+    #
+    # This will be combined into a list style input with `ssh-key`
+    # if more keys are required in the future.
+    #
+    # Default: ''
+    ssh-key2: ''
+
 ```
 <!-- end usage -->
 
