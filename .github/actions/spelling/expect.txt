@@ -1,6 +1,4 @@
-ABCD
 Buf
-Equi
 flexident
 formify
 gformify
@@ -10,10 +8,6 @@ gshow
 gsub
 hlint
 lindex
-Mathit
-oss
-pfs
-proplogic
 RWS
 syb
 subdirs
@@ -21,6 +15,7 @@ uncons
 unsnoc
 usr
 Wno
+wuerfle
 xit
 xprop
 YOURFORM
