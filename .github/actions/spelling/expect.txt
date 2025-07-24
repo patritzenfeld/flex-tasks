@@ -15,7 +15,6 @@ uncons
 unsnoc
 usr
 Wno
-wuerfle
 xit
 xprop
 YOURFORM

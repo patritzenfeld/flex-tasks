@@ -5,7 +5,7 @@
 module FlexTask.DefaultConfig (defaultConfig) where
 
 
-import Data.ByteString.Char8 (unpack)
+import Data.ByteString.UTF8 (toString)
 import Data.FileEmbed (embedFileRelative)
 import Text.Parsec (parse)
 
@@ -18,4 +18,4 @@ import FlexTask.Types (FlexConf, parseFlexConfig)
 defaultConfig :: FlexConf
 defaultConfig = either (error . show) id (parse parseFlexConfig "" defaultFile)
   where
-    defaultFile = unpack $(embedFileRelative "tasks/defaultConfig.flex")
+    defaultFile = toString $(embedFileRelative "tasks/defaultConfig.flex")

@@ -245,7 +245,7 @@ import Global
 description :: OutputCapable m => FilePath -> TaskData -> LangM m
 description _ ((one,two,three),_) = do
   paragraph $ translate $ do
-    german "Ich wuerfle drei Zahlen."
+    german "Ich würfle drei Zahlen."
     english "I throw a die three times."
   paragraph $ translate $ do
     german [i|Die erste ist #{one}, die zweite ist #{two}, die letzte ist #{three}.|]
