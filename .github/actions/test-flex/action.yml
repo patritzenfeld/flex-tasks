@@ -108,10 +108,10 @@ runs:
         ' stack.yaml > stack.yaml.new && mv stack.yaml.new stack.yaml
         sed -i "s@/autotool/default@$(realpath $PWD/../${{ inputs.tasks }}/root)@" env
         eval "$(ssh-agent -s)"
-        if [[! -n "${{ inputs.ssh-key }}"]]; then
+        if [[ ! -n "${{ inputs.ssh-key }}" ]]; then
           ssh-add <(echo "${{ inputs.ssh-key }}")
         fi
-        if [[! -n "${{ inputs.ssh-key2 }}"]]; then
+        if [[ ! -n "${{ inputs.ssh-key2 }}" ]]; then
           ssh-add <(echo "${{ inputs.ssh-key2 }}")
         fi
         ./create.sh
