@@ -95,7 +95,7 @@ runs:
         done
 
         insert='\'\
-        "  - git: git@github.com:${{ github.repository }}\n"\
+        "  - git: git@github.com:${{ github.repository }}.git\n"\
         "    commit: ${{ inputs.commit }}\n"\
         "${yaml}"
         awk -v insert="$insert" '
