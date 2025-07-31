@@ -134,7 +134,7 @@ escapedList = escapedString . (:[])
 
 
 escapedString :: [[String]] -> String
-escapedString = unpack . fromMaybe "" . formatAnswer . map (map pack)
+escapedString = unpack . fromMaybe "\"\"Missing\"\"" . formatAnswer . map (map pack)
 
 
 stripEscape :: String -> String

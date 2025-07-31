@@ -46,7 +46,7 @@ import Text.Parsec
   , notFollowedBy
   , optionMaybe
   , parse
-  , sepBy
+  , sepBy1
   , sourceColumn
   , spaces
   , try
@@ -190,7 +190,7 @@ instance (Parse a, Parse b, Parse c, Parse d, Parse e, Parse f) => Parse (a,b,c,
 
 
 parseList :: Parse a => Parser [a]
-parseList = try (escaped parseEmpty) <|> sepBy formParser (parseText listDelimiter)
+parseList = try (escaped parseEmpty) <|> sepBy1 formParser (parseText listDelimiter)
     where
       parseEmpty = parseText missingMarker $> []
 
@@ -279,7 +279,7 @@ These instances are already provided for standard types as is.
 parseInstanceSingleInputList :: Parser a -> Parser (SingleInputList a)
 parseInstanceSingleInputList parser = escaped $ contents <* spaces
     where
-      contents = SingleInputList <$> withSpaces parser `sepBy` try (withSpaces (char ','))
+      contents = SingleInputList <$> withSpaces parser `sepBy1` try (withSpaces (char ','))
       withSpaces = (spaces *>)
 
 
