@@ -37,8 +37,22 @@ base_name=$(basename "$1" | sed 's/\(.*\)\..*/\1/')
 pkg_path=$PWD/$2/pkgdb
 script_path="$(realpath "$(dirname "$0")")"
 expect_script="${script_path}/runGhci.expect"
-mapfile -t files \
-  < <(awk '/^\s*module/ && !/^\s*module +Check +/ {sub(/module /,"")sub(/ (where|\().*/,".hs"); print}' "$1")
+mapfile -t files < <(
+  awk '
+    /^\s*module/ && !/^\s*module +Check +/ {
+      mod = $0
+
+      while (mod !~ /where/) {
+        if (getline line <= 0) break   # Stop if end of file
+        mod = mod " " line
+      }
+
+      sub(/module[[:space:]]+/, "", mod)
+      sub(/[[:space:]]*(where|\().*/, ".hs", mod)
+      print mod
+    }
+  ' "$1"
+)
 files=("${files[@]/#/$base_name/}")
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
