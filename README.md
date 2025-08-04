@@ -6,10 +6,7 @@ Also automatic HTML form and parser generation for input data types.
 
 ## Contents
 
-The repository includes two packages.
-Directory `flex-tasks/tasks` includes a collection of sample tasks and a test script.
-
-[Haddock Documentation](https://fmidue.github.io/flex-tasks/)
+This repository includes two packages:
 
 ### flex-tasks
 
@@ -23,6 +20,12 @@ Supplies both a way to run tasks and utilities to simplify the creation of said 
 ### flex-tasks-processing
 
 Includes text processing necessary for the Autotool frontend. It is split off from the above package to minimize dependencies in Autotool.
+
+
+## Documentation
+
+  - [Haddock Documentation](https://fmidue.github.io/flex-tasks/)
+  - [Wiki](https://github.com/fmidue/flex-tasks/wiki)
 
 
 ## Usage
