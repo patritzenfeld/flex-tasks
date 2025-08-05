@@ -24,15 +24,15 @@ Includes text processing necessary for the Autotool frontend. It is split off fr
 
 ## Documentation
 
-  - [Haddock Documentation](https://fmidue.github.io/flex-tasks/)
-  - [Wiki](https://github.com/fmidue/flex-tasks/wiki)
+* [Haddock Documentation](https://fmidue.github.io/flex-tasks/)
+* [Wiki](https://github.com/fmidue/flex-tasks/wiki)
 
 
 ## Usage
 
 The package is incorporated into Autotool. The task evaluation is currently not intended to be used on its own.
 In Autotool, you can select the task type `Flex` to input a task configuration. A default is given, which can be edited or completely overwritten by your own task.
-For task development, consider using the provided test script in `flex-tasks/tasks`. Please refer to its own readme file.
+For task development, consider using the provided test script in `flex-tasks/tasks`. Please refer to its own README file.
 
 The generic parsers and input forms can be used as a standalone feature, independently of Autotool.
 
