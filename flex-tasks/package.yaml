@@ -1,5 +1,6 @@
 ---
 name: flex-tasks
+version: 0.1
 extra-source-files:
   - tasks/defaultConfig.flex
 dependencies:
