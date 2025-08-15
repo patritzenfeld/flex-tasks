@@ -49,7 +49,7 @@ This includes (in order):
   and a map of languages to translated HTML code, wrapped in IO. (IO ([Text],HtmlDict))
 
 Provide a function
-getTask :: Gen (TaskData, String, IO ([Text],HtmlDict))
+getTask :: MonadRandom m => m (TaskData, String, IO ([Text],HtmlDict))
 implementing a generator for these elements.
 
 If no specific form is required, you may use 'formify' to generate a generic form for you,
