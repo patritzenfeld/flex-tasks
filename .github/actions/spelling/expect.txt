@@ -22,8 +22,6 @@ unsnoc
 usr
 wbr
 Wno
-xit
-xprop
 XOverloaded
 XQuasi
 XType
