@@ -25,7 +25,7 @@ import FlexTask.YesodConfig             (FlexForm(..), Handler, Rendered, Widget
 
 
 -- reset internal id generator to have same ids in all languages
-resetIdentGen :: HandlerFor master ()
+resetIdentGen :: Handler ()
 resetIdentGen = do
     x <- HandlerFor $ readIORef . handlerState
     HandlerFor $ flip writeIORef x {ghsIdent = 0} . handlerState
@@ -64,7 +64,7 @@ getFormData widget = do
 
 
 -- Manipulate the request data to use a specific language.
-setRequestLang :: Lang -> HandlerFor master a -> HandlerFor master a
+setRequestLang :: Lang -> Handler a -> Handler a
 setRequestLang lang HandlerFor{..} = do
   HandlerFor $ unHandlerFor . alterHandlerData
   where
