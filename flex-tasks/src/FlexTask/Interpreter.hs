@@ -374,6 +374,6 @@ prettyError (WontCompile ghcErrors) = "Won't compile:\n" ++ unlines (map errMsg 
 
 
 greadError :: String -> String
-greadError term = "fst $ headDef (error " ++ show errorMessage ++") $ gread " ++ show term
+greadError term = "fst $ headDef (error " ++ show errorMessage ++") $ gread " ++ show term ++ " :: TaskData"
   where
     errorMessage = "Failed reading stored TaskData. Encountered this: " ++ term
