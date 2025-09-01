@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 {-# OPTIONS_GHC -Wno-missing-fields #-}
 {-# language DefaultSignatures #-}
+{-# language DeriveDataTypeable #-}
 {-# language DeriveGeneric #-}
 {-# language LambdaCase #-}
 {-# language OverloadedStrings #-}
@@ -51,6 +52,7 @@ module FlexTask.Generic.Form
   ) where
 
 
+import Data.Data            (Data)
 import Data.List.Extra      (intercalate, nubSort, uncons, unsnoc)
 import Data.Tuple.Extra     (first)
 import Data.Maybe           (fromMaybe)
@@ -245,7 +247,7 @@ Use if both of the following is true:
 -}
 newtype SingleChoiceSelection = SingleChoiceSelection
   {getAnswer :: Maybe Int -- ^ Retrieve the selected option. @Nothing@ if none.
-  } deriving (Show,Eq,Generic)
+  } deriving (Show,Eq,Generic,Data)
 {- |
 Same as `SingleChoiceSelection`, but for multiple choice input.
 
@@ -279,7 +281,7 @@ Use if both of the following is true:
 -}
 newtype MultipleChoiceSelection = MultipleChoiceSelection
   { getAnswers :: [Int] -- ^ Retrieve the list of selected options. @[]@ if none.
-  } deriving (Show,Eq,Generic)
+  } deriving (Show,Eq,Generic,Data)
 
 
 -- | Value with no option selected.
