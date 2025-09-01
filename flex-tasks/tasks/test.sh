@@ -85,7 +85,7 @@ while IFS= read -r line || [ -n "$line" ]; do
     continue
   fi
   if [[ "$line" =~ "taskName:" ]]; then
-    task_name=$(awk '{$1=$1;print}' <<< "${line#"taskName:"}")
+    task_name=$(awk '{$1=$1;print}' <<<"${line#"taskName:"}")
     echo "$task_name" >>"${files[$current_file]}"
   else
     echo "${line//$'\r'/}" >>"${files[$current_file]}"
