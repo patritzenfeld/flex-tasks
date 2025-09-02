@@ -3,12 +3,8 @@ resolver: nightly-2024-03-20
 packages:
   - .
 extra-deps:
-  - git: https://github.com/fmidue/logic-tasks.git
-    commit: 79baa6175bcb83ce74484906b53898ab600a0182
-  - git: https://github.com/fmidue/term-tasks
-    commit: cb2bfac5e0145c01fbbab7e4f995d624db72dcad
   - git: https://github.com/fmidue/autotool-capabilities.git
-    commit: abf9b15ad431e517ae0700ad9dfb6f6941e10538
+    commit: 8067088f23759d787c049677a26868df26c1676f
     subdirs:
       - autotool-capabilities
       - autotool-capabilities-io-instances
