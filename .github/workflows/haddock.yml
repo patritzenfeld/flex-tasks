@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-# abcd
+
       - name: Cache Stack
         id: cache-stack-unix
         uses: actions/cache@v4
@@ -33,7 +33,7 @@ jobs:
         id: haddock
         run: |
           stack haddock --no-haddock-deps \
-            --haddock-arguments "--html --hyperlinked-source --quickjump --title=FlexTask"
+            --haddock-arguments "--pretty-html --hyperlinked-source --quickjump --title=FlexTask"
           echo "doc_path=$(stack path --no-haddock-deps --local-doc-root)" >> $GITHUB_OUTPUT
 
       - name: Upload artifact
