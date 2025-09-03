@@ -32,9 +32,9 @@ jobs:
       - name: Build Haddock
         id: haddock
         run: |
-          stack exec -- haddock \
-            --html --pretty-html --hyperlinked-source --quickjump --title=FlexTask
-          echo "doc_path=$(stack path --no-haddock-deps --local-doc-root)" >> $GITHUB_OUTPUT
+          stack exec -- haddock ./**/*.hs \
+            --html --pretty-html --hyperlinked-source --quickjump --title=FlexTask --odir docs
+          echo "doc_path=docs" >> $GITHUB_OUTPUT
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
