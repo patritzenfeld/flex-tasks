@@ -2,11 +2,8 @@
 name: Haddock to GitHub pages
 
 on:
-  workflow_run:
-    workflows: ["Haskell CI"]
+  push:
     branches: [main]
-    types: completed
-
 permissions: read-all
 
 jobs:
