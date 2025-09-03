@@ -32,7 +32,7 @@ jobs:
       - name: Build Haddock
         id: haddock
         run: |
-          stack exec -- haddock --no-haddock-deps \
+          stack exec -- haddock \
             --html --pretty-html --hyperlinked-source --quickjump --title=FlexTask
           echo "doc_path=$(stack path --no-haddock-deps --local-doc-root)" >> $GITHUB_OUTPUT
 
