@@ -17,15 +17,20 @@ module FlexTask.Processing.Text
   , formatIfFlexSubmission
   , formatForJS
   , removeUnicodeEscape
+    -- * Form Duplication for Autotool Comment View
+  , uniqueFormCopy
     -- * Internationalization
   , supportedLanguages
   ) where
 
 
 import Data.Char                        (isAscii, isDigit)
+import Data.List.Extra                  (replace)
 import Data.Maybe                       (fromMaybe)
 import Data.Text                        (Text)
 import Numeric                          (showHex)
+import Text.Blaze.Html                  (Html, preEscapedToHtml)
+import Text.Blaze.Html.Renderer.String  (renderHtml)
 import Text.Read                        (readMaybe)
 import Text.Shakespeare.I18N            (Lang)
 
@@ -129,6 +134,23 @@ removeUnicodeEscape (x:xs)
     inUnicodeRange = ident <= (1114111 :: Int)
 removeUnicodeEscape xs = xs
 
+
+
+{- |
+Create an exact duplicate of the given form data, but append all field names with a unique identifier.
+This is used to render multiple views of the input form on the same page, e.g. the comments page in Autotool.
+-}
+uniqueFormCopy :: ([[Text]],Html) -> String -> ([[Text]],Html)
+uniqueFormCopy (params,html) uniqueId = (newParams, alteredHtml)
+  where
+    suffix = '-' : uniqueId
+    newParams = map (map (<> T.pack suffix)) params
+    alteredHtml = preEscapedToHtml $ foldr
+      ( (\param -> replace ("name=\""<> param) ("name=\""<> param <> suffix)) .
+        T.unpack
+      )
+      (renderHtml html)
+      $ concat params
 
 
 {- |
