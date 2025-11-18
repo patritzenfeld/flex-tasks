@@ -153,7 +153,7 @@ uniqueFormCopy (params,html) uniqueId = (newParams, alteredHtml)
 
 {- |
 Format an answer String into a vertical text listing of individual values.
-This is used to display Flex submissions in a non-HTML context, e.g. in a downloadable text file.
+This is used to display Flex submissions when using the "download all submission" feature in Autotool.
 -}
 formatIfFlexSubmission :: Text -> Text
 formatIfFlexSubmission t
