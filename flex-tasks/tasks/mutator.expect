@@ -4,7 +4,7 @@
 set ver [lindex $argv 0];
 set mutator [lindex $argv 1];
 set how_many [lindex $argv 2];
-set timeout 3
+set timeout 15
 
 log_user 0
 spawn ghci-$ver $mutator
