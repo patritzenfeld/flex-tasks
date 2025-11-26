@@ -78,7 +78,7 @@ runs:
       with:
         path: |
           ~/.stack
-          $GITHUB_WORKSPACE/haskell-template-setup/.stack-work
+          ${{ github.workspace }}/haskell-template-setup/.stack-work
         key: >-
           stack-cache-${{ hashFiles(format('{0}/stack.yaml', inputs.config), format('{0}/package.yaml', inputs.config)) }}
 
