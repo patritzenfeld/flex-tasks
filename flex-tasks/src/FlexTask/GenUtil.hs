@@ -20,4 +20,4 @@ fromGen gen = do
 
 
 a :: Int
-a = 1
+a = 2
