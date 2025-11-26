@@ -1,6 +1,6 @@
 
 module FlexTask.GenUtil (
-  fromGen,
+  fromGen, a
   ) where
 
 
@@ -17,3 +17,7 @@ fromGen :: MonadRandom m => Gen a -> m a
 fromGen gen = do
   seed <- getRandom
   pure $ unGen gen (mkQCGen seed) 30
+
+
+a :: Int
+a = 1
