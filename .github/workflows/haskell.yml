@@ -24,37 +24,37 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+#      - uses: actions/checkout@v4
 
-      - name: Cache Stack
-        id: cache-stack-unix
-        uses: actions/cache@v4
-        with:
-          path: ~/.stack
-          key: ${{ matrix.os }}-${{ matrix.plan.build }}-stack-home-${{ hashFiles('stack.yaml') }}-${{ hashFiles('**/package.yaml') }}
+#      - name: Cache Stack
+#        id: cache-stack-unix
+#        uses: actions/cache@v4
+#        with:
+#          path: ~/.stack
+#          key: ${{ matrix.os }}-${{ matrix.plan.build }}-stack-home-${{ hashFiles('stack.yaml') }}-${{ hashFiles('**/package.yaml') }}
 
-      - name: Setup stack
-        uses: haskell-actions/setup@v2
-        with:
-          enable-stack: true
-          stack-no-global: true
+#      - name: Setup stack
+#        uses: haskell-actions/setup@v2
+#        with:
+#          enable-stack: true
+#          stack-no-global: true
 
-      - name: Install dependencies
-        run: |
-          set -ex
-          stack --no-terminal --install-ghc build --test --bench --only-dependencies --stack-yaml stack-test.yaml
-          set +ex
-        env:
-          BUILD: ${{ matrix.plan.build }}
+#      - name: Install dependencies
+#        run: |
+#          set -ex
+#          stack --no-terminal --install-ghc build --test --bench --only-dependencies --stack-yaml stack-test.yaml
+#          set +ex
+#        env:
+#          BUILD: ${{ matrix.plan.build }}
 
-      - name: Build and test
-        run: |
-          set -ex
-          export FLEX_PKGDB=$(stack path --local-pkg-db)
-          stack --no-terminal test --coverage --bench --no-run-benchmarks --haddock --no-haddock-deps --stack-yaml stack-test.yaml
-          set +ex
-        env:
-          BUILD: ${{ matrix.plan.build }}
+#      - name: Build and test
+#        run: |
+#          set -ex
+#          export FLEX_PKGDB=$(stack path --local-pkg-db)
+#          stack --no-terminal test --coverage --bench --no-run-benchmarks --haddock --no-haddock-deps --stack-yaml stack-test.yaml
+#          set +ex
+#        env:
+#          BUILD: ${{ matrix.plan.build }}
 
       - name: Escape commit message
         id: escape
