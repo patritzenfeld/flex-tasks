@@ -72,16 +72,6 @@ runs:
         repository: fmidue/haskell-template-setup
         path: haskell-template-setup
 
-    - name: Cache Stack
-      if: steps.restore-cache-db.outputs.cache-hit != 'true'
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.stack
-          ${{ github.workspace }}/haskell-template-setup/.stack-work
-        key: >-
-          stack-cache-${{ hashFiles(format('{0}/stack.yaml', inputs.config), format('{0}/package.yaml', inputs.config)) }}
-
     - uses: webfactory/ssh-agent@v0.9.0
       if: >
         steps.restore-cache-db.outputs.cache-hit != 'true' &&
