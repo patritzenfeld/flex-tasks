@@ -144,7 +144,7 @@ uniqueFormCopy (params,html) uniqueId = (newParams, alteredHtml)
     suffix = '-' : uniqueId
     newParams = map (map (<> T.pack suffix)) params
     alteredHtml = preEscapedToHtml $ foldr
-      ( (\param -> replace ("name=\""<> param) ("name=\""<> param <> suffix)) .
+      ( (\param -> replace ("name=\"" <> param <> "\"") ("name=\"" <> param <> suffix <> "\"")) .
         T.unpack
       )
       (renderHtml html)
