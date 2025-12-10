@@ -4,6 +4,7 @@
 module FlexTask.ConvertForm (
   getFormData,
   unsafeGetFormData,
+  a,
   ) where
 
 
@@ -24,6 +25,9 @@ import FlexTask.Types                   (HtmlDict)
 import FlexTask.Processing.Text         (supportedLanguages)
 import FlexTask.YesodConfig             (FlexForm(..), Handler, Rendered, Widget)
 
+
+a :: String
+a = "Sup"
 
 
 -- reset internal id generator to have same ids in all languages
