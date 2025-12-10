@@ -4,7 +4,7 @@
 module FlexTask.ConvertForm (
   getFormData,
   unsafeGetFormData,
-  a,
+  doNotShadow,
   ) where
 
 
@@ -26,8 +26,8 @@ import FlexTask.Processing.Text         (supportedLanguages)
 import FlexTask.YesodConfig             (FlexForm(..), Handler, Rendered, Widget)
 
 
-a :: String
-a = "Sup"
+doNotShadow :: String
+doNotShadow = "Sup"
 
 
 -- reset internal id generator to have same ids in all languages
