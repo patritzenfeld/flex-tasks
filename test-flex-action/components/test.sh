@@ -78,8 +78,6 @@ mkdir -p "${base_name}"
 true >"${files[0]}"
 
 while IFS= read -r line || [ -n "$line" ]; do
-  line="${line//$'\r'/}"
-
   # Check for module separator
   if [[ "$line" =~ ^===+$ ]]; then
     ((current_file++))
@@ -90,7 +88,7 @@ while IFS= read -r line || [ -n "$line" ]; do
     task_name=$(awk '{$1=$1;print}' <<<"${line#"taskName:"}")
     echo "$task_name" >>"${files[$current_file]}"
   elif (( current_file > 0 )); then
-    echo "$line" >>"${files[$current_file]}"
+    echo "${line//$'\r'/}" >>"${files[$current_file]}"
   fi
 done <"$1"
 
