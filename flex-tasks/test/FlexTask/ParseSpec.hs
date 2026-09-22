@@ -49,6 +49,7 @@ spec = do
     context "should work for all base types" $ do
       prop "Text" $ testParsingString pack
       prop "Textarea" $ testParsingString $ Textarea . pack
+      prop "String" $ testParsingString id
       prop "Bool" $ testParsing boolShow
       prop "Int" $ testParsing @Int show
       prop "Double" $ \a -> parsesNear @Double (escapedSingle (show a)) a $ doubleInaccuracy a
@@ -56,6 +57,7 @@ spec = do
     context "should work for lists" $ do
       prop "Text" $ testParsingStringList pack
       prop "Textarea" $ testParsingStringList (Textarea . pack)
+      prop "String" $ testParsingStringList id
       prop "Bool" $ testParsingList boolShow
       prop "Int" $ testParsingList @Int show
       prop "Double" $ \a -> parsesNear @[Double] (escapedList $ map show a) a $
@@ -64,6 +66,7 @@ spec = do
     context "should work for optional values" $ do
       prop "Text" $ testParsingMaybe pack
       prop "Textarea" $ testParsingMaybe (Textarea . pack)
+      prop "String" $ testParsingMaybe id
       prop "Bool" $ testParsing $ maybeShow boolShow
       prop "Int" $ testParsing @(Maybe Int) $ maybeShow show
       prop "Double" $ \a -> parsesNear @(Maybe Double) (escapedSingle $ maybeShow show a) a $
@@ -72,6 +75,7 @@ spec = do
     context "should work for lists of optional values" $ do
       prop "Text" $ testParsingMaybeStringList pack
       prop "Textarea" $ testParsingMaybeStringList (Textarea . pack)
+      prop "String" $ testParsingMaybeStringList id
       prop "Bool" $ testParsingList $ maybeShow boolShow
       prop "Int" $ testParsingList @(Maybe Int) $ maybeShow show
       prop "Double" $ \a -> parsesNear @[Maybe Double] (escapedList $ map (maybeShow show) a) a

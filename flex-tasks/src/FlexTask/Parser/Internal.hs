@@ -162,6 +162,13 @@ parseDouble :: Parser Double
 parseDouble = ap sign $ floating2 True
 
 
+parseList :: Parse a => Parser [a]
+parseList =
+      try (escaped parseEmpty) <|>
+      sepBy1 formParser (textParser listDelimiter)
+    where
+      parseEmpty = textParser missingMarker $> []
+
 
 instance Parse Integer where
   formParser = escaped int
@@ -179,6 +186,11 @@ instance Parse Text where
 
 instance Parse Textarea where
   formParser = Textarea <$> formParser
+
+
+
+instance Parse String where
+  formParser = unpack <$> formParser
 
 
 
@@ -203,12 +215,13 @@ instance (Parse a, Parse b, Parse c, Parse d, Parse e, Parse f) => Parse (a,b,c,
 
 
 
-instance Parse a => Parse [a] where
-  formParser =
-      try (escaped parseEmpty) <|>
-      sepBy1 formParser (textParser listDelimiter)
-    where
-      parseEmpty = textParser missingMarker $> []
+instance {-# Overlappable #-} Parse a => Parse [a] where
+  formParser = parseList
+
+
+-- To avoid clash with TypeError instance in Parse.hs
+instance Parse [String] where
+  formParser = parseList
 
 
 instance Parse a => Parse (Maybe a) where
@@ -241,6 +254,10 @@ instance Parse (SingleInputList Text) where
 
 instance Parse (SingleInputList Textarea) where
   formParser = parseInstanceSingleInputList $ Textarea <$> parseText
+
+
+instance Parse (SingleInputList String) where
+  formParser = parseInstanceSingleInputList $ unpack <$> parseText
 
 
 instance Parse (SingleInputList Bool) where
