@@ -66,7 +66,7 @@ getFormData widget = do
       html <- withUrlRenderer [hamlet|
         ^{pageHead content}
         ^{pageBody content}|]
-      return (ids, names, (lang, concat $ lines $ renderHtml html))
+      return (ids, names, (lang, renderHtml html))
 
 
 {- |
