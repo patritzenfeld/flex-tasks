@@ -445,7 +445,7 @@ printWidget :: Lang -> Rendered Widget -> IO ()
 printWidget lang render  = do
   (_,_, dict) <- getFormData render
   putStrLn $ maybe "Form not available in this language."
-    (trimEnd . unlines . addIndent 0 . intoLines)
+    (trimEnd . unlines . addIndent 0 . intoLines . concat . lines)
     $ M.lookup lang dict
   where
     intoLines s =
